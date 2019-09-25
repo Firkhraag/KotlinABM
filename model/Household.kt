@@ -11,8 +11,3 @@ class Household(val pos: Pair<Double, Double>,
     }
 
 }
-
-//class Household(val pos: Pair<Double, Double>,
-//                val closestSchool: Int, val closestKindergarten: Int,
-//                val numOfPeople: Int, val numOfWorking: Int,
-//                val status: Int, val agents: ArrayList<Agent>)

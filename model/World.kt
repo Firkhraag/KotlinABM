@@ -12,9 +12,7 @@ class World {
     var year = 1
 
     var dayOfTheWeek = 1
-    var weekOfTheMonth = 1
-    var dayOfTheYear = 1
-    var weekend = false
+    var weekCases = 0
 
     var infected = 0
     var recovered = 0
@@ -424,951 +422,10 @@ class World {
         household.addAgent(agent)
     }
 
-    private fun createHousehold(type: String,
-                                pos: Pair<Double, Double>,
-                                okatoIndex: Int,
-                                biasedIndex: Int,
-                                districtsInfoMatrix: ArrayList<ArrayList<Int>>,
-                                ageDistributionInDistrictsMatrix: ArrayList<ArrayList<Int>>) {
-
-        val closestKindergarten = kindergartens[findClosestKindergarten(pos)]
-        val closestSchool = schools[findClosestSchool(pos)]
-        val household = Household(pos, findClosestSchool(pos), findClosestKindergarten(pos), type)
-        when (type) {
-            "1P" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-            }
-            "PWOP2P0C" -> {
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-            }
-            "PWOP3P0C" -> {
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-            }
-            "PWOP3P1C" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        false)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-            }
-            "PWOP4P0C" -> {
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "PWOP4P1C" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "PWOP4P2C" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        false)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "PWOP5P0C" -> {
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "PWOP5P1C" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "PWOP5P2C" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        false)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "PWOP5P3C" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        false)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "PWOP6P0C" -> {
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "PWOP6P1C" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "PWOP6P2C" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "PWOP6P3C" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        false)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "2PWOP4P0С" -> {
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-            }
-            "2PWOP5P0С" -> {
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-            }
-            "2PWOP5P1С" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        false)
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-            }
-            "2PWOP6P0С" -> {
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "2PWOP6P1С" -> {
-                val parentAge = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        false)
-                addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        null)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "2PWOP6P2С" -> {
-                val parentAge1 = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        false)
-                val parentAge2 = addPair(household,
-                        okatoIndex,
-                        biasedIndex,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix,
-                        closestKindergarten,
-                        closestSchool,
-                        false)
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge1)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, parentAge2)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "SMWC2P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, false, null, true)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent2.age < 18) {
-                    agent2.age = agent.age - 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "SMWC2P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, false, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "SMWC3P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, false, null, true)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent2.age < 18) {
-                    agent2.age = agent.age - 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent3.age < 18) {
-                    agent3.age = agent.age - 18
-                }
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "SMWC3P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, false, null, true)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent2.age < 18) {
-                    agent2.age = agent.age - 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "SMWC3P2C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, false, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "SMWC4P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, false, null, true)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent2.age < 18) {
-                    agent2.age = agent.age - 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent3.age < 18) {
-                    agent3.age = agent.age - 18
-                }
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent4.age < 18) {
-                    agent4.age = agent.age - 18
-                }
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SMWC4P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, false, null, true)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent2.age < 18) {
-                    agent2.age = agent.age - 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent3.age < 18) {
-                    agent3.age = agent.age - 18
-                }
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SMWC4P2C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, false, null, true)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent2.age < 18) {
-                    agent2.age = agent.age - 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SMWC4P3C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, false, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SFWC2P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, true)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent2.age < 18) {
-                    agent2.age = agent.age - 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "SFWC2P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "SFWC3P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, true)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent2.age < 18) {
-                    agent2.age = agent.age - 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent3.age < 18) {
-                    agent3.age = agent.age - 18
-                }
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "SFWC3P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, true)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                if (agent.age - agent2.age < 18) {
-                    agent2.age = agent.age - 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "SFWC3P2C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWP3P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWP3P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                if (agent2.age - agent.age < 18) {
-                    agent2.age = agent.age + 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-
-//                println("-------------PARENT----------------")
-//                println("Age: ${agent.age}")
-//                println("Sex: ${agent.isMale}")
-//                println("Activity: ${agent.activityStatus}")
-//                println("-------------PARENT OF PARENT----------------")
-//                println("Age: ${agent2.age}")
-//                println("Sex: ${agent2.isMale}")
-//                println("Activity: ${agent2.activityStatus}")
-//                println("-------------CHILDREN----------------")
-//                println("Age: ${agent3.age}")
-//                println("Sex: ${agent3.isMale}")
-//                println("Activity: ${agent3.activityStatus}")
-            }
-            "SPWCWP4P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWP4P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWP4P2C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                if (agent2.age - agent.age < 18) {
-                    agent2.age = agent.age + 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWPWOP3P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWPWOP3P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                if (agent2.age - agent.age < 18) {
-                    agent2.age = agent.age + 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWPWOP4P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWPWOP4P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWPWOP4P2C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                if (agent2.age - agent.age < 18) {
-                    agent2.age = agent.age + 18
-                }
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWPWOP5P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-                val agent5 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWPWOP5P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, true)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-                val agent5 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
-            }
-            "SPWCWPWOP5P2C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, true, null, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false, null, null, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-                val agent5 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true, null, agent.age)
-                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
-            }
-            "O2P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "O2P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-            }
-            "O3P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "O3P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "O3P2C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-            }
-            "O4P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "O4P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "O4P2C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-            }
-            "O5P0C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-                val agent5 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
-            }
-            "O5P1C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-                val agent5 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
-            }
-            "O5P2C" -> {
-                val agent = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
-                val agent2 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
-                val agent3 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, false)
-                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
-                val agent4 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
-                val agent5 = createAgent(okatoIndex, biasedIndex, districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix, true)
-                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
-            }
-        }
-        households.add(household)
-    }
-
     private fun addHouseholdsToPool(districtsInfoMatrix: ArrayList<ArrayList<Int>>,
                                     ageDistributionInDistrictsMatrix: ArrayList<ArrayList<Int>>) {
         var okatoIndex = 0
+//        districtsInfoMatrix.parallelStream().forEach {
         districtsInfoMatrix.forEach {
             val currOkato = it[0]
             println(currOkato)
@@ -1378,536 +435,1447 @@ class World {
             val indexFor3People = okatoIndex * 5 + 3
             val indexFor4People = okatoIndex * 5 + 4
             val indexFor5People = okatoIndex * 5 + 5
+
 ////            for (i in 0..it[58]) {
-            for (i in 0..100) {
-                createHousehold("1P",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor1People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "1P")
+
+                val agent = createAgent(okatoIndex, indexFor1People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[59]) {
-            for (i in 0..100) {
-                createHousehold("PWOP2P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor2People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP2P0C")
+
+                addPair(household, okatoIndex,
+                        indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten, closestSchool, null)
+                households.add(household)
             }
 //            for (i in 0..(it[60] - it[61])) {
-            for (i in 0..100) {
-                createHousehold("PWOP3P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP3P0C")
+
+                addPair(household,
                         okatoIndex,
                         indexFor3People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[61]) {
-            for (i in 0..100) {
-                createHousehold("PWOP3P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP3P1C")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor3People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        false)
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[62] - it[63] - it[64])) {
-            for (i in 0..100) {
-                createHousehold("PWOP4P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP4P0C")
+
+                addPair(household,
                         okatoIndex,
                         indexFor4People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[63]) {
-            for (i in 0..100) {
-                createHousehold("PWOP4P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP4P1C")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor4People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[64]) {
-            for (i in 0..100) {
-                createHousehold("PWOP4P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP4P2C")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor4People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        false)
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[65] - it[66] - it[67] - it[68])) {
-            for (i in 0..100) {
-                createHousehold("PWOP5P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP5P0C")
+
+                addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[66]) {
-            for (i in 0..100) {
-                createHousehold("PWOP5P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP5P1C")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[67]) {
-            for (i in 0..100) {
-                createHousehold("PWOP5P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP5P2C")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        false)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[68]) {
-            for (i in 0..100) {
-                createHousehold("PWOP5P3C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP5P3C")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        false)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[69] - it[70] - it[71] - it[72])) {
-            for (i in 0..100) {
-                createHousehold("PWOP6P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP6P0C")
+
+                addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[70]) {
-            for (i in 0..100) {
-                createHousehold("PWOP6P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP6P1C")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[71]) {
-            for (i in 0..100) {
-                createHousehold("PWOP6P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP6P2C")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[72]) {
-            for (i in 0..100) {
-                createHousehold("PWOP6P3C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP6P3C")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        false)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[73]) {
-            for (i in 0..100) {
-                createHousehold("2PWOP4P0С",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP4P0С")
+
+                addPair(household,
                         okatoIndex,
                         indexFor4People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                addPair(household,
+                        okatoIndex,
+                        indexFor4People,
+                        districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                households.add(household)
             }
 //            for (i in 0..(it[74] - it[75])) {
-            for (i in 0..100) {
-                createHousehold("2PWOP5P0С",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP5P0С")
+
+                addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                addPair(household,
+                        okatoIndex,
+                        indexFor5People,
+                        districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[75]) {
-            for (i in 0..100) {
-                createHousehold("2PWOP5P1С",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP5P1С")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        false)
+                addPair(household,
+                        okatoIndex,
+                        indexFor5People,
+                        districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[76] - it[77] - it[78])) {
-            for (i in 0..100) {
-                createHousehold("2PWOP6P0С",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP6P0С")
+
+                addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                addPair(household,
+                        okatoIndex,
+                        indexFor5People,
+                        districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[77]) {
-            for (i in 0..100) {
-                createHousehold("2PWOP6P1С",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP6P1С")
+
+                val parentAge = addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        false)
+                addPair(household,
+                        okatoIndex,
+                        indexFor5People,
+                        districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        null)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[78]) {
-            for (i in 0..100) {
-                createHousehold("2PWOP6P2С",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP6P2С")
+
+                val parentAge1 = addPair(household,
                         okatoIndex,
                         indexFor5People,
                         districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        false)
+                val parentAge2 = addPair(household,
+                        okatoIndex,
+                        indexFor5People,
+                        districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix,
+                        closestKindergarten,
+                        closestSchool,
+                        false)
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge1)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, parentAge2)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[79] - it[80])) {
-            for (i in 0..100) {
-                createHousehold("SMWC2P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor2People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC2P0C")
+
+                val agent = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, false, null, true)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent2.age < 18) {
+                    agent2.age = agent.age - 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[80]) {
-            for (i in 0..100) {
-                createHousehold("SMWC2P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor2People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC2P1C")
+
+                val agent = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, false, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[81] - it[82] - it[83])) {
-            for (i in 0..100) {
-                createHousehold("SMWC3P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC3P0C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, false, null, true)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent2.age < 18) {
+                    agent2.age = agent.age - 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent3.age < 18) {
+                    agent3.age = agent.age - 18
+                }
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[82]) {
-            for (i in 0..100) {
-                createHousehold("SMWC3P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC3P1C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, false, null, true)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent2.age < 18) {
+                    agent2.age = agent.age - 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[83]) {
-            for (i in 0..100) {
-                createHousehold("SMWC3P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC3P2C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, false, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[84] - it[85] - it[86] - it[87])) {
-            for (i in 0..100) {
-                createHousehold("SMWC4P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC4P0C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, false, null, true)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent2.age < 18) {
+                    agent2.age = agent.age - 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent3.age < 18) {
+                    agent3.age = agent.age - 18
+                }
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent4.age < 18) {
+                    agent4.age = agent.age - 18
+                }
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[85]) {
-            for (i in 0..100) {
-                createHousehold("SMWC4P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC4P1C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, false, null, true)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent2.age < 18) {
+                    agent2.age = agent.age - 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent3.age < 18) {
+                    agent3.age = agent.age - 18
+                }
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[86]) {
-            for (i in 0..100) {
-                createHousehold("SMWC4P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC4P2C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, false, null, true)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent2.age < 18) {
+                    agent2.age = agent.age - 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[87]) {
-            for (i in 0..100) {
-                createHousehold("SMWC4P3C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC4P3C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, false, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[88] - it[89])) {
-            for (i in 0..100) {
-                createHousehold("SFWC2P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor2People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC2P0C")
+
+                val agent = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, true)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent2.age < 18) {
+                    agent2.age = agent.age - 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[89]) {
-            for (i in 0..100) {
-                createHousehold("SFWC2P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor2People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC2P1C")
+
+                val agent = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[90] - it[91] - it[92])) {
-            for (i in 0..100) {
-                createHousehold("SFWC3P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC3P0C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, true)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent2.age < 18) {
+                    agent2.age = agent.age - 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent3.age < 18) {
+                    agent3.age = agent.age - 18
+                }
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[91]) {
-            for (i in 0..100) {
-                createHousehold("SFWC3P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC3P1C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, true)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                if (agent.age - agent2.age < 18) {
+                    agent2.age = agent.age - 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[92]) {
-            for (i in 0..100) {
-                createHousehold("SFWC3P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC3P2C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[93] - it[94])) {
-            for (i in 0..100) {
-                createHousehold("SPWCWP3P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP3P0C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[94]) {
-            for (i in 0..100) {
-                createHousehold("SPWCWP3P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP3P1C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                if (agent2.age - agent.age < 18) {
+                    agent2.age = agent.age + 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[95] - it[96] - it[97])) {
-            for (i in 0..100) {
-                createHousehold("SPWCWP4P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP4P0C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[96]) {
-            for (i in 0..100) {
-                createHousehold("SPWCWP4P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP4P1C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[97]) {
-            for (i in 0..100) {
-                createHousehold("SPWCWP4P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP4P2C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                if (agent2.age - agent.age < 18) {
+                    agent2.age = agent.age + 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[98] - it[99])) {
-            for (i in 0..100) {
-                createHousehold("SPWCWPWOP3P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP3P0C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[99]) {
-            for (i in 0..100) {
-                createHousehold("SPWCWPWOP3P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP3P1C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                if (agent2.age - agent.age < 18) {
+                    agent2.age = agent.age + 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
-//            for (i in 0..(it[100] - it[101] - it[102])) {
-            for (i in 0..100) {
-                createHousehold("SPWCWPWOP4P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+//            for (i in 0..(it[19] - it[101] - it[102])) {
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP4P0C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[101]) {
-            for (i in 0..100) {
-                createHousehold("SPWCWPWOP4P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP4P1C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[102]) {
-            for (i in 0..100) {
-                createHousehold("SPWCWPWOP4P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP4P2C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                if (agent2.age - agent.age < 18) {
+                    agent2.age = agent.age + 18
+                }
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[103] - it[104] - it[105])) {
-            for (i in 0..100) {
-                createHousehold("SPWCWPWOP5P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor5People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP5P0C")
+
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                val agent5 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[104]) {
-            for (i in 0..100) {
-                createHousehold("SPWCWPWOP5P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor5People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP5P1C")
+
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, true)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                val agent5 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[105]) {
-            for (i in 0..100) {
-                createHousehold("SPWCWPWOP5P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor5People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP5P2C")
+
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, true, null, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false, null, null, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                val agent5 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true, null, agent.age)
+                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[106] - it[107])) {
-            for (i in 0..100) {
-                createHousehold("O2P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor2People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O2P0C")
+
+                val agent = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[107]) {
-            for (i in 0..100) {
-                createHousehold("O2P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor2People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O2P1C")
+
+                val agent = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor2People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[108] - it[109] - it[110])) {
-            for (i in 0..100) {
-                createHousehold("O3P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O3P0C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[109]) {
-            for (i in 0..100) {
-                createHousehold("O3P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O3P1C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[110]) {
-            for (i in 0..100) {
-                createHousehold("O3P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor3People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O3P2C")
+
+                val agent = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor3People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[111] - it[112] - it[113])) {
-            for (i in 0..100) {
-                createHousehold("O4P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O4P0C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[112]) {
-            for (i in 0..100) {
-                createHousehold("O4P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O4P1C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[113]) {
-            for (i in 0..100) {
-                createHousehold("O4P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor4People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O4P2C")
+
+                val agent = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor4People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..(it[114] - it[115] - it[116])) {
-            for (i in 0..100) {
-                createHousehold("O5P0C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor5People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O5P0C")
+
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                val agent5 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[115]) {
-            for (i in 0..100) {
-                createHousehold("O5P1C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor5People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O5P1C")
+
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                val agent5 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
 //            for (i in 0..it[116]) {
-            for (i in 0..100) {
-                createHousehold("O5P2C",
-                        homesFiltered[(0 until (homesFiltered.size)).random()].pos,
-                        okatoIndex,
-                        indexFor5People,
-                        districtsInfoMatrix,
-                        ageDistributionInDistrictsMatrix)
+            for (i in 0..19) {
+                val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
+                val closestKindergartenIndex = findClosestKindergarten(pos)
+                val closestSchoolIndex = findClosestSchool(pos)
+                val closestKindergarten = kindergartens[closestKindergartenIndex]
+                val closestSchool = schools[closestSchoolIndex]
+                val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O5P2C")
+
+                val agent = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent, household, closestKindergarten, closestSchool)
+                val agent2 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent2, household, closestKindergarten, closestSchool)
+                val agent3 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, false)
+                addAgentToGroups(agent3, household, closestKindergarten, closestSchool)
+                val agent4 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent4, household, closestKindergarten, closestSchool)
+                val agent5 = createAgent(okatoIndex, indexFor5People, districtsInfoMatrix,
+                        ageDistributionInDistrictsMatrix, true)
+                addAgentToGroups(agent5, household, closestKindergarten, closestSchool)
+                households.add(household)
             }
             okatoIndex += 1
         }
@@ -1920,6 +1888,7 @@ class World {
     fun runSimulation() {
         while(true) {
             println("Day $day")
+//            households.parallelStream().forEach { household ->
             households.forEach { household ->
                 household.agents.forEach { agent ->
                     if (agent.healthStatus == 0) {
@@ -1932,19 +1901,23 @@ class World {
                 }
             }
             if ((dayOfTheWeek != 7) && (dayOfTheWeek != 6)) {
+//                kindergartens.parallelStream().forEach { kindergarten ->
                 kindergartens.forEach { kindergarten ->
-                    kindergarten.groupsByAge.forEach { (key, agents) ->
-                        agents.forEach { agent ->
-                            if (agent.healthStatus == 0) {
-                                agents.forEach { agent2 ->
-                                    if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
-                                        makeContactWithInfected()
+                    kindergarten.groupsByAge.forEach { (_, groupByAge) ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if (agent.healthStatus == 0) {
+                                    group.agents.forEach { agent2 ->
+                                        if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
+                                            makeContactWithInfected()
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+//                homes.parallelStream().forEach { home ->
                 homes.forEach { home ->
                     home.workingAgents.forEach { agent ->
                         if (agent.healthStatus == 0) {
@@ -1958,39 +1931,48 @@ class World {
                 }
             }
             if (dayOfTheWeek != 7) {
+//                schools.parallelStream().forEach { school ->
                 schools.forEach { school ->
-                    school.groupsByAge.forEach { (key, agents) ->
-                        agents.forEach { agent ->
-                            if (agent.healthStatus == 0) {
-                                agents.forEach { agent2 ->
-                                    if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
-                                        makeContactWithInfected()
+                    school.groupsByAge.forEach { (_, groupByAge) ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if (agent.healthStatus == 0) {
+                                    group.agents.forEach { agent2 ->
+                                        if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
+                                            makeContactWithInfected()
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+//                universities.parallelStream().forEach { university ->
                 universities.forEach { university ->
-                    university.groupsByAge.forEach { (key, agents) ->
-                        agents.forEach { agent ->
-                            if (agent.healthStatus == 0) {
-                                agents.forEach { agent2 ->
-                                    if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
-                                        makeContactWithInfected()
+                    university.groupsByAge.forEach { (_, groupByAge) ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if (agent.healthStatus == 0) {
+                                    group.agents.forEach { agent2 ->
+                                        if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
+                                            makeContactWithInfected()
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+//                colleges.parallelStream().forEach { college ->
                 colleges.forEach { college ->
-                    college.groupsByAge.forEach { (key, agents) ->
-                        agents.forEach { agent ->
-                            if (agent.healthStatus == 0) {
-                                agents.forEach { agent2 ->
-                                    if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
-                                        makeContactWithInfected()
+                    college.groupsByAge.forEach { (_, groupByAge) ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if (agent.healthStatus == 0) {
+                                    group.agents.forEach { agent2 ->
+                                        if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
+                                            makeContactWithInfected()
+                                        }
                                     }
                                 }
                             }
@@ -1998,6 +1980,7 @@ class World {
                     }
                 }
             }
+//            households.parallelStream().forEach { household ->
             households.forEach { household ->
                 household.agents.forEach { agent ->
                     when (agent.healthStatus) {
@@ -2005,6 +1988,7 @@ class World {
                             agent.healthStatus = 1
                             susceptible -= 1
                             infected += 1
+                            weekCases += 1
                             agent.daysInfected = 1
                             agent.isStayingHomeWhenInfected = agent.shouldStayAtHome(agent.daysInfected)
                         }
@@ -2032,15 +2016,42 @@ class World {
                                 susceptible += 1
                             }
                         }
-
+                        0 -> {
+                            if ((0..99).random() < 1) {
+                                agent.healthStatus = 1
+                                susceptible -= 1
+                                infected += 1
+                                weekCases += 1
+                                agent.daysInfected = 1
+                                agent.isStayingHomeWhenInfected = agent.shouldStayAtHome(agent.daysInfected)
+                            }
+                        }
                     }
                 }
             }
+            println("---------------DAY$day------------------")
+            println("Susceptible: $susceptible")
+            println("Infected: $infected")
+            println("Recovered: $recovered")
             dayOfTheWeek += 1
             if (dayOfTheWeek == 8) {
                 dayOfTheWeek = 1
+                println("Week cases: $weekCases")
+                weekCases = 0
             }
             day += 1
+
+            if ((month in arrayListOf(1, 3, 5, 7, 8, 10) && (day == 32)) ||
+                    (month in arrayListOf(4, 6, 9, 11) && (day == 31)) ||
+                    (month == 2) and (day == 29)) {
+                day = 1
+                month += 1
+                println("Month $month")
+            } else if ((month == 12) && (day == 32)) {
+                day = 1
+                month = 1
+                year += 1
+            }
         }
     }
 

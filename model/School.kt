@@ -2,20 +2,23 @@ package model
 
 class School(val id: Int, val pos: Pair<Double, Double>) {
 
-    val groupsByAge = mapOf(7 to arrayListOf<Agent>(),
-            8 to arrayListOf<Agent>(),
-            9 to arrayListOf<Agent>(),
-            10 to arrayListOf<Agent>(),
-            11 to arrayListOf<Agent>(),
-            12 to arrayListOf<Agent>(),
-            13 to arrayListOf<Agent>(),
-            14 to arrayListOf<Agent>(),
-            15 to arrayListOf<Agent>(),
-            16 to arrayListOf<Agent>(),
-            17 to arrayListOf<Agent>(),
-            18 to arrayListOf<Agent>())
+    val groupsByAge = mapOf(7 to arrayListOf<Group>(Group()),
+            8 to arrayListOf<Group>(Group()),
+            9 to arrayListOf<Group>(Group()),
+            10 to arrayListOf<Group>(Group()),
+            11 to arrayListOf<Group>(Group()),
+            12 to arrayListOf<Group>(Group()),
+            13 to arrayListOf<Group>(Group()),
+            14 to arrayListOf<Group>(Group()),
+            15 to arrayListOf<Group>(Group()),
+            16 to arrayListOf<Group>(Group()),
+            17 to arrayListOf<Group>(Group()),
+            18 to arrayListOf<Group>(Group()))
 
     fun addAgent(agent: Agent) {
-        groupsByAge[agent.age]?.add(agent)
+        if (groupsByAge[agent.age]?.get(groupsByAge[agent.age]?.size!! - 1)?.numOfAgents == 28) {
+            groupsByAge[agent.age]?.add(Group())
+        }
+        (groupsByAge[agent.age] ?: error(""))[groupsByAge[agent.age]?.size!! - 1].addAgent(agent)
     }
 }
