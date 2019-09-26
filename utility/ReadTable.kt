@@ -7,10 +7,8 @@ import java.io.IOException
 fun readTableFloat(filepath: String, numOfRows: Int, numOfCols: Int, array: ArrayList<ArrayList<Double>>) {
     try {
         val inputStream = FileInputStream(filepath)
-        //Instantiate Excel workbook using existing file:
         val xlWb = WorkbookFactory.create(inputStream)
 
-        //Get reference to first sheet:
         val table = xlWb.getSheetAt(0)
 
         for (rowNumber in 0..numOfRows) {
@@ -26,10 +24,8 @@ fun readTableFloat(filepath: String, numOfRows: Int, numOfCols: Int, array: Arra
 fun readTableInt(filepath: String, numOfRows: Int, numOfCols: Int, array: ArrayList<ArrayList<Int>>) {
     try {
         val inputStream = FileInputStream(filepath)
-        //Instantiate Excel workbook using existing file:
         val xlWb = WorkbookFactory.create(inputStream)
 
-        //Get reference to first sheet:
         val table = xlWb.getSheetAt(0)
 
         for (rowNumber in 1..numOfRows) {

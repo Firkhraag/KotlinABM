@@ -3,27 +3,32 @@ package model
 import kotlin.math.*
 import utility.readTableFloat
 import utility.readTableInt
+import utility.writeTableResult
 
 class World {
 
-    var hour = 0
-    var day = 1
-    var month = 1
-    var year = 1
+    private var hour = 0
+    private var day = 1
+    private var month = 1
+    private var year = 1
 
-    var dayOfTheWeek = 1
-    var weekCases = 0
+    private var globalDay = 0
+    private var dayOfTheWeek = 1
 
-    var infected = 0
-    var recovered = 0
-    var susceptible = 0
+    // Susceptible, Infected, Recovered, New Cases
+    private var worldStats = arrayListOf(0, 0, 0, 0)
+//    var weekCases = 0
+//
+//    var infected = 0
+//    var recovered = 0
+//    var susceptible = 0
 
-    val kindergartens = arrayListOf<Kindergarten>()
-    val schools = arrayListOf<School>()
-    val colleges = arrayListOf<College>()
-    val universities = arrayListOf<University>()
-    val homes = arrayListOf<Home>()
-    val households = arrayListOf<Household>()
+    private val kindergartens = arrayListOf<Kindergarten>()
+    private val schools = arrayListOf<School>()
+    private val colleges = arrayListOf<College>()
+    private val universities = arrayListOf<University>()
+    private val homes = arrayListOf<Home>()
+    private val households = arrayListOf<Household>()
 
     private fun createKindergartens() {
         val kindergartenCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
@@ -80,20 +85,118 @@ class World {
                             isParentOfAdult: Boolean? = null): Agent {
 
         var randomNum = (1..100).random()
-
         if (isChild) {
+            if ((parentAge != null) && (parentAge < 32)) {
+                randomNum = 1
+            }
             when(randomNum) {
                 in 1..ageDistributionInDistrictsMatrix[16][biasedIndex] -> {
                     randomNum = (1..100).random()
                     return when(parentAge) {
-                        in 18..23 -> {
+                        18 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                Agent(true, 0)
+                            } else {
+                                Agent(false, 0)
+                            }
+                        }
+                        19 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                Agent(true, (0..1).random())
+                            } else {
+                                Agent(false, (0..1).random())
+                            }
+                        }
+                        20 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                Agent(true, (0..2).random())
+                            } else {
+                                Agent(false, (0..2).random())
+                            }
+                        }
+                        21 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                Agent(true, (0..3).random())
+                            } else {
+                                Agent(false, (0..3).random())
+                            }
+                        }
+                        22 -> {
                             if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
                                 Agent(true, (0..4).random())
                             } else {
                                 Agent(false, (0..4).random())
                             }
                         }
-                        in 24..27 -> {
+                        23 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][153])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                    Agent(true, (0..4).random())
+                                } else {
+                                    Agent(false, (0..4).random())
+                                }
+                            } else {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][119])) {
+                                    Agent(true, 5)
+                                } else {
+                                    Agent(false, 5)
+                                }
+                            }
+                        }
+                        24 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][153])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                    Agent(true, (0..4).random())
+                                } else {
+                                    Agent(false, (0..4).random())
+                                }
+                            } else {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][119])) {
+                                    Agent(true, (5..6).random())
+                                } else {
+                                    Agent(false, (5..6).random())
+                                }
+                            }
+                        }
+                        25 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][153])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                    Agent(true, (0..4).random())
+                                } else {
+                                    Agent(false, (0..4).random())
+                                }
+                            } else {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][119])) {
+                                    Agent(true, (5..7).random())
+                                } else {
+                                    Agent(false, (5..7).random())
+                                }
+                            }
+                        }
+                        26 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][153])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                    Agent(true, (0..4).random())
+                                } else {
+                                    Agent(false, (0..4).random())
+                                }
+                            } else {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][119])) {
+                                    Agent(true, (5..8).random())
+                                } else {
+                                    Agent(false, (5..8).random())
+                                }
+                            }
+                        }
+                        27 -> {
                             if (randomNum in (1..districtsInfoMatrix[okatoIndex][153])) {
                                 randomNum = (1..100).random()
                                 if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
@@ -107,6 +210,102 @@ class World {
                                     Agent(true, (5..9).random())
                                 } else {
                                     Agent(false, (5..9).random())
+                                }
+                            }
+                        }
+                        28 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][154])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                    Agent(true, (0..4).random())
+                                } else {
+                                    Agent(false, (0..4).random())
+                                }
+                            } else if (randomNum in (1..districtsInfoMatrix[okatoIndex][155])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][119])) {
+                                    Agent(true, (5..9).random())
+                                } else {
+                                    Agent(false, (5..9).random())
+                                }
+                            } else {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][121])) {
+                                    Agent(true, 10)
+                                } else {
+                                    Agent(false, 10)
+                                }
+                            }
+                        }
+                        29 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][154])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                    Agent(true, (0..4).random())
+                                } else {
+                                    Agent(false, (0..4).random())
+                                }
+                            } else if (randomNum in (1..districtsInfoMatrix[okatoIndex][155])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][119])) {
+                                    Agent(true, (5..9).random())
+                                } else {
+                                    Agent(false, (5..9).random())
+                                }
+                            } else {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][121])) {
+                                    Agent(true, (10..11).random())
+                                } else {
+                                    Agent(false, (10..11).random())
+                                }
+                            }
+                        }
+                        30 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][154])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                    Agent(true, (0..4).random())
+                                } else {
+                                    Agent(false, (0..4).random())
+                                }
+                            } else if (randomNum in (1..districtsInfoMatrix[okatoIndex][155])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][119])) {
+                                    Agent(true, (5..9).random())
+                                } else {
+                                    Agent(false, (5..9).random())
+                                }
+                            } else {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][121])) {
+                                    Agent(true, (10..12).random())
+                                } else {
+                                    Agent(false, (10..12).random())
+                                }
+                            }
+                        }
+                        31 -> {
+                            if (randomNum in (1..districtsInfoMatrix[okatoIndex][154])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][117])) {
+                                    Agent(true, (0..4).random())
+                                } else {
+                                    Agent(false, (0..4).random())
+                                }
+                            } else if (randomNum in (1..districtsInfoMatrix[okatoIndex][155])) {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][119])) {
+                                    Agent(true, (5..9).random())
+                                } else {
+                                    Agent(false, (5..9).random())
+                                }
+                            } else {
+                                randomNum = (1..100).random()
+                                if (randomNum in (1..districtsInfoMatrix[okatoIndex][121])) {
+                                    Agent(true, (10..13).random())
+                                } else {
+                                    Agent(false, (10..13).random())
                                 }
                             }
                         }
@@ -415,9 +614,9 @@ class World {
             5 -> homes[(0 until homes.size).random()].addWorkingAgent(agent)
         }
         when (agent.healthStatus) {
-            0 -> susceptible += 1
-            1 -> infected += 1
-            2 -> recovered += 1
+            0 -> worldStats[0] += 1
+            1 -> worldStats[1] += 1
+            2 -> worldStats[2] += 1
         }
         household.addAgent(agent)
     }
@@ -436,7 +635,7 @@ class World {
             val indexFor4People = okatoIndex * 5 + 4
             val indexFor5People = okatoIndex * 5 + 5
 
-////            for (i in 0..it[58]) {
+//            for (i in 0..it[58]) {
             for (i in 0..19) {
                 val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
                 val closestKindergartenIndex = findClosestKindergarten(pos)
@@ -1986,9 +2185,10 @@ class World {
                     when (agent.healthStatus) {
                         3 -> {
                             agent.healthStatus = 1
-                            susceptible -= 1
-                            infected += 1
-                            weekCases += 1
+
+                            worldStats[0] -= 1
+                            worldStats[1] += 1
+                            worldStats[3] += 1
                             agent.daysInfected = 1
                             agent.isStayingHomeWhenInfected = agent.shouldStayAtHome(agent.daysInfected)
                         }
@@ -1996,8 +2196,8 @@ class World {
                             agent.daysInfected += 1
                             if (agent.daysInfected == 8) {
                                 agent.healthStatus = 2
-                                infected -= 1
-                                recovered += 1
+                                worldStats[1] -= 1
+                                worldStats[2] += 1
                                 agent.daysInfected = 0
                                 agent.daysRecovered = 1
                                 agent.isStayingHomeWhenInfected = false
@@ -2012,16 +2212,16 @@ class World {
                             if (agent.daysRecovered == 62) {
                                 agent.healthStatus = 0
                                 agent.daysRecovered = 0
-                                recovered -= 1
-                                susceptible += 1
+                                worldStats[2] -= 1
+                                worldStats[0] += 1
                             }
                         }
                         0 -> {
                             if ((0..99).random() < 1) {
                                 agent.healthStatus = 1
-                                susceptible -= 1
-                                infected += 1
-                                weekCases += 1
+                                worldStats[0] -= 1
+                                worldStats[1] += 1
+                                worldStats[3] += 1
                                 agent.daysInfected = 1
                                 agent.isStayingHomeWhenInfected = agent.shouldStayAtHome(agent.daysInfected)
                             }
@@ -2029,17 +2229,19 @@ class World {
                     }
                 }
             }
-            println("---------------DAY$day------------------")
-            println("Susceptible: $susceptible")
-            println("Infected: $infected")
-            println("Recovered: $recovered")
+//            println("---------------DAY$day------------------")
+//            println("Susceptible: $susceptible")
+//            println("Infected: $infected")
+//            println("Recovered: $recovered")
+            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\results.xlsx", globalDay, worldStats)
             dayOfTheWeek += 1
             if (dayOfTheWeek == 8) {
                 dayOfTheWeek = 1
-                println("Week cases: $weekCases")
-                weekCases = 0
+//                println("Week cases: $weekCases")
+//                weekCases = 0
             }
             day += 1
+            globalDay += 1
 
             if ((month in arrayListOf(1, 3, 5, 7, 8, 10) && (day == 32)) ||
                     (month in arrayListOf(4, 6, 9, 11) && (day == 31)) ||
