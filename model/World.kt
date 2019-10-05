@@ -88,6 +88,8 @@ class World {
         if (isChild) {
             if ((parentAge != null) && (parentAge < 32)) {
                 randomNum = 1
+            } else if ((parentAge != null) && (parentAge > 60)) {
+                randomNum = 100
             }
             when(randomNum) {
                 in 1..ageDistributionInDistrictsMatrix[16][biasedIndex] -> {
@@ -2080,7 +2082,80 @@ class World {
         }
     }
 
-    private fun makeContactWithInfected(): Boolean {
+    private fun makeContactWithInfected(exposedAgentAge: Int, infectiousAgentAge: Int, placeType: Int): Boolean {
+        var randNum = (0..99).random()
+        when (placeType) {
+            0 -> {
+                if (exposedAgentAge <= 18) {
+                    if (infectiousAgentAge <= 18) {
+                        if (randNum < 80) {
+                            return true
+                        }
+                    } else {
+                        if (randNum < 25) {
+                            return true
+                        }
+                    }
+                    return false
+                } else {
+                    if (infectiousAgentAge <= 18) {
+                        if (randNum < 35) {
+                            return true
+                        }
+                    } else {
+                        if (randNum < 40) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+            }
+            1 -> {
+                if (randNum < 28) {
+                    return true
+                }
+                return false
+            }
+            2 -> {
+                when (infectiousAgentAge) {
+                    in 7..12 -> {
+                        if (randNum < 5) {
+                            return true
+                        }
+                    }
+                    in 13..16 -> {
+                        if (randNum < 4) {
+                            return true
+                        }
+                    }
+                    else -> {
+                        if (randNum < 3) {
+                            return true
+                        }
+                    }
+                }
+                return false
+            }
+            3, 4 -> {
+                if (randNum < 2) {
+                    return true
+                }
+                return false
+            }
+            5 -> {
+                if (randNum < 5) {
+                    return true
+                }
+                return false
+            }
+            6 -> {
+                randNum = (0..10000).random()
+                if (randNum < 1) {
+                    return true
+                }
+                return false
+            }
+        }
         return ((0..99).random() < 5)
     }
 
@@ -2093,84 +2168,109 @@ class World {
                     if (agent.healthStatus == 0) {
                         household.agents.forEach { agent2 ->
                             if (agent2.healthStatus == 1) {
-                                makeContactWithInfected()
+                                if (makeContactWithInfected(agent.age, agent2.age, 0)) {
+                                    agent.healthStatus = 3
+                                }
                             }
                         }
                     }
                 }
             }
-            if ((dayOfTheWeek != 7) && (dayOfTheWeek != 6)) {
-//                kindergartens.parallelStream().forEach { kindergarten ->
-                kindergartens.forEach { kindergarten ->
-                    kindergarten.groupsByAge.forEach { (_, groupByAge) ->
-                        groupByAge.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if (agent.healthStatus == 0) {
-                                    group.agents.forEach { agent2 ->
-                                        if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
-                                            makeContactWithInfected()
+            if (((month != 1) || ((month == 1) && (day !in arrayListOf(1, 2, 3, 4, 5, 6, 7, 8)))) &&
+                    ((month != 5) || ((month == 5) && (day !in arrayListOf(1, 9)))) &&
+                    ((month != 2) || ((month == 2) && (day != 23))) &&
+                    ((month != 3) || ((month == 3) && (day != 8))) &&
+                    ((month != 11) || ((month == 11) && (day != 4)))) {
+                if ((dayOfTheWeek != 7) && (dayOfTheWeek != 6)) {
+                    if (month !in arrayListOf(6, 7, 8)) {
+//                    kindergartens.parallelStream().forEach { kindergarten ->
+                        kindergartens.forEach { kindergarten ->
+                            kindergarten.groupsByAge.forEach { (_, groupByAge) ->
+                                groupByAge.forEach { group ->
+                                    group.agents.forEach { agent ->
+                                        if (agent.healthStatus == 0) {
+                                            group.agents.forEach { agent2 ->
+                                                if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
+                                                    if (makeContactWithInfected(agent.age, agent2.age, 1)) {
+                                                        agent.healthStatus = 3
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
 //                homes.parallelStream().forEach { home ->
-                homes.forEach { home ->
-                    home.workingAgents.forEach { agent ->
-                        if (agent.healthStatus == 0) {
-                            home.workingAgents.forEach { agent2 ->
-                                if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
-                                    makeContactWithInfected()
+                    homes.forEach { home ->
+                        home.workingGroups.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if (agent.healthStatus == 0) {
+                                    group.agents.forEach { agent2 ->
+                                        if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
+                                            if (makeContactWithInfected(agent.age, agent2.age, 5)) {
+                                                agent.healthStatus = 3
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            if (dayOfTheWeek != 7) {
+                if ((dayOfTheWeek != 7) && (month !in arrayListOf(6, 7, 8))) {
+                    if (((month != 3) || ((month == 3) && (day !in arrayListOf(21, 22, 23, 24, 25, 26, 27, 28, 29)))) &&
+                            ((month != 10) || ((month == 10) && (day !in arrayListOf(28, 29, 30, 31)))) &&
+                            ((month != 11) || ((month == 11) && (day !in arrayListOf(1, 2, 3)))))
 //                schools.parallelStream().forEach { school ->
-                schools.forEach { school ->
-                    school.groupsByAge.forEach { (_, groupByAge) ->
-                        groupByAge.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if (agent.healthStatus == 0) {
-                                    group.agents.forEach { agent2 ->
-                                        if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
-                                            makeContactWithInfected()
+                    schools.forEach { school ->
+                        school.groupsByAge.forEach { (_, groupByAge) ->
+                            groupByAge.forEach { group ->
+                                group.agents.forEach { agent ->
+                                    if (agent.healthStatus == 0) {
+                                        group.agents.forEach { agent2 ->
+                                            if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
+                                                if (makeContactWithInfected(agent.age, agent2.age, 2)) {
+                                                    agent.healthStatus = 3
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
 //                universities.parallelStream().forEach { university ->
-                universities.forEach { university ->
-                    university.groupsByAge.forEach { (_, groupByAge) ->
-                        groupByAge.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if (agent.healthStatus == 0) {
-                                    group.agents.forEach { agent2 ->
-                                        if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
-                                            makeContactWithInfected()
+                    universities.forEach { university ->
+                        university.groupsByAge.forEach { (_, groupByAge) ->
+                            groupByAge.forEach { group ->
+                                group.agents.forEach { agent ->
+                                    if (agent.healthStatus == 0) {
+                                        group.agents.forEach { agent2 ->
+                                            if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
+                                                if (makeContactWithInfected(agent.age, agent2.age, 4)) {
+                                                    agent.healthStatus = 3
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
 //                colleges.parallelStream().forEach { college ->
-                colleges.forEach { college ->
-                    college.groupsByAge.forEach { (_, groupByAge) ->
-                        groupByAge.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if (agent.healthStatus == 0) {
-                                    group.agents.forEach { agent2 ->
-                                        if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
-                                            makeContactWithInfected()
+                    colleges.forEach { college ->
+                        college.groupsByAge.forEach { (_, groupByAge) ->
+                            groupByAge.forEach { group ->
+                                group.agents.forEach { agent ->
+                                    if (agent.healthStatus == 0) {
+                                        group.agents.forEach { agent2 ->
+                                            if ((agent2.healthStatus == 1) && (!agent2.isStayingHomeWhenInfected)) {
+                                                if (makeContactWithInfected(agent.age, agent2.age, 3)) {
+                                                    agent.healthStatus = 3
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -2217,7 +2317,7 @@ class World {
                             }
                         }
                         0 -> {
-                            if ((0..99).random() < 1) {
+                            if (makeContactWithInfected(agent.age, -1, 6)) {
                                 agent.healthStatus = 1
                                 worldStats[0] -= 1
                                 worldStats[1] += 1
@@ -2235,6 +2335,7 @@ class World {
 //            println("Recovered: $recovered")
             writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\results.xlsx", globalDay, worldStats)
             dayOfTheWeek += 1
+            worldStats[3] = 0
             if (dayOfTheWeek == 8) {
                 dayOfTheWeek = 1
 //                println("Week cases: $weekCases")

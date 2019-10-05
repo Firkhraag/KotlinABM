@@ -7,11 +7,11 @@ class Household(val pos: Pair<Double, Double>,
     val agents = arrayListOf<Agent>()
 
     fun addAgent(agent: Agent) {
-        println("-------------")
-        println("Pos: $pos")
-        println("Type: $type")
-        println("Age: ${agent.age}")
-        println("Activity: ${agent.activityStatus}")
+//        println("-------------")
+//        println("Pos: $pos")
+//        println("Type: $type")
+//        println("Age: ${agent.age}")
+//        println("Activity: ${agent.activityStatus}")
         agents.add(agent)
     }
 
