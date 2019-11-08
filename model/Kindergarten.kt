@@ -1,5 +1,7 @@
 package model
 
+import utility.generateBarabasiAlbertNetwork
+
 class Kindergarten(val id: Int, val pos: Pair<Double, Double>) {
 
     val groupsByAge = mapOf(1 to arrayListOf<Group>(Group()),
@@ -11,7 +13,9 @@ class Kindergarten(val id: Int, val pos: Pair<Double, Double>) {
 
 
     fun addAgent(agent: Agent) {
-        if (groupsByAge[agent.age]?.get(groupsByAge[agent.age]?.size!! - 1)?.numOfAgents == 30) {
+        if (groupsByAge[agent.age]?.get(groupsByAge[agent.age]?.size!! - 1)?.agents?.size == 30) {
+//            generateBarabasiAlbertNetwork(
+//                    groupsByAge[agent.age]?.get(groupsByAge[agent.age]?.size!! - 1)!!, 15)
             groupsByAge[agent.age]?.add(Group())
         }
         (groupsByAge[agent.age] ?: error(""))[groupsByAge[agent.age]?.size!! - 1].addAgent(agent)

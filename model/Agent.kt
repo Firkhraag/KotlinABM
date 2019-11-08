@@ -1,16 +1,43 @@
 package model
 
+import kotlin.math.*
+
 class Agent(val isMale: Boolean, var age: Int) {
 
-    var healthStatus = when ((1..1000).random()) {
-        in 1..5 -> 1
-        in 6..50 -> 2
-        else -> 0
-    }
-    var daysInfected = if (healthStatus == 1) (1..7).random() else 0
-    var daysRecovered = if (healthStatus == 2) (1..61).random() else 0
+//    var id = 0
 
-    fun shouldStayAtHome(daysInfected: Int): Boolean {
+//    val connectedAgents = arrayListOf<Int>()
+//
+//    fun addConnectedAgent(agentNum: Int) {
+//        connectedAgents.add(agentNum)
+//    }
+
+    var healthStatus = if ((0..10000).random() < 15) 1 else {
+        if (age < 18) {
+            if ((1..100).random() < 33) 2 else 0
+        } else 0
+    }
+//var healthStatus = 1
+
+    var daysInfected = if (healthStatus == 1) if (age > 17 ) (1..8).random() else (1..15).random() else 0
+//    var daysInfected = if (healthStatus == 1) {
+//        if (age > 17 ) (1..6).random() else (1..13).random()
+//    } else 0
+
+//    fun willBeInfected(): Int {
+//        return if (healthStatus == 1) {
+//            if (age > 17) (5..8).random()
+//            else (7..15).random()
+//        }
+//        else 0
+//    }
+
+    val shouldBeInfected = if (age > 17 ) (max(5, daysInfected)..8).random() else (max(7, daysInfected)..15).random()
+//    var shouldBeInfected = if (healthStatus == 1) {
+//        if (age > 17 ) 7 else 14
+//    } else 0
+
+    fun shouldStayAtHome(): Boolean {
         return when (daysInfected) {
             0 -> false
             1 -> when (age) {
@@ -30,7 +57,7 @@ class Agent(val isMale: Boolean, var age: Int) {
         }
     }
 
-    var isStayingHomeWhenInfected = shouldStayAtHome(daysInfected)
+    var isStayingHomeWhenInfected = shouldStayAtHome()
 
     // Activity 0 - Unemployed, 1 - Kindergarten, 2 - School, 3 - College, 4 - University, 5 - Work
     val activityStatus: Int = when (age) {
@@ -58,5 +85,14 @@ class Agent(val isMale: Boolean, var age: Int) {
         }
         else -> 0
     }
+
+//    var isVaccinated = if (age < 18) (0..99).random() < 45 else false
+//
+////    var vaccineEffectiveness = if (isVaccinated) {
+////        if (age < 5) 63 else 56
+////    } else 0
+//    var vaccineEffectiveness = if (isVaccinated) {
+//        if (age < 5) 0.37 else 0.44
+//    } else 1.0
 
 }
