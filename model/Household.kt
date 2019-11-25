@@ -7,7 +7,7 @@ class Household(val pos: Pair<Double, Double>,
 
     val agents = arrayListOf<Agent>()
 //    var numOfAgents = 0
-//    var numOfInfected = 0
+    var numOfInfected = 0
 
     fun addAgent(agent: Agent) {
 //        println("-------------")
@@ -23,9 +23,9 @@ class Household(val pos: Pair<Double, Double>,
 //        if (!agent.isStayingHomeWhenInfected) {
 //            numOfAgents += 1
 //        }
-//        if ((agent.healthStatus == 1) && (!agent.isStayingHomeWhenInfected)) {
-//            numOfInfected += 1
-//        }
+        if (agent.healthStatus == 1) {
+            numOfInfected += 1
+        }
     }
 
 }

@@ -9,20 +9,70 @@ import kotlinx.coroutines.*
 
 class World {
 
-    private val temp = arrayListOf(19.4, 19.4, 30.2, 44.6, 55.4, 62.6, 66.2, 62.6, 51.8, 42.8, 30.2, 23.0)
-    private val maxTemp = 66.2
-//    private val minTemp = 19.4
-//    private val maxMinTemp = 46.8
-//
-//    private fun scaler(value: Double, minVal: Double, maxminVal: Double): Double {
-//        return (value - minVal) / maxminVal * 10
-//    }
+    private val temp = mapOf(0 to -5.8, 1 to -5.9, 2 to -5.9, 3 to -5.9, 4 to -6.0, 5 to -6.0, 6 to -6.1, 7 to -6.1,
+            8 to -6.2, 9 to -6.2, 10 to -6.2, 11 to -6.3, 12 to -6.3, 13 to -6.4, 14 to -6.5, 15 to -6.5, 16 to -6.6,
+            17 to -6.6, 18 to -6.7, 19 to -6.7, 20 to -6.8, 21 to -6.8, 22 to -6.9, 23 to -6.9, 24 to -7.0, 25 to -7.0,
+            26 to -7.0, 27 to -7.1, 28 to -7.1, 29 to -7.1, 30 to -7.1, 31 to -7.2, 32 to -7.2, 33 to -7.2, 34 to -7.2,
+            35 to -7.2, 36 to -7.2, 37 to -7.1, 38 to -7.1, 39 to -7.1, 40 to -7.0, 41 to -7.0, 42 to -6.9, 43 to -6.8,
+            44 to -6.8, 45 to -6.7, 46 to -6.6, 47 to -6.5, 48 to -6.4, 49 to -6.3, 50 to -6.1, 51 to -6.0, 52 to -5.9,
+            53 to -5.7, 54 to -5.6, 55 to -5.4, 56 to -5.2, 57 to -5.0, 58 to -4.8, 59 to -4.7, 60 to -4.7, 61 to -4.5,
+            62 to -4.2, 63 to -4.0, 64 to -3.8, 65 to -3.6, 66 to -3.4, 67 to -3.1, 68 to -2.9, 69 to -2.7, 70 to -2.4,
+            71 to -2.2, 72 to -1.9, 73 to -1.7, 74 to -1.4, 75 to -1.2, 76 to -0.9, 77 to -0.6, 78 to -0.4, 79 to -0.1,
+            80 to 0.2, 81 to 0.4, 82 to 0.7, 83 to 1.0, 84 to 1.2, 85 to 1.5, 86 to 1.8, 87 to 2.0, 88 to 2.3, 89 to 2.5,
+            90 to 2.8, 91 to 3.1, 92 to 3.3, 93 to 3.6, 94 to 3.9, 95 to 4.1, 96 to 4.4, 97 to 4.6, 98 to 4.9, 99 to 5.1,
+            100 to 5.4, 101 to 5.6, 102 to 5.9, 103 to 6.1, 104 to 6.4, 105 to 6.6, 106 to 6.9, 107 to 7.1, 108 to 7.4,
+            109 to 7.6, 110 to 7.8, 111 to 8.1, 112 to 8.3, 113 to 8.5, 114 to 8.8, 115 to 9.0, 116 to 9.2, 117 to 9.4,
+            118 to 9.7, 119 to 9.9, 120 to 10.1, 121 to 10.3, 122 to 10.5, 123 to 10.7, 124 to 11.0, 125 to 11.2,
+            126 to 11.4, 127 to 11.6, 128 to 11.8, 129 to 12.0, 130 to 12.1, 131 to 12.3, 132 to 12.5, 133 to 12.7,
+            134 to 12.9, 135 to 13.1, 136 to 13.2, 137 to 13.4, 138 to 13.6, 139 to 13.7, 140 to 13.9, 141 to 14.0,
+            142 to 14.2, 143 to 14.3, 144 to 14.5, 145 to 14.6, 146 to 14.8, 147 to 14.9, 148 to 15.0, 149 to 15.2,
+            150 to 15.3, 151 to 15.4, 152 to 15.5, 153 to 15.6, 154 to 15.8, 155 to 15.9, 156 to 16.0, 157 to 16.1,
+            158 to 16.2, 159 to 16.3, 160 to 16.4, 161 to 16.5, 162 to 16.6, 163 to 16.7, 164 to 16.8, 165 to 16.9,
+            166 to 17.0, 167 to 17.1, 168 to 17.2, 169 to 17.2, 170 to 17.3, 171 to 17.4, 172 to 17.5, 173 to 17.6,
+            174 to 17.7, 175 to 17.8, 176 to 17.9, 177 to 17.9, 178 to 18.0, 179 to 18.1, 180 to 18.2, 181 to 18.3,
+            182 to 18.4, 183 to 18.4, 184 to 18.5, 185 to 18.6, 186 to 18.7, 187 to 18.7, 188 to 18.8, 189 to 18.9,
+            190 to 18.9, 191 to 19.0, 192 to 19.1, 193 to 19.1, 194 to 19.2, 195 to 19.2, 196 to 19.3, 197 to 19.3,
+            198 to 19.3, 199 to 19.4, 200 to 19.4, 201 to 19.4, 202 to 19.4, 203 to 19.4, 204 to 19.4, 205 to 19.4,
+            206 to 19.4, 207 to 19.4, 208 to 19.3, 209 to 19.3, 210 to 19.3, 211 to 19.2, 212 to 19.1, 213 to 19.1,
+            214 to 19.0, 215 to 18.9, 216 to 18.8, 217 to 18.7, 218 to 18.6, 219 to 18.5, 220 to 18.4, 221 to 18.3,
+            222 to 18.2, 223 to 18.0, 224 to 17.9, 225 to 17.7, 226 to 17.6, 227 to 17.4, 228 to 17.2, 229 to 17.1,
+            230 to 16.9, 231 to 16.7, 232 to 16.5, 233 to 16.3, 234 to 16.1, 235 to 15.9, 236 to 15.7, 237 to 15.5,
+            238 to 15.3, 239 to 15.1, 240 to 14.9, 241 to 14.7, 242 to 14.5, 243 to 14.3, 244 to 14.1, 245 to 13.9,
+            246 to 13.7, 247 to 13.5, 248 to 13.3, 249 to 13.1, 250 to 12.8, 251 to 12.6, 252 to 12.4, 253 to 12.2,
+            254 to 12.1, 255 to 11.9, 256 to 11.7, 257 to 11.5, 258 to 11.3, 259 to 11.1, 260 to 10.9, 261 to 10.7,
+            262 to 10.6, 263 to 10.4, 264 to 10.2, 265 to 10.0, 266 to 9.9, 267 to 9.7, 268 to 9.5, 269 to 9.4,
+            270 to 9.2, 271 to 9.0, 272 to 8.9, 273 to 8.7, 274 to 8.5, 275 to 8.3, 276 to 8.2, 277 to 8.0,
+            278 to 7.8, 279 to 7.7, 280 to 7.5, 281 to 7.3, 282 to 7.1, 283 to 6.9, 284 to 6.8, 285 to 6.6,
+            286 to 6.4, 287 to 6.2, 288 to 6.0, 289 to 5.8, 290 to 5.6, 291 to 5.4, 292 to 5.2, 293 to 4.9,
+            294 to 4.7, 295 to 4.5, 296 to 4.3, 297 to 4.0, 298 to 3.8, 299 to 3.6, 300 to 3.3, 301 to 3.1,
+            302 to 2.9, 303 to 2.6, 304 to 2.4, 305 to 2.1, 306 to 1.9, 307 to 1.6, 308 to 1.4, 309 to 1.1,
+            310 to 0.9, 311 to 0.7, 312 to 0.4, 313 to 0.2, 314 to -0.1, 315 to -0.3, 316 to -0.5, 317 to -0.8,
+            318 to -1.0, 319 to -1.2, 320 to -1.5, 321 to -1.7, 322 to -1.9, 323 to -2.1, 324 to -2.3, 325 to -2.5,
+            326 to -2.7, 327 to -2.9, 328 to -3.0, 329 to -3.2, 330 to -3.4, 331 to -3.5, 332 to -3.7, 333 to -3.8,
+            334 to -4.0, 335 to -4.1, 336 to -4.2, 337 to -4.3, 338 to -4.4, 339 to -4.5, 340 to -4.6, 341 to -4.7,
+            342 to -4.8, 343 to -4.9, 344 to -5.0, 345 to -5.0, 346 to -5.1, 347 to -5.2, 348 to -5.2, 349 to -5.3,
+            350 to -5.3, 351 to -5.4, 352 to -5.4, 353 to -5.4, 354 to -5.5, 355 to -5.5, 356 to -5.5, 357 to -5.6,
+            358 to -5.6, 359 to -5.6, 360 to -5.7, 361 to -5.7, 362 to -5.7, 363 to -5.7, 364 to -5.8, 365 to -5.8
+    )
+
+    private val humidity = arrayListOf(85.0, 81.0, 74.0, 66.0, 66.0, 69.0, 72.0, 75.0, 81.0, 83.0, 86.0, 86.0)
+
+    private val maxTemp = 19.4
+    private val minTemp = -7.2
+
+    private val maxMinTemp = 26.6
+
+    val infectivityMapAdult = mapOf(1 to 0.0, 2 to 0.045, 3 to 0.055, 4 to 0.045, 5 to 0.03,
+            6 to 0.02, 7 to 0.01, 8 to 0.05)
+    val infectivityMapChild = mapOf(1 to 0.0, 2 to 0.095, 3 to 0.095, 4 to 0.075, 5 to 0.05,
+            6 to 0.03, 7 to 0.015, 8 to 0.01, 9 to 0.05, 10 to 0.005, 11 to 0.004, 12 to 0.003, 13 to 0.002, 14 to 0.001)
 
     private var day = 1
     private var month = 8
     private var year = 1
 
     private var globalDay = 0
+    private var tempDay = 213
     private var dayOfTheWeek = 1
 
     // Susceptible, Infected, New Cases
@@ -2050,72 +2100,129 @@ class World {
         println("World creation has ended")
     }
 
-    private fun contactsInHouseholdForAgent(household: Household, agent: Agent, externalFactor: Double) {
-//        val risk = 1 / (1 + exp(-30.0 / household.agents.size))
-        val risk = exp(-1 / (1 + exp(-household.agents.size / 30.0)) + 0.5)
-        val shapeParamChild = 2.0
-        var scaleParamChild = 3.0
+    private fun contactsInHouseholdForAgent(household: Household, agent: Agent, externalRisk: Double, coeffD: Double,
+                                            deviationD: Double, coeffA: Double, deviationA: Double, coeffTS: Double) {
         val infectivity = if (agent.age > 17) {
-            GammaDistribution(shapeParamChild, scaleParamChild).density(agent.daysInfected.toDouble()) * 0.5
+            infectivityMapAdult[agent.daysInfected] ?: 0.001
         } else {
-            GammaDistribution(shapeParamChild, scaleParamChild).density(agent.daysInfected.toDouble())
+            infectivityMapChild[agent.daysInfected] ?: 0.001
         }
+
         household.agents.forEach { agent2 ->
             if (agent2.healthStatus == 0) {
-//                val internalFactor = 1.2 / (1 + exp(-90.0 / agent.age))
-                val internalFactor = exp(-1 / (1 + exp(-agent.age /90.0)) + 0.5)
+//                val internalCognition = if (agent2.age > 17) {
+//                    (coeffD * exp(-1.0 / household.agents.size) - deviationD) * (coeffA - deviationA)
+//                } else {
+//                    (coeffD * exp(-1.0 / household.agents.size) - deviationD) * (coeffA / (1 +exp(-1.0 / agent2.age)) - deviationA)
+//                }
+//                val internalRisk = exp(-internalCognition * household.numOfInfected / household.agents.size)
+                val internalRisk = 1
+
+                var susceptibility = when (agent.age) {
+                    in 0..17 -> {
+                        1.18153846154
+                    }
+                    in 18..64 -> {
+                        1.11384615385
+                    }
+                    else -> {
+                        1.0
+                    }
+                }
+                val curTemp = temp[tempDay] ?: 1.0 - minTemp
+                susceptibility *= coeffTS * curTemp + 1
                 val randNum = (0..9999).random() * 0.0001
-                if (randNum < infectivity * externalFactor * internalFactor * risk) {
+                if (randNum < infectivity * susceptibility * externalRisk * internalRisk) {
                     agent2.healthStatus = 3
                 }
             }
         }
     }
 
-    private fun contactsInGroupForAgent(group: Group, agent: Agent, externalFactor: Double) {
-//        val risk = 1 / (1 + exp(-30.0 / group.agents.size))
-        val risk = exp(-1 / (1 + exp(-group.agents.size / 30.0)) + 0.5)
-        val shapeParamChild = 2.0
-        var scaleParamChild = 3.0
+    private fun contactsInHouseholdForAgentInSaturday(household: Household, agent: Agent, externalRisk: Double, coeffD: Double,
+                                                      deviationD: Double, coeffA: Double, deviationA: Double, coeffTS: Double) {
         val infectivity = if (agent.age > 17) {
-            GammaDistribution(shapeParamChild, scaleParamChild).density(agent.daysInfected.toDouble()) * 0.5
+            infectivityMapAdult[agent.daysInfected] ?: 0.001
         } else {
-            GammaDistribution(shapeParamChild, scaleParamChild).density(agent.daysInfected.toDouble())
+            infectivityMapChild[agent.daysInfected] ?: 0.001
         }
+
+        household.agents.forEach { agent2 ->
+            if (((agent.healthStatus == 0) && (agent.isStayingHomeWhenInfected)) ||
+                    ((agent.healthStatus == 0) && (agent.activityStatus == 5)) ||
+                    ((agent.healthStatus == 0) && (agent.activityStatus == 1)) ||
+                    ((agent.healthStatus == 0) && (agent.activityStatus == 0))) {
+//                val internalCognition = if (agent2.age > 17) {
+//                    (coeffD * exp(-1.0 / household.agents.size) - deviationD) * (coeffA - deviationA)
+//                } else {
+//                    (coeffD * exp(-1.0 / household.agents.size) - deviationD) * (coeffA / (1 +exp(-1.0 / agent2.age)) - deviationA)
+//                }
+//                val internalRisk = exp(-internalCognition * household.numOfInfected / household.agents.size)
+                val internalRisk = 1
+
+                var susceptibility = when (agent.age) {
+                    in 0..17 -> {
+                        1.18153846154
+                    }
+                    in 18..64 -> {
+                        1.11384615385
+                    }
+                    else -> {
+                        1.0
+                    }
+                }
+                val curTemp = temp[tempDay] ?: 1.0 - minTemp
+                susceptibility *= coeffTS * curTemp + 1
+                val randNum = (0..9999).random() * 0.0001
+                if (randNum < infectivity * susceptibility * externalRisk * internalRisk) {
+                    agent2.healthStatus = 3
+                }
+            }
+        }
+    }
+
+    private fun contactsInGroupForAgent(group: Group, agent: Agent, externalRisk: Double, coeffD: Double,
+                                        deviationD: Double, coeffA: Double, deviationA: Double, coeffTS: Double) {
+        val infectivity = if (agent.age > 17) {
+            infectivityMapAdult[agent.daysInfected] ?: 0.001
+        } else {
+            infectivityMapChild[agent.daysInfected] ?: 0.001
+        }
+
         group.agents.forEach { agent2 ->
             if (agent2.healthStatus == 0) {
-//                val internalFactor = 0.8 / (1 + exp(-90.0 / agent.age))
-                val internalFactor = exp(-1 / (1 + exp(-agent.age /90.0)) + 0.5)
+
+//                val internalCognition = if (agent2.age > 17) {
+//                    (coeffD * exp(-1.0 / group.numOfAgents) - deviationD) * (coeffA - deviationA)
+//                } else {
+//                    (coeffD * exp(-1.0 / group.numOfAgents) - deviationD) * (coeffA / (1 +exp(-1.0 / agent2.age)) - deviationA)
+//                }
+//                val internalRisk = exp(-internalCognition * group.numOfInfected / group.numOfAgents)
+                val internalRisk = 1
+
                 val randNum = (0..9999).random() * 0.0001
-                if (randNum < infectivity * externalFactor * internalFactor * risk) {
+                var susceptibility = when (agent.age) {
+                    in 0..17 -> {
+                        1.18153846154
+                    }
+                    in 18..64 -> {
+                        1.11384615385
+                    }
+                    else -> {
+                        1.0
+                    }
+                }
+                val curTemp = temp[tempDay] ?: 1.0 - minTemp
+                susceptibility *= coeffTS * curTemp + 1
+                if (randNum < infectivity * susceptibility * externalRisk * internalRisk) {
                     agent2.healthStatus = 3
                 }
             }
         }
     }
 
-    fun runSimulation() {
-
-        val coeffR = 6.5
-        val deviationR = -0.13
-        val coeffT = 1.3
-        val deviationT = 0.54
-        val coeffD = 6.0
-//        val coeffDKinder = 6
-//        val coeffDSchool = 6
-//        val coeffDCollege = 6
-//        val coeffDUniv = 6
-//        val coeffDHome = 6
-//        val coeffDWork = 6
-//        val deviationD = 0.1
-        val deviationDKinder = 0.1
-        val deviationDSchool = 0.1
-        val deviationDCollege = 0.1
-        val deviationDUniv = 0.1
-        val deviationDHome = 0.1
-        val deviationDWork = 0.1
-        val coeffA = 1.09
-        val deviationA = -0.01
+    fun runSimulation(scale: Double, coeffR: Double, deviationR: Double, coeffT: Double, deviationT: Double, coeffD: Double,
+                      deviationD: Double, coeffA: Double, deviationA: Double, coeffTS: Double) {
 
         worldStats[3] = worldStats[1] / 7
         while(true) {
@@ -2124,45 +2231,34 @@ class World {
                     globalDay, worldStats)
 
 
-
-//            var test = 0
-//            println("World before: ${worldStats[1]}")
-//            households.forEach { household ->
-//                household.agents.forEach { agent ->
-//                    if (agent.healthStatus == 1) {
-//                        test += 1
-//                    }
-//                }
-//            }
-//            println("Actually: $test")
-
-//            val externalFactor = 1 / (1 + exp(-maxTemp / temp[month - 1])) * exp(-1 / (1 +exp(-worldStats[3]/23676.0)) + 0.5)
-            val externalFactor = exp(-1 / (1 + exp(-temp[month - 1] / maxTemp)) + 0.5) * exp(-1 / (1 +exp(-worldStats[3]/23676.0)) + 0.5)
+//            val curTemp = temp[tempDay] ?: 1.0 - minTemp
+////            val externalCognition = (coeffT / (1 + exp(-maxMinTemp / curTemp)) - deviationT) *
+////                    (coeffR / (1 +exp(-worldStats[3] / worldStats[0].toDouble())) - deviationR)
+////            val externalRisk = scale * exp(-
+            val externalRisk = scale
             worldStats[3] = 0
 
             households.parallelStream().forEach { household ->
-//            households.forEach { household ->
                 household.agents.forEach { agent ->
                     if (agent.healthStatus == 1) {
-                        contactsInHouseholdForAgent(household, agent, externalFactor)
+                        contactsInHouseholdForAgent(household, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
                     }
                 }
             }
-            if (((month != 1) || ((month == 1) && (day !in arrayListOf(1, 2, 3, 4, 5, 6, 7, 8)))) &&
-                    ((month != 5) || ((month == 5) && (day !in arrayListOf(1, 9)))) &&
-                    ((month != 2) || ((month == 2) && (day != 23))) &&
-                    ((month != 3) || ((month == 3) && (day != 8))) &&
-                    ((month != 11) || ((month == 11) && (day != 4)))) {
-                if ((dayOfTheWeek != 7) && (dayOfTheWeek != 6)) {
+            if ((dayOfTheWeek != 7) && (((month != 1) || ((month == 1) && (day !in arrayListOf(1, 2, 3, 4, 5, 6, 7, 8)))) &&
+                            ((month != 5) || ((month == 5) && (day !in arrayListOf(1, 9)))) &&
+                            ((month != 2) || ((month == 2) && (day != 23))) &&
+                            ((month != 3) || ((month == 3) && (day != 8))) &&
+                            ((month != 11) || ((month == 11) && (day != 4))))) {
+                if (dayOfTheWeek != 6) {
                     if (month !in arrayListOf(6, 7, 8)) {
                         kindergartens.parallelStream().forEach { kindergarten ->
-//                        kindergartens.forEach { kindergarten ->
                             kindergarten.groupsByAge.forEach { (_, groupByAge) ->
                                 groupByAge.forEach { group ->
                                     group.agents.forEach { agent ->
                                         if ((agent.healthStatus == 1) &&
                                                 (!agent.isStayingHomeWhenInfected)) {
-                                            contactsInGroupForAgent(group, agent, externalFactor)
+                                            contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
                                         }
                                     }
                                 }
@@ -2170,29 +2266,27 @@ class World {
                         }
                     }
                     homes.parallelStream().forEach { home ->
-//                    homes.forEach { home ->
                         home.workingGroups.forEach { group ->
                             group.agents.forEach { agent ->
                                 if ((agent.healthStatus == 1) &&
                                         (!agent.isStayingHomeWhenInfected)) {
-                                    contactsInGroupForAgent(group, agent, externalFactor)
+                                    contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
                                 }
                             }
                         }
                     }
                 }
-                if ((dayOfTheWeek != 7) && (month !in arrayListOf(6, 7, 8))) {
+                if (month !in arrayListOf(6, 7, 8)) {
                     if (((month != 3) || ((month == 3) && (day !in arrayListOf(21, 22, 23, 24, 25, 26, 27, 28, 29)))) &&
                             ((month != 10) || ((month == 10) && (day !in arrayListOf(28, 29, 30, 31)))) &&
                             ((month != 11) || ((month == 11) && (day !in arrayListOf(1, 2, 3))))) {
                         schools.parallelStream().forEach { school ->
-//                        schools.forEach { school ->
                             school.groupsByAge.forEach { (_, groupByAge) ->
                                 groupByAge.forEach { group ->
                                     group.agents.forEach { agent ->
                                         if ((agent.healthStatus == 1) &&
                                                 (!agent.isStayingHomeWhenInfected)) {
-                                            contactsInGroupForAgent(group, agent, externalFactor)
+                                            contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
                                         }
                                     }
                                 }
@@ -2200,58 +2294,60 @@ class World {
                         }
                     }
                     universities.parallelStream().forEach { university ->
-//                    universities.forEach { university ->
                         university.groupsByAge.forEach { (_, groupByAge) ->
                             groupByAge.forEach { group ->
                                 group.agents.forEach { agent ->
                                     if ((agent.healthStatus == 1) &&
                                             (!agent.isStayingHomeWhenInfected)) {
-                                        contactsInGroupForAgent(group, agent, externalFactor)
+                                        contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
                                     }
                                 }
                             }
                         }
                     }
                     colleges.parallelStream().forEach { college ->
-//                    colleges.forEach { college ->
                         college.groupsByAge.forEach { (_, groupByAge) ->
                             groupByAge.forEach { group ->
                                 group.agents.forEach { agent ->
                                     if ((agent.healthStatus == 1) &&
                                             (!agent.isStayingHomeWhenInfected)) {
-                                        contactsInGroupForAgent(group, agent, externalFactor)
+                                        contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
                                     }
                                 }
                             }
                         }
                     }
-                }
-                else if (dayOfTheWeek == 7) {
+                } else if ((month in arrayListOf(6, 7, 8)) && (dayOfTheWeek == 6)) {
                     households.parallelStream().forEach { household ->
-//                    households.forEach { household ->
                         household.agents.forEach { agent ->
                             if (agent.healthStatus == 1) {
-                                contactsInHouseholdForAgent(household, agent, externalFactor)
+                                contactsInHouseholdForAgent(household, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
+                            }
+                        }
+                    }
+                } else if (dayOfTheWeek == 6) {
+                    households.parallelStream().forEach { household ->
+                        household.agents.forEach { agent ->
+                            if (((agent.healthStatus == 1) && (agent.isStayingHomeWhenInfected)) ||
+                                    ((agent.healthStatus == 1) && (agent.activityStatus == 5)) ||
+                                    ((agent.healthStatus == 1) && (agent.activityStatus == 1)) ||
+                                    ((agent.healthStatus == 1) && (agent.activityStatus == 0))) {
+                                contactsInHouseholdForAgentInSaturday(household, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
                             }
                         }
                     }
                 }
             } else {
                 households.parallelStream().forEach { household ->
-//                households.forEach { household ->
                     household.agents.forEach { agent ->
                         if (agent.healthStatus == 1) {
-                            contactsInHouseholdForAgent(household, agent, externalFactor)
+                            contactsInHouseholdForAgent(household, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
                         }
                     }
                 }
             }
             households.forEach { household ->
                 household.agents.forEach { agent ->
-//                    if (agent.healthStatus == 1) {
-//                        println("Age: ${agent.age}, Days: ${agent.daysInfected}, Should: ${agent.shouldBeInfected}")
-//
-//                    }
                     when (agent.healthStatus) {
                         3 -> {
                             agent.healthStatus = 1
@@ -2261,6 +2357,14 @@ class World {
                             agent.daysInfected = 1
 //                            agent.shouldBeInfected = agent.willBeInfected()
                             agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
+                            household.numOfInfected += 1
+                            if (agent.groupId != -1) {
+                                if (agent.isStayingHomeWhenInfected) {
+                                    groupRepo[agent.groupId].numOfAgents -= 1
+                                } else {
+                                    groupRepo[agent.groupId].numOfInfected += 1
+                                }
+                            }
                         }
                         1 -> {
                             //println("Id: ${agent.id}; Infected: ${agent.daysInfected}; ShouldBeInfected: ${agent.shouldBeInfected}")
@@ -2269,16 +2373,28 @@ class World {
                                 worldStats[1] -= 1
                                 worldStats[2] += 1
 //                                agent.daysInfected = 0
+                                if (agent.groupId != -1) {
+                                    if (!agent.isStayingHomeWhenInfected) {
+                                        groupRepo[agent.groupId].numOfInfected -= 1
+                                    } else {
+                                        groupRepo[agent.groupId].numOfAgents += 1
+                                    }
+                                }
                                 agent.isStayingHomeWhenInfected = false
+                                household.numOfInfected -= 1
                             } else {
                                 agent.daysInfected += 1
                                 if (!agent.isStayingHomeWhenInfected) {
                                     agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
+                                    if ((agent.isStayingHomeWhenInfected) && (agent.groupId != -1)) {
+                                        groupRepo[agent.groupId].numOfInfected -= 1
+                                        groupRepo[agent.groupId].numOfAgents -= 1
+                                    }
                                 }
                             }
                         }
                         0 -> {
-                            if ((0..9999).random() == 0) {
+                            if ((0..99999).random() == 0) {
                                 agent.healthStatus = 1
                                 worldStats[0] -= 1
                                 worldStats[1] += 1
@@ -2286,6 +2402,14 @@ class World {
                                 agent.daysInfected = 1
 //                                agent.shouldBeInfected = agent.willBeInfected()
                                 agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
+                                household.numOfInfected += 1
+                                if (agent.groupId != -1) {
+                                    if (agent.isStayingHomeWhenInfected) {
+                                        groupRepo[agent.groupId].numOfAgents -= 1
+                                    } else {
+                                        groupRepo[agent.groupId].numOfInfected += 1
+                                    }
+                                }
                             }
                         }
                     }
@@ -2298,6 +2422,13 @@ class World {
             }
             day += 1
             globalDay += 1
+            tempDay += 1
+            if (tempDay == 366) {
+                tempDay = 0
+            }
+            if (tempDay == 59) {
+                tempDay = 60
+            }
 
             if ((month in arrayListOf(1, 3, 5, 7, 8, 10) && (day == 32)) ||
                     (month in arrayListOf(4, 6, 9, 11) && (day == 31)) ||
@@ -2317,177 +2448,37 @@ class World {
         }
     }
 
-//    fun runSimulation() {
-//
-//        worldStats[3] = worldStats[1] / 7
-//        while(true) {
-//
-//            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\results.xlsx",
-//                    globalDay, worldStats)
-//
-//            val externalFactor = 1 / (1 + exp(-maxTemp / temp[month - 1])) * exp(-1 / (1 +exp(-worldStats[3]/23676.0)) + 0.5)
-//            worldStats[3] = 0
-//
-//            households.parallelStream().forEach { household ->
-//                household.agents.forEach { agent ->
-//                    if (agent.healthStatus == 1) {
-//                        contactsInHouseholdForAgent(household, agent, externalFactor)
-//                    }
-//                }
-//            }
-//            if (((month != 1) || ((month == 1) && (day !in arrayListOf(1, 2, 3, 4, 5, 6, 7, 8)))) &&
-//                    ((month != 5) || ((month == 5) && (day !in arrayListOf(1, 9)))) &&
-//                    ((month != 2) || ((month == 2) && (day != 23))) &&
-//                    ((month != 3) || ((month == 3) && (day != 8))) &&
-//                    ((month != 11) || ((month == 11) && (day != 4)))) {
-//                if ((dayOfTheWeek != 7) && (dayOfTheWeek != 6)) {
-//                    if (month !in arrayListOf(6, 7, 8)) {
-//
-//                        kindergartens.parallelStream().forEach { kindergarten ->
-//                            kindergarten.groupsByAge.forEach { (_, groupByAge) ->
-//                                groupByAge.forEach { group ->
-//                                    group.agents.forEach { agent ->
-//                                        if ((agent.healthStatus == 1) &&
-//                                                (!agent.isStayingHomeWhenInfected)) {
-//                                            contactsInGroupForAgent(group, agent, externalFactor)
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                    homes.parallelStream().forEach { home ->
-//                        home.workingGroups.forEach { group ->
-//                            group.agents.forEach { agent ->
-//                                if ((agent.healthStatus == 1) &&
-//                                        (!agent.isStayingHomeWhenInfected)) {
-//                                    contactsInGroupForAgent(group, agent, externalFactor)
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                if ((dayOfTheWeek != 7) && (month !in arrayListOf(6, 7, 8))) {
-//                    if (((month != 3) || ((month == 3) && (day !in arrayListOf(21, 22, 23, 24, 25, 26, 27, 28, 29)))) &&
-//                            ((month != 10) || ((month == 10) && (day !in arrayListOf(28, 29, 30, 31)))) &&
-//                            ((month != 11) || ((month == 11) && (day !in arrayListOf(1, 2, 3))))) {
-//                        schools.parallelStream().forEach { school ->
-//                            school.groupsByAge.forEach { (_, groupByAge) ->
-//                                groupByAge.forEach { group ->
-//                                    group.agents.forEach { agent ->
-//                                        if ((agent.healthStatus == 1) &&
-//                                                (!agent.isStayingHomeWhenInfected)) {
-//                                            contactsInGroupForAgent(group, agent, externalFactor)
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                    universities.parallelStream().forEach { university ->
-//                        university.groupsByAge.forEach { (_, groupByAge) ->
-//                            groupByAge.forEach { group ->
-//                                group.agents.forEach { agent ->
-//                                    if ((agent.healthStatus == 1) &&
-//                                            (!agent.isStayingHomeWhenInfected)) {
-//                                        contactsInGroupForAgent(group, agent, externalFactor)
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                    colleges.parallelStream().forEach { college ->
-//                        college.groupsByAge.forEach { (_, groupByAge) ->
-//                            groupByAge.forEach { group ->
-//                                group.agents.forEach { agent ->
-//                                    if ((agent.healthStatus == 1) &&
-//                                            (!agent.isStayingHomeWhenInfected)) {
-//                                        contactsInGroupForAgent(group, agent, externalFactor)
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//                else if (dayOfTheWeek == 7) {
-//                    households.parallelStream().forEach { household ->
-//                        household.agents.forEach { agent ->
-//                            if (agent.healthStatus == 1) {
-//                                contactsInHouseholdForAgent(household, agent, externalFactor)
-//                            }
-//                        }
-//                    }
-//                }
-//            } else {
-//                households.parallelStream().forEach { household ->
-//                    household.agents.forEach { agent ->
-//                        if (agent.healthStatus == 1) {
-//                            contactsInHouseholdForAgent(household, agent, externalFactor)
-//                        }
-//                    }
-//                }
-//            }
-//            households.forEach { household ->
-//                household.agents.forEach { agent ->
-//                    when (agent.healthStatus) {
-//                        3 -> {
-//                            agent.healthStatus = 1
-//                            worldStats[0] -= 1
-//                            worldStats[1] += 1
-//                            worldStats[3] += 1
-//                            agent.daysInfected = 1
-//                            agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-//                        }
-//                        1 -> {
-//                            if (agent.daysInfected == agent.shouldBeInfected) {
-//                                agent.healthStatus = 2
-//                                worldStats[1] -= 1
-//                                worldStats[2] += 1
-//                                agent.isStayingHomeWhenInfected = false
-//                            } else {
-//                                agent.daysInfected += 1
-//                                if (!agent.isStayingHomeWhenInfected) {
-//                                    agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-//                                }
-//                            }
-//                        }
-//                        0 -> {
-//                            if ((0..9999).random() == 0) {
-//                                agent.healthStatus = 1
-//                                worldStats[0] -= 1
-//                                worldStats[1] += 1
-//                                worldStats[3] += 1
-//                                agent.daysInfected = 1
-//                                agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            dayOfTheWeek += 1
-//            if (dayOfTheWeek == 8) {
-//                dayOfTheWeek = 1
-//            }
-//            day += 1
-//            globalDay += 1
-//
-//            if ((month in arrayListOf(1, 3, 5, 7, 8, 10) && (day == 32)) ||
-//                    (month in arrayListOf(4, 6, 9, 11) && (day == 31)) ||
-//                    (month == 2) and (day == 29)) {
-//                if (month == 7) {
-//                    break
-//                }
-//                day = 1
-//                month += 1
-//                println("Month $month")
-//            } else if ((month == 12) && (day == 32)) {
-//                day = 1
-//                month = 1
-//                year += 1
-//                println("Month 1")
-//            }
-//        }
-//    }
+    fun resetState() {
+        day = 1
+        month = 8
+
+        globalDay = 0
+        dayOfTheWeek = 1
+
+        tempDay = 213
+
+        worldStats = arrayListOf(0, 0, 0, 0)
+
+        households.forEach { household ->
+            household.agents.forEach { agent ->
+                agent.healthStatus = if ((0..10000).random() < 15) 1 else {
+                    if (agent.age < 18) {
+                        if ((1..100).random() < 33) 2 else 0
+                    } else 0
+                }
+                agent.daysInfected = if (agent.healthStatus == 1) if (agent.age > 17 ) (1..8).random() else (1..15).random() else 0
+                agent.shouldBeInfected = if (agent.age > 17 ) (max(5, agent.daysInfected)..8).random() else (max(7, agent.daysInfected)..15).random()
+                agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
+
+                when (agent.healthStatus) {
+                    0 -> worldStats[0] += 1
+                    1 -> worldStats[1] += 1
+                    2 -> worldStats[2] += 1
+                }
+            }
+
+        }
+    }
 
     init {
         createKindergartens()

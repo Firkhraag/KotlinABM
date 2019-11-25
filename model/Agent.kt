@@ -12,6 +12,8 @@ class Agent(val isMale: Boolean, var age: Int) {
 //        connectedAgents.add(agentNum)
 //    }
 
+    var groupId = -1
+
     var healthStatus = if ((0..10000).random() < 15) 1 else {
         if (age < 18) {
             if ((1..100).random() < 33) 2 else 0
@@ -19,7 +21,7 @@ class Agent(val isMale: Boolean, var age: Int) {
     }
 //var healthStatus = 1
 
-    var daysInfected = if (healthStatus == 1) if (age > 17 ) (1..8).random() else (1..15).random() else 0
+    var daysInfected = if (healthStatus == 1) if (age > 17 ) (1..8).random() else (1..14).random() else 0
 //    var daysInfected = if (healthStatus == 1) {
 //        if (age > 17 ) (1..6).random() else (1..13).random()
 //    } else 0
@@ -32,7 +34,7 @@ class Agent(val isMale: Boolean, var age: Int) {
 //        else 0
 //    }
 
-    val shouldBeInfected = if (age > 17 ) (max(5, daysInfected)..8).random() else (max(7, daysInfected)..15).random()
+    var shouldBeInfected = if (age > 17 ) (max(5, daysInfected)..8).random() else (max(7, daysInfected)..14).random()
 //    var shouldBeInfected = if (healthStatus == 1) {
 //        if (age > 17 ) 7 else 14
 //    } else 0
