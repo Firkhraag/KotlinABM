@@ -52,3 +52,23 @@ fun writeTableResult(filepath: String, row: Int, stats: ArrayList<Int>) {
         println("Unable to read the file")
     }
 }
+
+fun writeTableResult2(filepath: String, row: Int, stats: ArrayList<Double>) {
+    try {
+        val inputStream = FileInputStream(filepath)
+        val xlWb = WorkbookFactory.create(inputStream)
+
+        val xlWs = xlWb.getSheetAt(0)
+        val xlRow = xlWs.createRow(row)
+
+        stats.forEachIndexed { index, item ->
+            val xlCol = xlRow.createCell(index)
+            xlCol.setCellValue(item)
+        }
+        val outputStream = FileOutputStream(filepath)
+        xlWb.write(outputStream)
+        xlWb.close()
+    } catch(err: IOException) {
+        println("Unable to read the file")
+    }
+}

@@ -1,11 +1,9 @@
 package model
 
-import kotlin.math.*
-import utility.readTableFloat
 import utility.readTableInt
 import utility.writeTableResult
-import org.apache.commons.math3.distribution.GammaDistribution
 import kotlinx.coroutines.*
+import utility.writeTableResult2
 
 class World {
 
@@ -55,24 +53,22 @@ class World {
             358 to -5.6, 359 to -5.6, 360 to -5.7, 361 to -5.7, 362 to -5.7, 363 to -5.7, 364 to -5.8, 365 to -5.8
     )
 
-    private val humidity = arrayListOf(85.0, 81.0, 74.0, 66.0, 66.0, 69.0, 72.0, 75.0, 81.0, 83.0, 86.0, 86.0)
-
     private val maxTemp = 19.4
     private val minTemp = -7.2
 
     private val maxMinTemp = 26.6
 
-    val infectivityMapAdult = mapOf(1 to 0.0, 2 to 0.045, 3 to 0.055, 4 to 0.045, 5 to 0.03,
-            6 to 0.02, 7 to 0.01, 8 to 0.05)
-    val infectivityMapChild = mapOf(1 to 0.0, 2 to 0.095, 3 to 0.095, 4 to 0.075, 5 to 0.05,
-            6 to 0.03, 7 to 0.015, 8 to 0.01, 9 to 0.05, 10 to 0.005, 11 to 0.004, 12 to 0.003, 13 to 0.002, 14 to 0.001)
+//    val infectivityMapAdult = mapOf(1 to 0.0, 2 to 0.045, 3 to 0.055, 4 to 0.045, 5 to 0.03,
+//            6 to 0.02, 7 to 0.01, 8 to 0.05)
+//    val infectivityMapChild = mapOf(1 to 0.0, 2 to 0.095, 3 to 0.095, 4 to 0.075, 5 to 0.05,
+//            6 to 0.03, 7 to 0.015, 8 to 0.01, 9 to 0.05, 10 to 0.005, 11 to 0.004, 12 to 0.003, 13 to 0.002, 14 to 0.001)
 
-    private var day = 1
-    private var month = 8
+    private var day = 31
+    private var month = 7
     private var year = 1
 
     private var globalDay = 0
-    private var tempDay = 213
+    private var tempDay = 212
     private var dayOfTheWeek = 1
 
     // Susceptible, Infected, New Cases
@@ -83,57 +79,57 @@ class World {
 //    var recovered = 0
 //    var susceptible = 0
 
-    private val kindergartens = arrayListOf<Kindergarten>()
-    private val schools = arrayListOf<School>()
-    private val colleges = arrayListOf<College>()
-    private val universities = arrayListOf<University>()
-    private val homes = arrayListOf<Home>()
+    private val kindergarten = Kindergarten()
+    private val school = School()
+    private val college = College()
+    private val university = University()
+    private val workplace = Workplace()
     private val households = arrayListOf<Household>()
 
-    private fun createKindergartens() {
-        val kindergartenCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\kindergartens.xlsx",
-                1763, 1, kindergartenCoordinatesMatrix)
-        kindergartenCoordinatesMatrix.forEachIndexed{ index, element ->
-            kindergartens.add(Kindergarten(index, Pair(element[0], element[1])))
-        }
-    }
-
-    private fun createSchools() {
-        val schoolCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\schools.xlsx",
-                997, 1, schoolCoordinatesMatrix)
-        schoolCoordinatesMatrix.forEachIndexed{ index, element ->
-            schools.add(School(index, Pair(element[0], element[1])))
-        }
-    }
-
-    private fun createColleges() {
-        val collegeCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\colleges.xlsx",
-                276, 1, collegeCoordinatesMatrix)
-        collegeCoordinatesMatrix.forEach{
-            colleges.add(College(Pair(it[0], it[1])))
-        }
-    }
-
-    private fun createUniversities() {
-        val universityCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\universities.xlsx",
-                41, 1, universityCoordinatesMatrix)
-        universityCoordinatesMatrix.forEach{
-            universities.add(University(Pair(it[0], it[1])))
-        }
-    }
-
-    private fun createHomes() {
-        val homeCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\homes.xlsx",
-                22266, 2, homeCoordinatesMatrix)
-        homeCoordinatesMatrix.forEach{
-            homes.add(Home(Pair(it[0], it[1]), it[2].toInt()))
-        }
-    }
+//    private fun createKindergartens() {
+//        val kindergartenCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
+//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\kindergartens.xlsx",
+//                1763, 1, kindergartenCoordinatesMatrix)
+//        kindergartenCoordinatesMatrix.forEachIndexed{ index, element ->
+//            kindergartens.add(Kindergarten(index, Pair(element[0], element[1])))
+//        }
+//    }
+//
+//    private fun createSchools() {
+//        val schoolCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
+//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\schools.xlsx",
+//                997, 1, schoolCoordinatesMatrix)
+//        schoolCoordinatesMatrix.forEachIndexed{ index, element ->
+//            schools.add(School(index, Pair(element[0], element[1])))
+//        }
+//    }
+//
+//    private fun createColleges() {
+//        val collegeCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
+//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\colleges.xlsx",
+//                276, 1, collegeCoordinatesMatrix)
+//        collegeCoordinatesMatrix.forEach{
+//            colleges.add(College(Pair(it[0], it[1])))
+//        }
+//    }
+//
+//    private fun createUniversities() {
+//        val universityCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
+//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\universities.xlsx",
+//                41, 1, universityCoordinatesMatrix)
+//        universityCoordinatesMatrix.forEach{
+//            universities.add(University(Pair(it[0], it[1])))
+//        }
+//    }
+//
+//    private fun createHomes() {
+//        val homeCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
+//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\homes.xlsx",
+//                22266, 2, homeCoordinatesMatrix)
+//        homeCoordinatesMatrix.forEach{
+//            homes.add(Home(Pair(it[0], it[1]), it[2].toInt()))
+//        }
+//    }
 
     private fun createAgent(okatoIndex: Int,
                             biasedIndex: Int,
@@ -602,44 +598,44 @@ class World {
         return Agent(false, spouseAge)
     }
 
-    private fun degRad(deg: Double): Double {
-        return deg * (PI/180)
-    }
-
-    private fun findDistance(point1: Pair<Double, Double>, point2: Pair<Double, Double>): Double {
-        val dLat = degRad(point2.second - point1.second)
-        val dLon = degRad(point2.first - point1.first)
-        val a = sin(dLat/2) * sin(dLat/2) + cos(degRad(point1.second)) * cos(degRad(point2.second)) * sin(dLon/2) * sin(dLon/2)
-        return 12742 * atan2(sqrt(a), sqrt(1-a))
-    }
-
-    private fun findClosestKindergarten(homePos: Pair<Double, Double>): Int {
-        var minIndex = 0
-        var minDist = 10000.0
-        var dist: Double
-        kindergartens.forEach {
-            dist = findDistance(homePos, it.pos)
-            if (dist < minDist) {
-                minDist = dist
-                minIndex = it.id
-            }
-        }
-        return minIndex
-    }
-
-    private fun findClosestSchool(homePos: Pair<Double, Double>): Int {
-        var minIndex: Int = 0
-        var minDist = 10000.0
-        var dist: Double
-        schools.forEach {
-            dist = findDistance(homePos, it.pos)
-            if (dist < minDist) {
-                minDist = dist
-                minIndex = it.id
-            }
-        }
-        return minIndex
-    }
+//    private fun degRad(deg: Double): Double {
+//        return deg * (PI/180)
+//    }
+//
+//    private fun findDistance(point1: Pair<Double, Double>, point2: Pair<Double, Double>): Double {
+//        val dLat = degRad(point2.second - point1.second)
+//        val dLon = degRad(point2.first - point1.first)
+//        val a = sin(dLat/2) * sin(dLat/2) + cos(degRad(point1.second)) * cos(degRad(point2.second)) * sin(dLon/2) * sin(dLon/2)
+//        return 12742 * atan2(sqrt(a), sqrt(1-a))
+//    }
+//
+//    private fun findClosestKindergarten(homePos: Pair<Double, Double>): Int {
+//        var minIndex = 0
+//        var minDist = 10000.0
+//        var dist: Double
+//        kindergartens.forEach {
+//            dist = findDistance(homePos, it.pos)
+//            if (dist < minDist) {
+//                minDist = dist
+//                minIndex = it.id
+//            }
+//        }
+//        return minIndex
+//    }
+//
+//    private fun findClosestSchool(homePos: Pair<Double, Double>): Int {
+//        var minIndex: Int = 0
+//        var minDist = 10000.0
+//        var dist: Double
+//        schools.forEach {
+//            dist = findDistance(homePos, it.pos)
+//            if (dist < minDist) {
+//                minDist = dist
+//                minIndex = it.id
+//            }
+//        }
+//        return minIndex
+//    }
 
 //    @Synchronized private fun addAgentsToGroups(agent: Agent, household: Household,
 //                                 closestKindergarten: Kindergarten,
@@ -660,16 +656,14 @@ class World {
 //        household.addAgent(agent)
 //    }
 
-    @Synchronized private fun addAgentsToGroups(agents: ArrayList<Agent>, household: Household,
-                                               closestKindergarten: Kindergarten,
-                                               closestSchool: School) {
+    @Synchronized private fun addAgentsToGroups(agents: ArrayList<Agent>, household: Household) {
         agents.forEach { agent ->
             when (agent.activityStatus) {
-                1 -> closestKindergarten.addAgent(agent)
-                2 -> if (agent.age < 14) closestSchool.addAgent(agent) else schools[(0 until schools.size).random()].addAgent(agent)
-                3 -> colleges[(0 until colleges.size).random()].addAgent(agent)
-                4 -> universities[(0 until universities.size).random()].addAgent(agent)
-                5 -> homes[(0 until homes.size).random()].addWorkingAgent(agent)
+                1 -> kindergarten.addAgent(agent)
+                2 -> school.addAgent(agent)
+                3 -> college.addAgent(agent)
+                4 -> university.addAgent(agent)
+                5 -> workplace.addAgent(agent)
             }
 
             when (agent.healthStatus) {
@@ -687,9 +681,7 @@ class World {
 
         districtsInfoMatrix.forEachIndexed { index, it ->
             launch {
-                val currOkato = it[0]
                 println("Current index $index")
-                val homesFiltered = homes.filter { home -> home.okato == currOkato }
                 val indexFor1People = index * 5 + 1
                 val indexFor2People = index * 5 + 2
                 val indexFor3People = index * 5 + 3
@@ -698,25 +690,15 @@ class World {
 
                 for (i in 0..it[58]) {
 //                for (i in 1..100) {
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "1P")
+                    val household = Household("1P")
 
                     val agent = createAgent(index, indexFor1People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
-                    addAgentsToGroups(arrayListOf(agent), household,closestKindergarten,closestSchool)
+                    addAgentsToGroups(arrayListOf(agent), household)
                 }
                 for (i in 0..it[59]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP2P0C")
+                    val household = Household("PWOP2P0C")
 
                     val agentMale = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -724,16 +706,11 @@ class World {
                     val agentFemale = addSpouse(agentMale)
                     agents.add(agentMale)
                     agents.add(agentFemale)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[60] - it[61])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP3P0C")
+                    val household = Household("PWOP3P0C")
 
                     val agentMale = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -744,16 +721,11 @@ class World {
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[61]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP3P1C")
+                    val household = Household("PWOP3P1C")
 
                     val agentMale = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -764,16 +736,11 @@ class World {
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[62] - it[63] - it[64])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP4P0C")
+                    val household = Household("PWOP4P0C")
 
                     val agentMale = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -787,16 +754,11 @@ class World {
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[63]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP4P1C")
+                    val household = Household("PWOP4P1C")
 
                     val agentMale = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -810,16 +772,11 @@ class World {
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[64]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP4P2C")
+                    val household = Household("PWOP4P2C")
 
                     val agentMale = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -833,16 +790,11 @@ class World {
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[65] - it[66] - it[67] - it[68])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP5P0C")
+                    val household = Household("PWOP5P0C")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -859,16 +811,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[66]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP5P1C")
+                    val household = Household("PWOP5P1C")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -885,16 +832,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[67]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP5P2C")
+                    val household = Household("PWOP5P2C")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -911,16 +853,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[68]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP5P3C")
+                    val household = Household("PWOP5P3C")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -937,16 +874,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[69] - it[70] - it[71] - it[72])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP6P0C")
+                    val household = Household("PWOP6P0C")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -966,16 +898,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[70]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP6P1C")
+                    val household = Household("PWOP6P1C")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -995,16 +922,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[71]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP6P2C")
+                    val household = Household("PWOP6P2C")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -1024,16 +946,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[72]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "PWOP6P3C")
+                    val household = Household("PWOP6P3C")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -1053,16 +970,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[73]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP4P0С")
+                    val household = Household("2PWOP4P0С")
 
                     val agentMale = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -1076,16 +988,11 @@ class World {
                     agents.add(agentFemale)
                     agents.add(agentMale2)
                     agents.add(agentFemale2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[74] - it[75])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP5P0С")
+                    val household = Household("2PWOP5P0С")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -1102,16 +1009,11 @@ class World {
                     agents.add(agentMale2)
                     agents.add(agentFemale2)
                     agents.add(agent)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[75]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP5P1С")
+                    val household = Household("2PWOP5P1С")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -1128,16 +1030,11 @@ class World {
                     agents.add(agentMale2)
                     agents.add(agentFemale2)
                     agents.add(agent)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[76] - it[77] - it[78])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP6P0С")
+                    val household = Household("2PWOP6P0С")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -1157,16 +1054,11 @@ class World {
                     agents.add(agentFemale2)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[77]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP6P1С")
+                    val household = Household("2PWOP6P1С")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -1186,16 +1078,11 @@ class World {
                     agents.add(agentFemale2)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[78]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "2PWOP6P2С")
+                    val household = Household("2PWOP6P2С")
 
                     val agentMale = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false,
@@ -1215,16 +1102,11 @@ class World {
                     agents.add(agentFemale2)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[79] - it[80])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC2P0C")
+                    val household = Household("SMWC2P0C")
 
                     val agent = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, false, null, true)
@@ -1235,16 +1117,11 @@ class World {
                     }
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[80]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC2P1C")
+                    val household = Household("SMWC2P1C")
 
                     val agent = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, false, null, false)
@@ -1252,16 +1129,11 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[81] - it[82] - it[83])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC3P0C")
+                    val household = Household("SMWC3P0C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, false, null, true)
@@ -1278,16 +1150,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[82]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC3P1C")
+                    val household = Household("SMWC3P1C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, false, null, true)
@@ -1301,16 +1168,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[83]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC3P2C")
+                    val household = Household("SMWC3P2C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, false, null, false)
@@ -1321,16 +1183,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[84] - it[85] - it[86] - it[87])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC4P0C")
+                    val household = Household("SMWC4P0C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, false, null, true)
@@ -1353,16 +1210,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[85]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC4P1C")
+                    val household = Household("SMWC4P1C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, false, null, true)
@@ -1382,16 +1234,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[86]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC4P2C")
+                    val household = Household("SMWC4P2C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, false, null, true)
@@ -1408,16 +1255,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[87]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SMWC4P3C")
+                    val household = Household("SMWC4P3C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, false, null, false)
@@ -1431,16 +1273,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[88] - it[89])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC2P0C")
+                    val household = Household("SFWC2P0C")
 
                     val agent = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, true)
@@ -1451,16 +1288,11 @@ class World {
                     }
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[89]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC2P1C")
+                    val household = Household("SFWC2P1C")
 
                     val agent = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1468,16 +1300,11 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[90] - it[91] - it[92])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC3P0C")
+                    val household = Household("SFWC3P0C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, true)
@@ -1494,16 +1321,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[91]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC3P1C")
+                    val household = Household("SFWC3P1C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, true)
@@ -1517,16 +1339,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[92]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SFWC3P2C")
+                    val household = Household("SFWC3P2C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1537,16 +1354,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[93] - it[94])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP3P0C")
+                    val household = Household("SPWCWP3P0C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1557,16 +1369,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[94]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP3P1C")
+                    val household = Household("SPWCWP3P1C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1580,16 +1387,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[95] - it[96] - it[97])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP4P0C")
+                    val household = Household("SPWCWP4P0C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1603,16 +1405,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[96]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP4P1C")
+                    val household = Household("SPWCWP4P1C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1626,16 +1423,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[97]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWP4P2C")
+                    val household = Household("SPWCWP4P2C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1652,16 +1444,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[98] - it[99])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP3P0C")
+                    val household = Household("SPWCWPWOP3P0C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1672,16 +1459,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[99]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP3P1C")
+                    val household = Household("SPWCWPWOP3P1C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1695,16 +1477,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[55] - it[101] - it[102])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP4P0C")
+                    val household = Household("SPWCWPWOP4P0C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1718,16 +1495,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[101]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP4P1C")
+                    val household = Household("SPWCWPWOP4P1C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1741,16 +1513,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[102]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP4P2C")
+                    val household = Household("SPWCWPWOP4P2C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1767,16 +1534,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[103] - it[104] - it[105])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP5P0C")
+                    val household = Household("SPWCWPWOP5P0C")
 
                     val agent = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1793,16 +1555,11 @@ class World {
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[104]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP5P1C")
+                    val household = Household("SPWCWPWOP5P1C")
 
                     val agent = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1819,16 +1576,11 @@ class World {
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[105]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "SPWCWPWOP5P2C")
+                    val household = Household("SPWCWPWOP5P2C")
 
                     val agent = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false, true, null, false)
@@ -1845,16 +1597,11 @@ class World {
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[106] - it[107])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O2P0C")
+                    val household = Household("O2P0C")
 
                     val agent = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -1862,16 +1609,11 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[107]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O2P1C")
+                    val household = Household("O2P1C")
 
                     val agent = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -1879,16 +1621,11 @@ class World {
                             ageDistributionInDistrictsMatrix, true)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[108] - it[109] - it[110])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O3P0C")
+                    val household = Household("O3P0C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -1899,16 +1636,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[109]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O3P1C")
+                    val household = Household("O3P1C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -1919,16 +1651,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[110]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O3P2C")
+                    val household = Household("O3P2C")
 
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -1939,16 +1666,11 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[111] - it[112] - it[113])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O4P0C")
+                    val household = Household("O4P0C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -1962,16 +1684,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[112]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O4P1C")
+                    val household = Household("O4P1C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -1985,16 +1702,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[113]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O4P2C")
+                    val household = Household("O4P2C")
 
                     val agent = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -2008,16 +1720,11 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..(it[114] - it[115] - it[116])) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O5P0C")
+                    val household = Household("O5P0C")
 
                     val agent = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -2034,16 +1741,11 @@ class World {
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[115]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O5P1C")
+                    val household = Household("O5P1C")
 
                     val agent = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -2060,16 +1762,11 @@ class World {
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
                 for (i in 0..it[116]) {
                     val agents = arrayListOf<Agent>()
-                    val pos = homesFiltered[(0 until (homesFiltered.size)).random()].pos
-                    val closestKindergartenIndex = findClosestKindergarten(pos)
-                    val closestSchoolIndex = findClosestSchool(pos)
-                    val closestKindergarten = kindergartens[closestKindergartenIndex]
-                    val closestSchool = schools[closestSchoolIndex]
-                    val household = Household(pos, closestSchoolIndex, closestKindergartenIndex, "O5P2C")
+                    val household = Household("O5P2C")
 
                     val agent = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
@@ -2086,7 +1783,7 @@ class World {
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household, closestKindergarten, closestSchool)
+                    addAgentsToGroups(agents, household)
                 }
             }
         }
@@ -2097,255 +1794,395 @@ class World {
         runBlocking {
             processAll(districtsInfoMatrix, ageDistributionInDistrictsMatrix)
         }
+
+//        households.forEach { household ->
+//            household.agents.forEach { agent ->
+//                if (agent.healthStatus == 1) {
+//                    agent.findInfectivity(0.02)
+//                    println("Age: ${agent.age}, Days Infected: ${agent.daysInfected}, Should be infected: ${agent.shouldBeInfected}, Virus load: ${agent.getViralShedding()}, Infectivity: ${agent.infectivity}")
+//                }
+//            }
+//        }
+
+        //println(households.size)
+        workplace.generateLastBarabasiAlbertNetwork()
+        school.generateLastBarabasiAlbertNetworks()
+        kindergarten.generateLastBarabasiAlbertNetworks()
+        college.generateLastBarabasiAlbertNetworks()
+        university.generateLastBarabasiAlbertNetworks()
         println("World creation has ended")
     }
 
-    private fun contactsInHouseholdForAgent(household: Household, agent: Agent, externalRisk: Double, coeffD: Double,
-                                            deviationD: Double, coeffA: Double, deviationA: Double, coeffTS: Double) {
-        val infectivity = if (agent.age > 17) {
-            infectivityMapAdult[agent.daysInfected] ?: 0.001
-        } else {
-            infectivityMapChild[agent.daysInfected] ?: 0.001
-        }
-
+    private fun contactsInHouseholdForAgent(household: Household, agent: Agent, scale: Double, durationCoeff: Double, tempCoeff: Double) {
         household.agents.forEach { agent2 ->
             if (agent2.healthStatus == 0) {
-//                val internalCognition = if (agent2.age > 17) {
-//                    (coeffD * exp(-1.0 / household.agents.size) - deviationD) * (coeffA - deviationA)
-//                } else {
-//                    (coeffD * exp(-1.0 / household.agents.size) - deviationD) * (coeffA / (1 +exp(-1.0 / agent2.age)) - deviationA)
-//                }
-//                val internalRisk = exp(-internalCognition * household.numOfInfected / household.agents.size)
-                val internalRisk = 1
+                contactStats[0] += 1
+                val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+                val externalInfluence = tempCoeff * curTemp + 1
 
-                var susceptibility = when (agent.age) {
-                    in 0..17 -> {
-                        1.18153846154
-                    }
-                    in 18..64 -> {
-                        1.11384615385
-                    }
-                    else -> {
-                        1.0
-                    }
-                }
-                val curTemp = temp[tempDay] ?: 1.0 - minTemp
-                susceptibility *= coeffTS * curTemp + 1
                 val randNum = (0..9999).random() * 0.0001
-                if (randNum < infectivity * susceptibility * externalRisk * internalRisk) {
+                val probab = agent.infectivity * agent2.susceptibility * scale * externalInfluence * durationCoeff
+                probabStats[0] += probab
+//                if (probab > 0.1) {
+//                println("Age: ${agent.age}, Days Infected: ${agent.daysInfected}, Should be infected: ${agent.shouldBeInfected}, Virus load: ${agent.getViralShedding()}")
+//                println("Inf: ${agent.infectivity}; Probability: $probab")
+//                    readLine()
+//                }
+                if (randNum < probab) {
                     agent2.healthStatus = 3
                 }
             }
         }
     }
 
-    private fun contactsInHouseholdForAgentInSaturday(household: Household, agent: Agent, externalRisk: Double, coeffD: Double,
-                                                      deviationD: Double, coeffA: Double, deviationA: Double, coeffTS: Double) {
-        val infectivity = if (agent.age > 17) {
-            infectivityMapAdult[agent.daysInfected] ?: 0.001
-        } else {
-            infectivityMapChild[agent.daysInfected] ?: 0.001
-        }
-
+//    private fun contactsInHouseholdForAgentInHoliday(household: Household, agent: Agent, scale: Double, coeffT: Double,
+//                                                     kinderHoliday: Boolean, schoolHoliday: Boolean,
+//                                                     universityHoliday: Boolean, workingHoliday: Boolean) {
+    private fun contactsInHouseholdForAgentInHoliday(household: Household, agent: Agent, scale: Double, durationCoeff: Double, tempCoeff: Double,
+                                                 kinderHoliday: Boolean, schoolHoliday: Boolean,
+                                                 universityHoliday: Boolean, workingHoliday: Boolean) {
         household.agents.forEach { agent2 ->
-            if (((agent.healthStatus == 0) && (agent.isStayingHomeWhenInfected)) ||
-                    ((agent.healthStatus == 0) && (agent.activityStatus == 5)) ||
-                    ((agent.healthStatus == 0) && (agent.activityStatus == 1)) ||
-                    ((agent.healthStatus == 0) && (agent.activityStatus == 0))) {
-//                val internalCognition = if (agent2.age > 17) {
-//                    (coeffD * exp(-1.0 / household.agents.size) - deviationD) * (coeffA - deviationA)
-//                } else {
-//                    (coeffD * exp(-1.0 / household.agents.size) - deviationD) * (coeffA / (1 +exp(-1.0 / agent2.age)) - deviationA)
-//                }
-//                val internalRisk = exp(-internalCognition * household.numOfInfected / household.agents.size)
-                val internalRisk = 1
-
-                var susceptibility = when (agent.age) {
-                    in 0..17 -> {
-                        1.18153846154
-                    }
-                    in 18..64 -> {
-                        1.11384615385
-                    }
-                    else -> {
-                        1.0
-                    }
-                }
-                val curTemp = temp[tempDay] ?: 1.0 - minTemp
-                susceptibility *= coeffTS * curTemp + 1
-                val randNum = (0..9999).random() * 0.0001
-                if (randNum < infectivity * susceptibility * externalRisk * internalRisk) {
-                    agent2.healthStatus = 3
-                }
-            }
-        }
-    }
-
-    private fun contactsInGroupForAgent(group: Group, agent: Agent, externalRisk: Double, coeffD: Double,
-                                        deviationD: Double, coeffA: Double, deviationA: Double, coeffTS: Double) {
-        val infectivity = if (agent.age > 17) {
-            infectivityMapAdult[agent.daysInfected] ?: 0.001
-        } else {
-            infectivityMapChild[agent.daysInfected] ?: 0.001
-        }
-
-        group.agents.forEach { agent2 ->
             if (agent2.healthStatus == 0) {
+                if ((agent2.activityStatus == 0) ||
+                        ((agent2.activityStatus == 1) && kinderHoliday) ||
+                        ((agent2.activityStatus == 2) && schoolHoliday) ||
+                        ((agent2.age == 7) && workingHoliday) ||
+                        ((agent2.activityStatus == 3) && universityHoliday) ||
+                        ((agent2.activityStatus == 4) && universityHoliday) ||
+                        ((agent2.activityStatus == 5) && workingHoliday)) {
+                    contactStats[0] += 1
+                    val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+                    val externalInfluence = tempCoeff * curTemp + 1
 
-//                val internalCognition = if (agent2.age > 17) {
-//                    (coeffD * exp(-1.0 / group.numOfAgents) - deviationD) * (coeffA - deviationA)
-//                } else {
-//                    (coeffD * exp(-1.0 / group.numOfAgents) - deviationD) * (coeffA / (1 +exp(-1.0 / agent2.age)) - deviationA)
-//                }
-//                val internalRisk = exp(-internalCognition * group.numOfInfected / group.numOfAgents)
-                val internalRisk = 1
-
-                val randNum = (0..9999).random() * 0.0001
-                var susceptibility = when (agent.age) {
-                    in 0..17 -> {
-                        1.18153846154
+                    val randNum = (0..9999).random() * 0.0001
+                    val probab = agent.infectivity * agent2.susceptibility * scale * externalInfluence * durationCoeff
+                    probabStats[0] += probab
+                    if (randNum < probab) {
+                        agent2.healthStatus = 3
                     }
-                    in 18..64 -> {
-                        1.11384615385
-                    }
-                    else -> {
-                        1.0
-                    }
-                }
-                val curTemp = temp[tempDay] ?: 1.0 - minTemp
-                susceptibility *= coeffTS * curTemp + 1
-                if (randNum < infectivity * susceptibility * externalRisk * internalRisk) {
-                    agent2.healthStatus = 3
                 }
             }
         }
     }
 
-    fun runSimulation(scale: Double, coeffR: Double, deviationR: Double, coeffT: Double, deviationT: Double, coeffD: Double,
-                      deviationD: Double, coeffA: Double, deviationA: Double, coeffTS: Double) {
+//    private fun contactsInGroupForAgent(group: Group, agent: Agent, scale: Double, coeffT: Double) {
+    private fun contactsInGroupForAgent(group: Group, agent: Agent, scale1: Double, scale2: Double, scale3: Double, scale4: Double, scale5: Double, durationCoeff: Double, tempCoeff: Double) {
+        // var s = 0
+        group.agents.forEachIndexed { index, agent2 ->
+            if ((agent2.healthStatus == 0) && (index in agent.connectedAgents)) {
+                // s += 1
+                val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+                val externalInfluence = tempCoeff * curTemp + 1
+                val scale = when(agent.activityStatus) {
+                    1 -> scale1
+                    2 -> scale2
+                    3 -> scale3
+                    4 -> scale4
+                    5 -> scale5
+                    else -> 1.0
+                }
 
-        worldStats[3] = worldStats[1] / 7
+                when (agent2.activityStatus) {
+                    1 -> contactStats[1] += 1
+                    2 -> contactStats[2] += 1
+                    3 -> contactStats[3] += 1
+                    4 -> contactStats[4] += 1
+                    5 -> contactStats[5] += 1
+                }
+
+                val randNum = (0..9999).random() * 0.0001
+                val probab = agent.infectivity * agent2.susceptibility * scale * externalInfluence * durationCoeff
+                when (agent2.activityStatus) {
+                    1 -> probabStats[1] += probab
+                    2 -> probabStats[2] += probab
+                    3 -> probabStats[3] += probab
+                    4 -> probabStats[4] += probab
+                    5 -> probabStats[5] += probab
+                }
+                if (randNum < probab) {
+                    agent2.healthStatus = 3
+                }
+            }
+        }
+    //println("S $s")
+    }
+
+    var contactStats = arrayListOf(0, 0, 0, 0, 0, 0)
+    var probabStats = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+
+    fun runSimulation(a: Double, scale1: Double, scale2: Double, scale3: Double, scale4: Double, scale5: Double,
+                      scaleHome: Double, coeffT: Double, immDur: Int, randomFluChance: Int): ArrayList<ArrayList<Int>> {
+
+        val worldStats2 = arrayListOf(0, 0, 0, 0)
+        val worldStats3 = arrayListOf(arrayListOf(0, 0, 0, 0))
+
         while(true) {
 
-            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\results.xlsx",
-                    globalDay, worldStats)
-
-
-//            val curTemp = temp[tempDay] ?: 1.0 - minTemp
-////            val externalCognition = (coeffT / (1 + exp(-maxMinTemp / curTemp)) - deviationT) *
-////                    (coeffR / (1 +exp(-worldStats[3] / worldStats[0].toDouble())) - deviationR)
-////            val externalRisk = scale * exp(-
-            val externalRisk = scale
             worldStats[3] = 0
+
+            worldStats2[0] = 0
+            worldStats2[1] = 0
+            worldStats2[2] = 0
+            worldStats2[3] = 0
+
+            contactStats = arrayListOf(0, 0, 0, 0, 0, 0)
+            probabStats = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+
+            var holiday = false
+            if (dayOfTheWeek == 7) {
+                holiday = true
+            }
+            if ((month == 1) && (day in arrayListOf(1, 2, 3, 7))) {
+                holiday = true
+            }
+            if ((month == 5) && (day in arrayListOf(1, 9))) {
+                holiday = true
+            }
+            if ((month == 2) && (day == 23)) {
+                holiday = true
+            }
+            if ((month == 3) && (day == 8)) {
+                holiday = true
+            }
+            if ((month == 6) && (day == 12)) {
+                holiday = true
+            }
+
+            var workingHoliday = false
+            if (dayOfTheWeek == 6) {
+                workingHoliday = true
+            }
+
+            var kinderHoliday = false
+            if (month in arrayListOf(7, 8)) {
+                kinderHoliday = true
+            }
+
+            // Каникулы 2007/2008
+            //
+            // Осенние - с 05.11.2007 г. по 11.11.2007 г. - 7 дней;
+            //
+            // Зимние - с 26.12.2007 г. по 09.01.2008 г. - 15 дней;
+            //
+            // Весенние - с 22.03.2008 г. по 31.03.2008 г. - 10 дней.
+            var schoolHoliday = false
+            if (month in arrayListOf(6, 7, 8)) {
+                schoolHoliday = true
+            }
+            if ((month == 11) && (day in arrayListOf(5, 6, 7, 8, 9, 10, 11))) {
+                schoolHoliday = true
+            }
+            if ((month == 12) && (day in arrayListOf(26, 27, 28, 29, 30, 31))) {
+                schoolHoliday = true
+            }
+            if ((month == 1) && (day in arrayListOf(6, 7, 8, 9))) {
+                schoolHoliday = true
+            }
+            if ((month == 3) && (day in arrayListOf(22, 23, 24, 25, 26, 27, 28, 29, 30, 31))) {
+                schoolHoliday = true
+            }
+
+            var universityHoliday = false
+            if ((month == 12) && (day in arrayListOf(22, 23, 24, 25, 26, 27, 28, 29, 30, 31))) {
+                universityHoliday = true
+            }
+            if (month == 1) {
+                if (day !in arrayListOf(11, 15, 19, 23, 27)) {
+                    universityHoliday = true
+                }
+            }
+            if (month == 6) {
+                if (day !in arrayListOf(11, 15, 19, 23, 27)) {
+                    universityHoliday = true
+                }
+            }
+            if (month in arrayListOf(7, 8)) {
+                universityHoliday = true
+            }
+            if ((month == 2) && (day in arrayListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))) {
+                universityHoliday = true
+            }
 
             households.parallelStream().forEach { household ->
                 household.agents.forEach { agent ->
                     if (agent.healthStatus == 1) {
-                        contactsInHouseholdForAgent(household, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
+                        val durationCoeff = household.getContactDuration() / 24.0
+                        agent.findInfectivity(a)
+//                        println("Age: ${agent.age}, Days Infected: ${agent.daysInfected}, Should be infected: ${agent.shouldBeInfected}, Virus load: ${agent.viralLoad}, Infectivity: ${agent.infectivity}")
+//                        println("Connected agents size: ${agent.connectedAgents.size}")
+//                        contactsInHouseholdForAgent(household, agent, scale, coeffT)
+                        contactsInHouseholdForAgent(household, agent, scaleHome, durationCoeff, coeffT)
                     }
                 }
             }
-            if ((dayOfTheWeek != 7) && (((month != 1) || ((month == 1) && (day !in arrayListOf(1, 2, 3, 4, 5, 6, 7, 8)))) &&
-                            ((month != 5) || ((month == 5) && (day !in arrayListOf(1, 9)))) &&
-                            ((month != 2) || ((month == 2) && (day != 23))) &&
-                            ((month != 3) || ((month == 3) && (day != 8))) &&
-                            ((month != 11) || ((month == 11) && (day != 4))))) {
-                if (dayOfTheWeek != 6) {
-                    if (month !in arrayListOf(6, 7, 8)) {
-                        kindergartens.parallelStream().forEach { kindergarten ->
-                            kindergarten.groupsByAge.forEach { (_, groupByAge) ->
-                                groupByAge.forEach { group ->
-                                    group.agents.forEach { agent ->
-                                        if ((agent.healthStatus == 1) &&
-                                                (!agent.isStayingHomeWhenInfected)) {
-                                            contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    homes.parallelStream().forEach { home ->
-                        home.workingGroups.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if ((agent.healthStatus == 1) &&
-                                        (!agent.isStayingHomeWhenInfected)) {
-                                    contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
-                                }
-                            }
+//            readLine()
+
+            if ((universityHoliday) && (schoolHoliday) && (kinderHoliday) && (workingHoliday)) {
+                households.parallelStream().forEach { household ->
+                    household.agents.forEach { agent ->
+                        if (agent.healthStatus == 1) {
+                            val durationCoeff = household.getWeekendContactDuration() / 24.0
+//                            contactsInHouseholdForAgent(household, agent, scale, coeffT)
+                            contactsInHouseholdForAgent(household, agent, scaleHome, durationCoeff, coeffT)
                         }
                     }
                 }
-                if (month !in arrayListOf(6, 7, 8)) {
-                    if (((month != 3) || ((month == 3) && (day !in arrayListOf(21, 22, 23, 24, 25, 26, 27, 28, 29)))) &&
-                            ((month != 10) || ((month == 10) && (day !in arrayListOf(28, 29, 30, 31)))) &&
-                            ((month != 11) || ((month == 11) && (day !in arrayListOf(1, 2, 3))))) {
-                        schools.parallelStream().forEach { school ->
-                            school.groupsByAge.forEach { (_, groupByAge) ->
-                                groupByAge.forEach { group ->
-                                    group.agents.forEach { agent ->
-                                        if ((agent.healthStatus == 1) &&
-                                                (!agent.isStayingHomeWhenInfected)) {
-                                            contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    universities.parallelStream().forEach { university ->
-                        university.groupsByAge.forEach { (_, groupByAge) ->
-                            groupByAge.forEach { group ->
-                                group.agents.forEach { agent ->
-                                    if ((agent.healthStatus == 1) &&
-                                            (!agent.isStayingHomeWhenInfected)) {
-                                        contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    colleges.parallelStream().forEach { college ->
-                        college.groupsByAge.forEach { (_, groupByAge) ->
-                            groupByAge.forEach { group ->
-                                group.agents.forEach { agent ->
-                                    if ((agent.healthStatus == 1) &&
-                                            (!agent.isStayingHomeWhenInfected)) {
-                                        contactsInGroupForAgent(group, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else if ((month in arrayListOf(6, 7, 8)) && (dayOfTheWeek == 6)) {
-                    households.parallelStream().forEach { household ->
-                        household.agents.forEach { agent ->
-                            if (agent.healthStatus == 1) {
-                                contactsInHouseholdForAgent(household, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
-                            }
-                        }
-                    }
-                } else if (dayOfTheWeek == 6) {
-                    households.parallelStream().forEach { household ->
-                        household.agents.forEach { agent ->
-                            if (((agent.healthStatus == 1) && (agent.isStayingHomeWhenInfected)) ||
-                                    ((agent.healthStatus == 1) && (agent.activityStatus == 5)) ||
-                                    ((agent.healthStatus == 1) && (agent.activityStatus == 1)) ||
-                                    ((agent.healthStatus == 1) && (agent.activityStatus == 0))) {
-                                contactsInHouseholdForAgentInSaturday(household, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
-                            }
+            } else if (holiday) {
+                households.parallelStream().forEach { household ->
+                    household.agents.forEach { agent ->
+                        if (agent.healthStatus == 1) {
+                            val durationCoeff = household.getWeekendContactDuration() / 24.0
+//                            contactsInHouseholdForAgent(household, agent, scale, coeffT)
+                            contactsInHouseholdForAgent(household, agent, scaleHome, durationCoeff, coeffT)
                         }
                     }
                 }
             } else {
+                if (!workingHoliday) {
+                    if (!kinderHoliday) {
+                        kindergarten.groupsByAge.forEach { groupByAge ->
+                            groupByAge.forEach { group ->
+                                group.agents.forEach { agent ->
+                                    if ((agent.healthStatus == 1) &&
+                                            (!agent.isStayingHomeWhenInfected)) {
+//                                            contactsInGroupForAgent(group, agent, scale, coeffT)
+                                        val durationCoeff = kindergarten.getContactDuration() / 24.0
+                                        contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    workplace.workingGroups.forEach { group ->
+                        group.agents.forEach { agent ->
+                            if ((agent.healthStatus == 1) &&
+                                    (!agent.isStayingHomeWhenInfected)) {
+//                                    contactsInGroupForAgent(group, agent, scale, coeffT)
+                                val durationCoeff = workplace.getContactDuration() / 24.0
+                                contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
+                            }
+                        }
+                    }
+                }
+                if (!schoolHoliday) {
+                    school.groupsByAge.forEachIndexed { index, groupByAge ->
+                        if ((index == 0) && (workingHoliday)) {
+
+                        } else {
+                            groupByAge.forEach { group ->
+                                group.agents.forEach { agent ->
+                                    if ((agent.healthStatus == 1) &&
+                                            (!agent.isStayingHomeWhenInfected)) {
+//                                            contactsInGroupForAgent(group, agent, scale, coeffT)
+                                        val durationCoeff = school.getContactDuration() / 24.0
+                                        contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!universityHoliday) {
+                    university.groupsByAge.forEach { groupByAge ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if ((agent.healthStatus == 1) &&
+                                        (!agent.isStayingHomeWhenInfected)) {
+//                                        contactsInGroupForAgent(group, agent, scale, coeffT)
+                                    val durationCoeff = university.getContactDuration() / 24.0
+                                    contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
+                                }
+                            }
+                        }
+                    }
+                    college.groupsByAge.forEach { groupByAge ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if ((agent.healthStatus == 1) &&
+                                        (!agent.isStayingHomeWhenInfected)) {
+//                                        contactsInGroupForAgent(group, agent, scale, coeffT)
+                                    val durationCoeff = college.getContactDuration() / 24.0
+                                    contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
+                                }
+                            }
+                        }
+                    }
+                }
                 households.parallelStream().forEach { household ->
                     household.agents.forEach { agent ->
                         if (agent.healthStatus == 1) {
-                            contactsInHouseholdForAgent(household, agent, externalRisk, coeffD, deviationD, coeffA, deviationA, coeffTS)
+                            if ((agent.activityStatus == 0) ||
+                                    (agent.isStayingHomeWhenInfected) ||
+                                    ((agent.activityStatus == 1) && kinderHoliday) ||
+                                    ((agent.activityStatus == 2) && schoolHoliday) ||
+                                    ((agent.age == 7) && workingHoliday) ||
+                                    ((agent.activityStatus == 3) && universityHoliday) ||
+                                    ((agent.activityStatus == 4) && universityHoliday) ||
+                                    ((agent.activityStatus == 5) && workingHoliday)) {
+//                                contactsInHouseholdForAgentInHoliday(household, agent, scale, coeffT,
+//                                        kinderHoliday, schoolHoliday, universityHoliday,
+//                                        workingHoliday)
+                                val durationCoeff = household.getWeekendContactDuration() / 24.0
+                                contactsInHouseholdForAgentInHoliday(household, agent, scaleHome, durationCoeff, coeffT,
+                                        kinderHoliday, schoolHoliday, universityHoliday,
+                                        workingHoliday)
+                            }
+                        }
+                    }
+                }
+                if (kinderHoliday) {
+                    kindergarten.groupsByAge.forEach { groupByAge ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if (agent.healthStatus == 0) {
+                                    if ((0..999999).random() < randomFluChance) {
+                                        agent.healthStatus = 3
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (schoolHoliday) {
+                    school.groupsByAge.forEach { groupByAge ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if (agent.healthStatus == 0) {
+                                    if ((0..999999).random() < randomFluChance) {
+                                        agent.healthStatus = 3
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (universityHoliday) {
+                    university.groupsByAge.forEach { groupByAge ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if (agent.healthStatus == 0) {
+                                    if ((0..999999).random() < randomFluChance) {
+                                        agent.healthStatus = 3
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    college.groupsByAge.forEach { groupByAge ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if (agent.healthStatus == 0) {
+                                    if ((0..999999).random() < randomFluChance) {
+                                        agent.healthStatus = 3
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
+
+
             households.forEach { household ->
                 household.agents.forEach { agent ->
                     when (agent.healthStatus) {
@@ -2354,73 +2191,148 @@ class World {
                             worldStats[0] -= 1
                             worldStats[1] += 1
                             worldStats[3] += 1
-                            agent.daysInfected = 1
-//                            agent.shouldBeInfected = agent.willBeInfected()
-                            agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-                            household.numOfInfected += 1
-                            if (agent.groupId != -1) {
-                                if (agent.isStayingHomeWhenInfected) {
-                                    groupRepo[agent.groupId].numOfAgents -= 1
-                                } else {
-                                    groupRepo[agent.groupId].numOfInfected += 1
+
+                            when (agent.age) {
+                                in (0..2) -> {
+                                    worldStats3[worldStats3.size - 1][0] += 1
+                                    worldStats2[0] += 1
+                                }
+                                in (3..6) -> {
+                                    worldStats3[worldStats3.size - 1][1] += 1
+                                    worldStats2[1] += 1
+                                }
+                                in (7..14) -> {
+                                    worldStats3[worldStats3.size - 1][2] += 1
+                                    worldStats2[2] += 1
+                                }
+                                else -> {
+                                    worldStats3[worldStats3.size - 1][3] += 1
+                                    worldStats2[3] += 1
                                 }
                             }
+
+                            agent.daysInfected = 0
+                            agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
+                            agent.shouldBeInfected = agent.willBeInfected()
+                            household.numOfInfected += 1
                         }
                         1 -> {
-                            //println("Id: ${agent.id}; Infected: ${agent.daysInfected}; ShouldBeInfected: ${agent.shouldBeInfected}")
                             if (agent.daysInfected == agent.shouldBeInfected) {
                                 agent.healthStatus = 2
+                                agent.daysImmune = 1
                                 worldStats[1] -= 1
                                 worldStats[2] += 1
-//                                agent.daysInfected = 0
-                                if (agent.groupId != -1) {
-                                    if (!agent.isStayingHomeWhenInfected) {
-                                        groupRepo[agent.groupId].numOfInfected -= 1
-                                    } else {
-                                        groupRepo[agent.groupId].numOfAgents += 1
-                                    }
-                                }
                                 agent.isStayingHomeWhenInfected = false
                                 household.numOfInfected -= 1
                             } else {
                                 agent.daysInfected += 1
                                 if (!agent.isStayingHomeWhenInfected) {
                                     agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-                                    if ((agent.isStayingHomeWhenInfected) && (agent.groupId != -1)) {
-                                        groupRepo[agent.groupId].numOfInfected -= 1
-                                        groupRepo[agent.groupId].numOfAgents -= 1
-                                    }
                                 }
                             }
                         }
                         0 -> {
-                            if ((0..99999).random() == 0) {
+                            if ((0..999999).random() < randomFluChance) {
                                 agent.healthStatus = 1
                                 worldStats[0] -= 1
                                 worldStats[1] += 1
                                 worldStats[3] += 1
-                                agent.daysInfected = 1
-//                                agent.shouldBeInfected = agent.willBeInfected()
-                                agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-                                household.numOfInfected += 1
-                                if (agent.groupId != -1) {
-                                    if (agent.isStayingHomeWhenInfected) {
-                                        groupRepo[agent.groupId].numOfAgents -= 1
-                                    } else {
-                                        groupRepo[agent.groupId].numOfInfected += 1
+
+                                when (agent.age) {
+                                    in (0..2) -> {
+                                        worldStats3[worldStats3.size - 1][0] += 1
+                                        worldStats2[0] += 1
+                                    }
+                                    in (3..6) -> {
+                                        worldStats3[worldStats3.size - 1][1] += 1
+                                        worldStats2[1] += 1
+                                    }
+                                    in (7..14) -> {
+                                        worldStats3[worldStats3.size - 1][2] += 1
+                                        worldStats2[2] += 1
+                                    }
+                                    else -> {
+                                        worldStats3[worldStats3.size - 1][3] += 1
+                                        worldStats2[3] += 1
                                     }
                                 }
+
+                                agent.daysInfected = 0
+                                agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
+                                agent.shouldBeInfected = agent.willBeInfected()
+                                household.numOfInfected += 1
+                            }
+                        }
+                        2 -> {
+                            if (agent.daysImmune == immDur) {
+                                agent.healthStatus = 0
+                                worldStats[0] += 1
+                                worldStats[2] -= 1
+                            } else {
+                                agent.daysImmune += 1
                             }
                         }
                     }
                 }
             }
             //readLine()
+
+            if (contactStats[0] == 0) {
+                probabStats[0] = 0.0
+            } else {
+                probabStats[0] /= contactStats[0].toDouble()
+            }
+            if (contactStats[1] == 0) {
+                probabStats[1] = 0.0
+            } else {
+                probabStats[1] /= contactStats[1].toDouble()
+            }
+            if (contactStats[2] == 0) {
+                probabStats[2] = 0.0
+            } else {
+                probabStats[2] /= contactStats[2].toDouble()
+            }
+            if (contactStats[3] == 0) {
+                probabStats[3] = 0.0
+            } else {
+                probabStats[3] /= contactStats[3].toDouble()
+            }
+            if (contactStats[4] == 0) {
+                probabStats[4] = 0.0
+            } else {
+                probabStats[4] /= contactStats[4].toDouble()
+            }
+            if (contactStats[5] == 0) {
+                probabStats[5] = 0.0
+            } else {
+                probabStats[5] /= contactStats[5].toDouble()
+            }
+
+            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\results.xlsx",
+                    globalDay, worldStats)
+
+            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\resultsByAge.xlsx",
+                    globalDay, worldStats2)
+
+
+            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\contacts.xlsx",
+                    globalDay, contactStats)
+
+            writeTableResult2("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\probab.xlsx",
+                    globalDay, probabStats)
+
+
             dayOfTheWeek += 1
             if (dayOfTheWeek == 8) {
                 dayOfTheWeek = 1
+                worldStats3.add(arrayListOf(0, 0, 0, 0))
+//                break
             }
             day += 1
+            if ((month == 7) && (day == 31)) {
+                break
+            }
+
             globalDay += 1
             tempDay += 1
             if (tempDay == 366) {
@@ -2433,11 +2345,14 @@ class World {
             if ((month in arrayListOf(1, 3, 5, 7, 8, 10) && (day == 32)) ||
                     (month in arrayListOf(4, 6, 9, 11) && (day == 31)) ||
                     (month == 2) and (day == 29)) {
-                if (month == 7) {
-                    break
-                }
                 day = 1
                 month += 1
+
+
+//                if (month == 10) break
+
+
+
                 println("Month $month")
             } else if ((month == 12) && (day == 32)) {
                 day = 1
@@ -2446,16 +2361,17 @@ class World {
                 println("Month 1")
             }
         }
+        return worldStats3
     }
 
     fun resetState() {
-        day = 1
-        month = 8
+        day = 31
+        month = 7
 
         globalDay = 0
         dayOfTheWeek = 1
 
-        tempDay = 213
+        tempDay = 212
 
         worldStats = arrayListOf(0, 0, 0, 0)
 
@@ -2466,9 +2382,14 @@ class World {
                         if ((1..100).random() < 33) 2 else 0
                     } else 0
                 }
-                agent.daysInfected = if (agent.healthStatus == 1) if (agent.age > 17 ) (1..8).random() else (1..15).random() else 0
-                agent.shouldBeInfected = if (agent.age > 17 ) (max(5, agent.daysInfected)..8).random() else (max(7, agent.daysInfected)..15).random()
+                agent.shouldBeInfected = agent.willBeInfected()
+                agent.daysInfected = if (agent.healthStatus == 1) {
+                    (1..agent.shouldBeInfected).random()
+                } else {
+                    0
+                }
                 agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
+                agent.daysImmune = 0
 
                 when (agent.healthStatus) {
                     0 -> worldStats[0] += 1
@@ -2481,11 +2402,6 @@ class World {
     }
 
     init {
-        createKindergartens()
-        createSchools()
-        createColleges()
-        createUniversities()
-        createHomes()
 
         val ageDistributionInDistrictsMatrix = arrayListOf<ArrayList<Int>>()
         readTableInt("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\age-num-of-people-districts.xlsx",

@@ -1,30 +1,104 @@
 package model
 
 import utility.generateBarabasiAlbertNetwork
+import kotlin.math.max
 
-class University(val pos: Pair<Double, Double>) {
-//class University {
+class University {
 
-    val groupsByAge = mapOf(19 to arrayListOf<Group>(),
-            20 to arrayListOf(),
-            21 to arrayListOf(),
-            22 to arrayListOf())
+//    private val m = 6
+    private val m = 8
 
+    fun getContactDuration(): Double {
+        val rand = java.util.Random()
+        return max(0.0,2.133 + rand.nextGaussian() * 1.62)
+    }
+
+    fun generateLastBarabasiAlbertNetworks() {
+        groupsByAge.forEach { groupByAge ->
+            if (groupByAge.size > 0) {
+                if (groupByAge[groupByAge.size - 1].agents.size >= m) {
+                    generateBarabasiAlbertNetwork(
+                            groupByAge[groupByAge.size - 1], m)
+                } else {
+                    generateBarabasiAlbertNetwork(
+                            groupByAge[groupByAge.size - 1], groupByAge[groupByAge.size - 1].agents.size)
+                }
+            }
+        }
+    }
+
+    private fun findNumberOfPeople(classNum: Int): Int {
+        return when (classNum) {
+            0 -> when ((0..99).random()) {
+                in (0..19) -> 14
+                in (20..79) -> 15
+                else -> 16
+            }
+            1 -> when ((0..99).random()) {
+                in (0..19) -> 13
+                in (20..79) -> 14
+                else -> 15
+            }
+            2 -> when ((0..99).random()) {
+                in (0..19) -> 13
+                in (20..79) -> 14
+                else -> 15
+            }
+            3 -> when ((0..99).random()) {
+                in (0..19) -> 12
+                in (20..79) -> 13
+                else -> 14
+            }
+            4 -> when ((0..99).random()) {
+                in (0..19) -> 11
+                in (20..79) -> 12
+                else -> 13
+            }
+            5 -> when ((0..99).random()) {
+                in (0..19) -> 10
+                in (20..79) -> 11
+                else -> 12
+            }
+            else -> 15
+        }
+    }
+
+    private var currentGroupSize = arrayListOf(
+            findNumberOfPeople(0),
+            findNumberOfPeople(1),
+            findNumberOfPeople(2),
+            findNumberOfPeople(3),
+            findNumberOfPeople(4),
+            findNumberOfPeople(5))
+
+    val groupsByAge = arrayListOf(
+            arrayListOf<Group>(),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf(),
+            arrayListOf())
 
     fun addAgent(agent: Agent) {
-        if (groupsByAge[agent.age]?.size == 0) {
-            val group = Group(groupRepo.size)
-            groupsByAge[agent.age]?.add(group)
-            groupRepo.add(group)
+        val classNum = when (agent.age) {
+            18 -> 0
+            19 -> if ((0..1).random() == 0) 0 else 1
+            20 -> if ((0..1).random() == 0) 1 else 2
+            21 -> if ((0..1).random() == 0) 2 else 3
+            22 -> if ((0..1).random() == 0) 3 else 4
+            23 -> if ((0..1).random() == 0) 4 else 5
+            24 -> 5
+            else -> 99
         }
-        if (groupsByAge[agent.age]?.get(groupsByAge[agent.age]?.size!! - 1)?.agents?.size == 18) {
-//            generateBarabasiAlbertNetwork(
-//                    groupsByAge[agent.age]?.get(groupsByAge[agent.age]?.size!! - 1)!!, 2)
-            val group = Group(groupRepo.size)
-            groupsByAge[agent.age]?.add(group)
-            groupRepo.add(group)
+        if (groupsByAge[classNum].size == 0) {
+            groupsByAge[classNum].add(Group())
         }
-        agent.groupId = (groupsByAge[agent.age] ?: error(""))[groupsByAge[agent.age]?.size!! - 1].id
-        (groupsByAge[agent.age] ?: error(""))[groupsByAge[agent.age]?.size!! - 1].addAgent(agent)
+        if (groupsByAge[classNum][groupsByAge[classNum].size - 1].agents.size == currentGroupSize[classNum]) {
+            generateBarabasiAlbertNetwork(
+                    groupsByAge[classNum][groupsByAge[classNum].size - 1], m)
+            groupsByAge[classNum].add(Group())
+            currentGroupSize[classNum] = findNumberOfPeople(classNum)
+        }
+        groupsByAge[classNum][groupsByAge[classNum].size - 1].addAgent(agent)
     }
 }

@@ -1,9 +1,9 @@
 package model
 
-class Group (val id: Int) {
+class Group {
 
-    var numOfAgents = 0
-    var numOfInfected = 0
+//    var numOfAgents = 0
+//    var numOfInfected = 0
     val agents = arrayListOf<Agent>()
 
 //    fun getNumOfInfected(): Int {
@@ -28,12 +28,12 @@ class Group (val id: Int) {
 
     fun addAgent(agent: Agent) {
         agents.add(agent)
-        if (!agent.isStayingHomeWhenInfected) {
-            if (agent.healthStatus == 1) {
-                numOfInfected += 1
-            }
-            numOfAgents += 1
-        }
+//        if (!agent.isStayingHomeWhenInfected) {
+//            if (agent.healthStatus == 1) {
+//                numOfInfected += 1
+//            }
+//            numOfAgents += 1
+//        }
 //        numOfAgents += 1
     }
 }
