@@ -1,23 +1,17 @@
 package model
 
-import utility.generateBarabasiAlbertNetwork
-import kotlin.math.max
+import utility.generateBarabasiAlbertNetworkForWork
 
 class Workplace {
 
-    private val m = 7
-
-    fun getContactDuration(): Double {
-        val rand = java.util.Random()
-        return max(0.0,3.07 + rand.nextGaussian() * 2.07)
-    }
+    private val m = 8
 
     fun generateLastBarabasiAlbertNetwork() {
         if (workingGroups[workingGroups.size - 1].agents.size >= m) {
-            generateBarabasiAlbertNetwork(
+            generateBarabasiAlbertNetworkForWork(
                     workingGroups[workingGroups.size - 1], m)
         } else {
-            generateBarabasiAlbertNetwork(
+            generateBarabasiAlbertNetworkForWork(
                     workingGroups[workingGroups.size - 1], workingGroups[workingGroups.size - 1].agents.size)
         }
     }
@@ -32,7 +26,7 @@ class Workplace {
             workingGroups.add(Group())
         }
         if (workingGroups[workingGroups.size - 1].agents.size == currentGroupSize) {
-            generateBarabasiAlbertNetwork(
+            generateBarabasiAlbertNetworkForWork(
                     workingGroups[workingGroups.size - 1], m)
             workingGroups.add(Group())
             currentGroupSize = zipfDistribution.sample() + (m - 1)

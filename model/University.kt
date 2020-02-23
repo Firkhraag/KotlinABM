@@ -1,27 +1,22 @@
 package model
 
 import utility.generateBarabasiAlbertNetwork
-import kotlin.math.max
+//import utility.generateBarabasiAlbertNetworkForVacation
 
 class University {
 
-//    private val m = 6
-    private val m = 8
-
-    fun getContactDuration(): Double {
-        val rand = java.util.Random()
-        return max(0.0,2.133 + rand.nextGaussian() * 1.62)
-    }
+    private val m = 3
 
     fun generateLastBarabasiAlbertNetworks() {
         groupsByAge.forEach { groupByAge ->
             if (groupByAge.size > 0) {
-                if (groupByAge[groupByAge.size - 1].agents.size >= m) {
+                if (groupByAge[groupByAge.size - 1].agents.size < m) {
                     generateBarabasiAlbertNetwork(
-                            groupByAge[groupByAge.size - 1], m)
+                            groupByAge[groupByAge.size - 1],
+                            groupByAge[groupByAge.size - 1].agents.size)
                 } else {
                     generateBarabasiAlbertNetwork(
-                            groupByAge[groupByAge.size - 1], groupByAge[groupByAge.size - 1].agents.size)
+                            groupByAge[groupByAge.size - 1], m)
                 }
             }
         }
@@ -79,6 +74,23 @@ class University {
             arrayListOf(),
             arrayListOf())
 
+    val adultNeeded = arrayListOf(
+            false,
+            false,
+            false,
+            false,
+            false,
+            false)
+
+//    private val vacationGroupSize = 100
+//    val groupsByAgeForVacationContacts = arrayListOf(
+//            arrayListOf<Group>(),
+//            arrayListOf(),
+//            arrayListOf(),
+//            arrayListOf(),
+//            arrayListOf(),
+//            arrayListOf())
+
     fun addAgent(agent: Agent) {
         val classNum = when (agent.age) {
             18 -> 0
@@ -92,13 +104,26 @@ class University {
         }
         if (groupsByAge[classNum].size == 0) {
             groupsByAge[classNum].add(Group())
+
+//            groupsByAgeForVacationContacts[classNum].add(Group())
+            adultNeeded[classNum] = true
         }
         if (groupsByAge[classNum][groupsByAge[classNum].size - 1].agents.size == currentGroupSize[classNum]) {
             generateBarabasiAlbertNetwork(
                     groupsByAge[classNum][groupsByAge[classNum].size - 1], m)
             groupsByAge[classNum].add(Group())
             currentGroupSize[classNum] = findNumberOfPeople(classNum)
+            adultNeeded[classNum] = true
         }
+
+//        if (groupsByAgeForVacationContacts[classNum][groupsByAgeForVacationContacts[classNum].size - 1].agents.size == vacationGroupSize) {
+//            generateBarabasiAlbertNetworkForVacation(
+//                    groupsByAgeForVacationContacts[classNum][groupsByAgeForVacationContacts[classNum].size - 1], 2)
+//            groupsByAgeForVacationContacts[classNum].add(Group())
+//        }
+
         groupsByAge[classNum][groupsByAge[classNum].size - 1].addAgent(agent)
+
+//        groupsByAgeForVacationContacts[classNum][groupsByAgeForVacationContacts[classNum].size - 1].addAgent(agent)
     }
 }

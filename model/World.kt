@@ -3,9 +3,66 @@ package model
 import utility.readTableInt
 import utility.writeTableResult
 import kotlinx.coroutines.*
-import utility.writeTableResult2
+import kotlin.math.max
+//import utility.writeTableResult2
+//import kotlin.math.abs
 
 class World {
+
+    private fun getHouseholdContactDuration(): Double {
+        val rand = java.util.Random()
+        return max(0.0,12.0 + rand.nextGaussian() * 2.0)
+    }
+
+    private fun getAdditionalHouseholdContactDuration(): Double {
+        val rand = java.util.Random()
+        return max(0.0,6.0 + rand.nextGaussian() * 2.0)
+    }
+
+//    private fun getWeekendHouseholdContactDuration(): Double {
+//        val rand = java.util.Random()
+//        return max(0.0,2.5 + rand.nextGaussian() * 2.0)
+//    }
+
+    private fun getKindergartenContactDuration(): Double {
+        val rand = java.util.Random()
+        return max(0.0,5.88 + rand.nextGaussian() * 2.52)
+    }
+
+    private fun getSchoolContactDuration(): Double {
+        val rand = java.util.Random()
+        return max(0.0,4.783 + rand.nextGaussian() * 2.67)
+    }
+
+    private fun getUniversityContactDuration(): Double {
+        val rand = java.util.Random()
+        return max(0.0,2.133 + rand.nextGaussian() * 1.62)
+    }
+
+    private fun getWorkplaceContactDuration(): Double {
+        val rand = java.util.Random()
+        return max(0.0,3.07 + rand.nextGaussian() * 2.07)
+    }
+
+//    private fun getContactDurationWhenNoOtherActivitiesAvailable(): Double {
+//        val rand = java.util.Random()
+//        return max(0.0, 2.8 + rand.nextGaussian() * 1.0)
+//    }
+
+    private fun getContactDurationWhenNoOtherActivitiesAvailable(): Double {
+        val rand = java.util.Random()
+        return max(0.0, 1.0 + rand.nextGaussian() * 1.0)
+    }
+
+//    private fun getContactDurationDuringVacation(): Double {
+//        val rand = java.util.Random()
+//        return max(0.0, 2.0 + rand.nextGaussian() * 1.0)
+//    }
+//
+//    private fun getDistrictContactDuration(): Double {
+//        val rand = java.util.Random()
+//        return max(0.0,0.1 + rand.nextGaussian() * 0.2)
+//    }
 
     private val temp = mapOf(0 to -5.8, 1 to -5.9, 2 to -5.9, 3 to -5.9, 4 to -6.0, 5 to -6.0, 6 to -6.1, 7 to -6.1,
             8 to -6.2, 9 to -6.2, 10 to -6.2, 11 to -6.3, 12 to -6.3, 13 to -6.4, 14 to -6.5, 15 to -6.5, 16 to -6.6,
@@ -53,15 +110,10 @@ class World {
             358 to -5.6, 359 to -5.6, 360 to -5.7, 361 to -5.7, 362 to -5.7, 363 to -5.7, 364 to -5.8, 365 to -5.8
     )
 
-    private val maxTemp = 19.4
+//    private val maxTemp = 19.4
     private val minTemp = -7.2
 
     private val maxMinTemp = 26.6
-
-//    val infectivityMapAdult = mapOf(1 to 0.0, 2 to 0.045, 3 to 0.055, 4 to 0.045, 5 to 0.03,
-//            6 to 0.02, 7 to 0.01, 8 to 0.05)
-//    val infectivityMapChild = mapOf(1 to 0.0, 2 to 0.095, 3 to 0.095, 4 to 0.075, 5 to 0.05,
-//            6 to 0.03, 7 to 0.015, 8 to 0.01, 9 to 0.05, 10 to 0.005, 11 to 0.004, 12 to 0.003, 13 to 0.002, 14 to 0.001)
 
     private var day = 31
     private var month = 7
@@ -72,64 +124,15 @@ class World {
     private var dayOfTheWeek = 1
 
     // Susceptible, Infected, New Cases
-    private var worldStats = arrayListOf(0, 0, 0, 0)
-//    var weekCases = 0
-//
-//    var infected = 0
-//    var recovered = 0
-//    var susceptible = 0
+    private var worldStats = arrayListOf(0, 0, 0, 0, 0)
 
     private val kindergarten = Kindergarten()
     private val school = School()
-    private val college = College()
     private val university = University()
     private val workplace = Workplace()
     private val households = arrayListOf<Household>()
-
-//    private fun createKindergartens() {
-//        val kindergartenCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\kindergartens.xlsx",
-//                1763, 1, kindergartenCoordinatesMatrix)
-//        kindergartenCoordinatesMatrix.forEachIndexed{ index, element ->
-//            kindergartens.add(Kindergarten(index, Pair(element[0], element[1])))
-//        }
-//    }
-//
-//    private fun createSchools() {
-//        val schoolCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\schools.xlsx",
-//                997, 1, schoolCoordinatesMatrix)
-//        schoolCoordinatesMatrix.forEachIndexed{ index, element ->
-//            schools.add(School(index, Pair(element[0], element[1])))
-//        }
-//    }
-//
-//    private fun createColleges() {
-//        val collegeCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\colleges.xlsx",
-//                276, 1, collegeCoordinatesMatrix)
-//        collegeCoordinatesMatrix.forEach{
-//            colleges.add(College(Pair(it[0], it[1])))
-//        }
-//    }
-//
-//    private fun createUniversities() {
-//        val universityCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\universities.xlsx",
-//                41, 1, universityCoordinatesMatrix)
-//        universityCoordinatesMatrix.forEach{
-//            universities.add(University(Pair(it[0], it[1])))
-//        }
-//    }
-//
-//    private fun createHomes() {
-//        val homeCoordinatesMatrix = arrayListOf<ArrayList<Double>>()
-//        readTableFloat("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\homes.xlsx",
-//                22266, 2, homeCoordinatesMatrix)
-//        homeCoordinatesMatrix.forEach{
-//            homes.add(Home(Pair(it[0], it[1]), it[2].toInt()))
-//        }
-//    }
+//    private val district = District()
+//    private val population = Population()
 
     private fun createAgent(okatoIndex: Int,
                             biasedIndex: Int,
@@ -598,72 +601,62 @@ class World {
         return Agent(false, spouseAge)
     }
 
-//    private fun degRad(deg: Double): Double {
-//        return deg * (PI/180)
-//    }
-//
-//    private fun findDistance(point1: Pair<Double, Double>, point2: Pair<Double, Double>): Double {
-//        val dLat = degRad(point2.second - point1.second)
-//        val dLon = degRad(point2.first - point1.first)
-//        val a = sin(dLat/2) * sin(dLat/2) + cos(degRad(point1.second)) * cos(degRad(point2.second)) * sin(dLon/2) * sin(dLon/2)
-//        return 12742 * atan2(sqrt(a), sqrt(1-a))
-//    }
-//
-//    private fun findClosestKindergarten(homePos: Pair<Double, Double>): Int {
-//        var minIndex = 0
-//        var minDist = 10000.0
-//        var dist: Double
-//        kindergartens.forEach {
-//            dist = findDistance(homePos, it.pos)
-//            if (dist < minDist) {
-//                minDist = dist
-//                minIndex = it.id
-//            }
-//        }
-//        return minIndex
-//    }
-//
-//    private fun findClosestSchool(homePos: Pair<Double, Double>): Int {
-//        var minIndex: Int = 0
-//        var minDist = 10000.0
-//        var dist: Double
-//        schools.forEach {
-//            dist = findDistance(homePos, it.pos)
-//            if (dist < minDist) {
-//                minDist = dist
-//                minIndex = it.id
-//            }
-//        }
-//        return minIndex
-//    }
-
-//    @Synchronized private fun addAgentsToGroups(agent: Agent, household: Household,
-//                                 closestKindergarten: Kindergarten,
-//                                 closestSchool: School) {
-//        when (agent.activityStatus) {
-//            1 -> closestKindergarten.addAgent(agent)
-//            2 -> if (agent.age < 14) closestSchool.addAgent(agent) else schools[(0 until schools.size).random()].addAgent(agent)
-//            3 -> colleges[(0 until colleges.size).random()].addAgent(agent)
-//            4 -> universities[(0 until universities.size).random()].addAgent(agent)
-//            5 -> homes[(0 until homes.size).random()].addWorkingAgent(agent)
-//        }
-//
-//        when (agent.healthStatus) {
-//            0 -> worldStats[0] += 1
-//            1 -> worldStats[1] += 1
-//            2 -> worldStats[2] += 1
-//        }
-//        household.addAgent(agent)
-//    }
-
-    @Synchronized private fun addAgentsToGroups(agents: ArrayList<Agent>, household: Household) {
+    @Synchronized private fun addAgentsToGroups(agents: ArrayList<Agent>, household: Household, index: Int) {
         agents.forEach { agent ->
             when (agent.activityStatus) {
                 1 -> kindergarten.addAgent(agent)
                 2 -> school.addAgent(agent)
-                3 -> college.addAgent(agent)
                 4 -> university.addAgent(agent)
-                5 -> workplace.addAgent(agent)
+                5 -> {
+                    workplace.addAgent(agent)
+//                    var groupFound = false
+//                    for ((groupIndex, ageGroup) in kindergarten.groupsByAge.withIndex()) {
+//                        if (kindergarten.adultNeeded[groupIndex]) {
+//                            for (group in ageGroup) {
+//                                if (!group.hasAdult) {
+//                                    group.hasAdult = true
+//                                    group.addAgent(agent)
+//                                    groupFound = true
+//                                    kindergarten.adultNeeded[groupIndex] = false
+//                                    break
+//                                }
+//                            }
+//                        }
+//                    }
+//                    if (!groupFound) {
+//                        for ((groupIndex, ageGroup) in school.groupsByAge.withIndex()) {
+//                            if (school.adultNeeded[groupIndex]) {
+//                                for (group in ageGroup) {
+//                                    if (!group.hasAdult) {
+//                                        group.hasAdult = true
+//                                        group.addAgent(agent)
+//                                        groupFound = true
+//                                        school.adultNeeded[groupIndex] = false
+//                                        break
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        if (!groupFound) {
+//                            for ((groupIndex, ageGroup) in university.groupsByAge.withIndex()) {
+//                                if (university.adultNeeded[groupIndex]) {
+//                                    for (group in ageGroup) {
+//                                        if (!group.hasAdult) {
+//                                            group.hasAdult = true
+//                                            group.addAgent(agent)
+//                                            groupFound = true
+//                                            university.adultNeeded[groupIndex] = false
+//                                            break
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                            if (!groupFound) {
+//                                workplace.addAgent(agent)
+//                            }
+//                        }
+//                    }
+                }
             }
 
             when (agent.healthStatus) {
@@ -672,6 +665,7 @@ class World {
                 2 -> worldStats[2] += 1
             }
             household.addAgent(agent)
+//            population.addAgent(agent)
         }
         households.add(household)
     }
@@ -694,7 +688,7 @@ class World {
 
                     val agent = createAgent(index, indexFor1People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
-                    addAgentsToGroups(arrayListOf(agent), household)
+                    addAgentsToGroups(arrayListOf(agent), household, index)
                 }
                 for (i in 0..it[59]) {
                     val agents = arrayListOf<Agent>()
@@ -706,7 +700,7 @@ class World {
                     val agentFemale = addSpouse(agentMale)
                     agents.add(agentMale)
                     agents.add(agentFemale)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[60] - it[61])) {
                     val agents = arrayListOf<Agent>()
@@ -721,7 +715,7 @@ class World {
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[61]) {
                     val agents = arrayListOf<Agent>()
@@ -733,10 +727,18 @@ class World {
                     val agentFemale = addSpouse(agentMale)
                     val agent = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if (agentMale.activityStatus != 0) {
+                        agentFemale.isMother = true
+                        if ((agent.age <= 2) && (agent.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[62] - it[63] - it[64])) {
                     val agents = arrayListOf<Agent>()
@@ -754,7 +756,7 @@ class World {
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[63]) {
                     val agents = arrayListOf<Agent>()
@@ -768,11 +770,21 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     val agent2 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if ((agentMale.activityStatus != 0) &&
+                            (agent.activityStatus != 0)) {
+                        agentFemale.isMother = true
+                        if ((agent2.age <= 2) &&
+                                (agent2.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[64]) {
                     val agents = arrayListOf<Agent>()
@@ -786,11 +798,23 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
                     val agent2 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if (agentMale.activityStatus != 0) {
+                        agentFemale.isMother = true
+                        if ((agent2.age <= 2) &&
+                                (agent2.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        } else if ((agent.age <= 2) &&
+                                (agent.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[65] - it[66] - it[67] - it[68])) {
                     val agents = arrayListOf<Agent>()
@@ -811,7 +835,7 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[66]) {
                     val agents = arrayListOf<Agent>()
@@ -827,12 +851,23 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     val agent3 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if ((agentMale.activityStatus != 0) &&
+                            (agent.activityStatus != 0)) {
+                        agentFemale.isMother = true
+                        if ((agent2.activityStatus != 0) &&
+                                (agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[67]) {
                     val agents = arrayListOf<Agent>()
@@ -848,12 +883,25 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
                     val agent3 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if ((agentMale.activityStatus != 0) &&
+                            (agent.activityStatus != 0)) {
+                        agentFemale.isMother = true
+                        if ((agent2.age <= 2) &&
+                                (agent2.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        } else if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[68]) {
                     val agents = arrayListOf<Agent>()
@@ -869,12 +917,27 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
                     val agent3 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if (agentMale.activityStatus != 0){
+                        agentFemale.isMother = true
+                        if ((agent.age <= 2) &&
+                                (agent.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        } else if ((agent2.age <= 2) &&
+                                (agent2.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        } else if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[69] - it[70] - it[71] - it[72])) {
                     val agents = arrayListOf<Agent>()
@@ -898,7 +961,7 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[70]) {
                     val agents = arrayListOf<Agent>()
@@ -916,13 +979,25 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     val agent4 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if ((agentMale.activityStatus != 0) &&
+                            (agent.activityStatus != 0) &&
+                            (agent2.activityStatus != 0) &&
+                            (agent3.activityStatus != 0)) {
+                        agentFemale.isMother = true
+                        if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[71]) {
                     val agents = arrayListOf<Agent>()
@@ -940,13 +1015,27 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
                     val agent4 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if ((agentMale.activityStatus != 0) &&
+                            (agent.activityStatus != 0) &&
+                            (agent2.activityStatus != 0)) {
+                        agentFemale.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        } else if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[72]) {
                     val agents = arrayListOf<Agent>()
@@ -964,13 +1053,29 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
                     val agent4 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if ((agentMale.activityStatus != 0) &&
+                            (agent.activityStatus != 0)) {
+                        agentFemale.isMother = true
+                        if ((agent2.age <= 2) &&
+                                (agent2.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        } else if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        } else if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[73]) {
                     val agents = arrayListOf<Agent>()
@@ -988,7 +1093,7 @@ class World {
                     agents.add(agentFemale)
                     agents.add(agentMale2)
                     agents.add(agentFemale2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[74] - it[75])) {
                     val agents = arrayListOf<Agent>()
@@ -1009,7 +1114,7 @@ class World {
                     agents.add(agentMale2)
                     agents.add(agentFemale2)
                     agents.add(agent)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[75]) {
                     val agents = arrayListOf<Agent>()
@@ -1025,12 +1130,23 @@ class World {
                     val agentFemale2 = addSpouse(agentMale2)
                     val agent = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if ((agentMale.activityStatus != 0) &&
+                            (agentMale2.activityStatus != 0) &&
+                            (agentFemale2.activityStatus != 0)) {
+                        agentFemale.isMother = true
+                        if ((agent.age <= 2) &&
+                                (agent.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agentMale2)
                     agents.add(agentFemale2)
                     agents.add(agent)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[76] - it[77] - it[78])) {
                     val agents = arrayListOf<Agent>()
@@ -1048,13 +1164,14 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     val agent2 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, false)
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agentMale2)
                     agents.add(agentFemale2)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[77]) {
                     val agents = arrayListOf<Agent>()
@@ -1072,13 +1189,25 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     val agent2 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
+
+                    if ((agentMale.activityStatus != 0) &&
+                            (agentMale2.activityStatus != 0) &&
+                            (agentFemale2.activityStatus != 0) &&
+                            (agent.activityStatus != 0)) {
+                        agentFemale.isMother = true
+                        if ((agent2.age <= 2) &&
+                                (agent2.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agentMale2)
                     agents.add(agentFemale2)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[78]) {
                     val agents = arrayListOf<Agent>()
@@ -1096,13 +1225,36 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agentFemale.age)
                     val agent2 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agentFemale2.age)
+
+                    if ((agentMale.activityStatus != 0) &&
+                            (agentMale2.activityStatus != 0) &&
+                            (agentFemale2.activityStatus != 0)) {
+                        agentFemale.isMother = true
+                        if ((agent.age <= 2) &&
+                                (agent.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        } else if ((agent2.age <= 2) &&
+                                (agent2.activityStatus == 0)) {
+                            agentFemale.activityStatus = 0
+                        }
+                    }
+//                    if ((agentMale.activityStatus != 0) &&
+//                            (agentMale2.activityStatus != 0) &&
+//                            (agentFemale.activityStatus != 0)) {
+//                        agentFemale2.isMother = true
+//                        if ((agent2.age <= 2) &&
+//                                (agent2.activityStatus == 0)) {
+//                            agentFemale2.activityStatus = 0
+//                        }
+//                    }
+
                     agents.add(agentMale)
                     agents.add(agentFemale)
                     agents.add(agentMale2)
                     agents.add(agentFemale2)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[79] - it[80])) {
                     val agents = arrayListOf<Agent>()
@@ -1117,7 +1269,7 @@ class World {
                     }
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[80]) {
                     val agents = arrayListOf<Agent>()
@@ -1127,9 +1279,15 @@ class World {
                             ageDistributionInDistrictsMatrix, false, false, null, false)
                     val agent2 = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    agent.isMother = true
+                    if ((agent2.age <= 2) && (agent2.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[81] - it[82] - it[83])) {
                     val agents = arrayListOf<Agent>()
@@ -1150,7 +1308,7 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[82]) {
                     val agents = arrayListOf<Agent>()
@@ -1165,10 +1323,19 @@ class World {
                     }
                     val agent3 = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if (agent2.activityStatus != 0) {
+                        agent.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[83]) {
                     val agents = arrayListOf<Agent>()
@@ -1180,10 +1347,20 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
                     val agent3 = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    agent.isMother = true
+                    if ((agent2.age <= 2) &&
+                            (agent2.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    } else if ((agent3.age <= 2) &&
+                            (agent3.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[84] - it[85] - it[86] - it[87])) {
                     val agents = arrayListOf<Agent>()
@@ -1210,7 +1387,7 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[85]) {
                     val agents = arrayListOf<Agent>()
@@ -1230,11 +1407,21 @@ class World {
                     }
                     val agent4 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if ((agent2.activityStatus != 0) &&
+                            (agent3.activityStatus != 0)) {
+                        agent.isMother = true
+                        if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[86]) {
                     val agents = arrayListOf<Agent>()
@@ -1251,11 +1438,23 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
                     val agent4 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if (agent2.activityStatus != 0) {
+                        agent.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        } else if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[87]) {
                     val agents = arrayListOf<Agent>()
@@ -1269,11 +1468,24 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
                     val agent4 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    agent.isMother = true
+                    if ((agent2.age <= 2) &&
+                            (agent2.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    } else if ((agent3.age <= 2) &&
+                            (agent3.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    } else if ((agent4.age <= 2) &&
+                            (agent4.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[88] - it[89])) {
                     val agents = arrayListOf<Agent>()
@@ -1288,7 +1500,7 @@ class World {
                     }
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[89]) {
                     val agents = arrayListOf<Agent>()
@@ -1298,9 +1510,15 @@ class World {
                             ageDistributionInDistrictsMatrix, false, true, null, false)
                     val agent2 = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    agent.isMother = true
+                    if ((agent2.age <= 2) &&
+                            (agent2.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    }
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[90] - it[91] - it[92])) {
                     val agents = arrayListOf<Agent>()
@@ -1321,7 +1539,7 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[91]) {
                     val agents = arrayListOf<Agent>()
@@ -1336,10 +1554,19 @@ class World {
                     }
                     val agent3 = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if (agent2.activityStatus != 0) {
+                        agent.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[92]) {
                     val agents = arrayListOf<Agent>()
@@ -1351,10 +1578,20 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
                     val agent3 = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    agent.isMother = true
+                    if ((agent2.age <= 2) &&
+                            (agent2.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    } else if ((agent3.age <= 2) &&
+                            (agent3.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[93] - it[94])) {
                     val agents = arrayListOf<Agent>()
@@ -1369,7 +1606,7 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[94]) {
                     val agents = arrayListOf<Agent>()
@@ -1384,10 +1621,19 @@ class World {
                     }
                     val agent3 = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if (agent2.activityStatus != 0) {
+                        agent.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[95] - it[96] - it[97])) {
                     val agents = arrayListOf<Agent>()
@@ -1405,7 +1651,7 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[96]) {
                     val agents = arrayListOf<Agent>()
@@ -1419,11 +1665,21 @@ class World {
                             ageDistributionInDistrictsMatrix, false, null, null, true)
                     val agent4 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if ((agent2.activityStatus != 0) &&
+                            (agent3.activityStatus != 0)) {
+                        agent.isMother = true
+                        if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[97]) {
                     val agents = arrayListOf<Agent>()
@@ -1440,11 +1696,23 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
                     val agent4 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if (agent2.activityStatus != 0) {
+                        agent.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        } else if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[98] - it[99])) {
                     val agents = arrayListOf<Agent>()
@@ -1459,7 +1727,7 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[99]) {
                     val agents = arrayListOf<Agent>()
@@ -1474,10 +1742,19 @@ class World {
                     }
                     val agent3 = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if (agent2.activityStatus != 0) {
+                        agent.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[55] - it[101] - it[102])) {
                     val agents = arrayListOf<Agent>()
@@ -1495,7 +1772,7 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[101]) {
                     val agents = arrayListOf<Agent>()
@@ -1509,11 +1786,21 @@ class World {
                             ageDistributionInDistrictsMatrix, false, null, null, true)
                     val agent4 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if ((agent2.activityStatus != 0) &&
+                            (agent3.activityStatus != 0)) {
+                        agent.isMother = true
+                        if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[102]) {
                     val agents = arrayListOf<Agent>()
@@ -1530,11 +1817,23 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
                     val agent4 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if (agent2.activityStatus != 0) {
+                        agent.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        } else if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[103] - it[104] - it[105])) {
                     val agents = arrayListOf<Agent>()
@@ -1555,7 +1854,7 @@ class World {
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[104]) {
                     val agents = arrayListOf<Agent>()
@@ -1571,12 +1870,23 @@ class World {
                             ageDistributionInDistrictsMatrix, false, null, null, true)
                     val agent5 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if ((agent2.activityStatus != 0) &&
+                            (agent3.activityStatus != 0) &&
+                            (agent4.activityStatus != 0)) {
+                        agent.isMother = true
+                        if ((agent5.age <= 2) &&
+                                (agent5.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[105]) {
                     val agents = arrayListOf<Agent>()
@@ -1592,12 +1902,25 @@ class World {
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
                     val agent5 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true, null, agent.age)
+
+                    if ((agent2.activityStatus != 0) &&
+                            (agent3.activityStatus != 0)) {
+                        agent.isMother = true
+                        if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        } else if ((agent5.age <= 2) &&
+                                (agent5.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[106] - it[107])) {
                     val agents = arrayListOf<Agent>()
@@ -1609,7 +1932,7 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[107]) {
                     val agents = arrayListOf<Agent>()
@@ -1619,9 +1942,16 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     val agent2 = createAgent(index, indexFor2People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true)
+
+                    agent.isMother = true
+                    if ((agent2.age <= 2) &&
+                            (agent2.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[108] - it[109] - it[110])) {
                     val agents = arrayListOf<Agent>()
@@ -1636,7 +1966,7 @@ class World {
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[109]) {
                     val agents = arrayListOf<Agent>()
@@ -1648,10 +1978,19 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     val agent3 = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true)
+
+                    if (agent2.activityStatus != 0) {
+                        agent.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[110]) {
                     val agents = arrayListOf<Agent>()
@@ -1663,10 +2002,20 @@ class World {
                             ageDistributionInDistrictsMatrix, true)
                     val agent3 = createAgent(index, indexFor3People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true)
+
+                    agent.isMother = true
+                    if ((agent2.age <= 2) &&
+                            (agent2.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    } else if ((agent3.age <= 2) &&
+                            (agent3.activityStatus == 0)) {
+                        agent.activityStatus = 0
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[111] - it[112] - it[113])) {
                     val agents = arrayListOf<Agent>()
@@ -1684,7 +2033,7 @@ class World {
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[112]) {
                     val agents = arrayListOf<Agent>()
@@ -1698,11 +2047,21 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     val agent4 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true)
+
+                    if ((agent2.activityStatus != 0) &&
+                            (agent3.activityStatus != 0)) {
+                        agent.isMother = true
+                        if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[113]) {
                     val agents = arrayListOf<Agent>()
@@ -1716,11 +2075,23 @@ class World {
                             ageDistributionInDistrictsMatrix, true)
                     val agent4 = createAgent(index, indexFor4People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true)
+
+                    if (agent2.activityStatus != 0) {
+                        agent.isMother = true
+                        if ((agent3.age <= 2) &&
+                                (agent3.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        } else if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..(it[114] - it[115] - it[116])) {
                     val agents = arrayListOf<Agent>()
@@ -1741,7 +2112,7 @@ class World {
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[115]) {
                     val agents = arrayListOf<Agent>()
@@ -1757,12 +2128,23 @@ class World {
                             ageDistributionInDistrictsMatrix, false)
                     val agent5 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true)
+
+                    if ((agent2.activityStatus != 0) &&
+                            (agent3.activityStatus != 0) &&
+                            (agent4.activityStatus != 0)) {
+                        agent.isMother = true
+                        if ((agent5.age <= 2) &&
+                                (agent5.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
                 for (i in 0..it[116]) {
                     val agents = arrayListOf<Agent>()
@@ -1778,12 +2160,25 @@ class World {
                             ageDistributionInDistrictsMatrix, true)
                     val agent5 = createAgent(index, indexFor5People, districtsInfoMatrix,
                             ageDistributionInDistrictsMatrix, true)
+
+                    if ((agent2.activityStatus != 0) &&
+                            (agent3.activityStatus != 0)) {
+                        agent.isMother = true
+                        if ((agent4.age <= 2) &&
+                                (agent4.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        } else if ((agent5.age <= 2) &&
+                                (agent5.activityStatus == 0)) {
+                            agent.activityStatus = 0
+                        }
+                    }
+
                     agents.add(agent)
                     agents.add(agent2)
                     agents.add(agent3)
                     agents.add(agent4)
                     agents.add(agent5)
-                    addAgentsToGroups(agents, household)
+                    addAgentsToGroups(agents, household, index)
                 }
             }
         }
@@ -1794,139 +2189,301 @@ class World {
         runBlocking {
             processAll(districtsInfoMatrix, ageDistributionInDistrictsMatrix)
         }
+        println("Households created")
 
-//        households.forEach { household ->
-//            household.agents.forEach { agent ->
-//                if (agent.healthStatus == 1) {
-//                    agent.findInfectivity(0.02)
-//                    println("Age: ${agent.age}, Days Infected: ${agent.daysInfected}, Should be infected: ${agent.shouldBeInfected}, Virus load: ${agent.getViralShedding()}, Infectivity: ${agent.infectivity}")
+        workplace.generateLastBarabasiAlbertNetwork()
+        println("Workplaces created")
+        school.generateLastBarabasiAlbertNetworks()
+        println("Schools created")
+        kindergarten.generateLastBarabasiAlbertNetworks()
+        println("Kindergartens created")
+        university.generateLastBarabasiAlbertNetworks()
+        println("Universities created")
+
+        println("World creation has ended")
+//        kindergarten.groupsByAge.forEach { grba ->
+//            grba.forEach { gr ->
+//                println("Group")
+//                println(gr.hasAdult)
+//                println(gr.agents.size)
+//            }
+//        }
+    }
+
+    private fun contactsInHouseholdForAgent(household: Household, additionalContactInHoliday: Boolean,
+                                            agent: Agent, tMap: Map<String, Double>, durCoeff: Double) {
+        household.agents.forEach { agent2 ->
+            val agent2IsImmune = when (agent.infectionType) {
+                "fluA" -> agent2.fluAImmunity
+                "fluB" -> agent2.fluBImmunity
+                "RV" -> agent2.RVImmunity
+                "RSV" -> agent2.RSVImmunity
+                else -> true
+            }
+            if ((agent2.healthStatus == 0) && (!agent2IsImmune)) {
+                if ((agent.infectionType == "BoV") && (agent2.age > 4)) {
+                    return
+                }
+                val durationCoeff = if (additionalContactInHoliday) {
+                    durCoeff * getAdditionalHouseholdContactDuration() / 24.0 + (1 - durCoeff)
+                } else {
+                    durCoeff * getHouseholdContactDuration() / 24.0 + (1 - durCoeff)
+                }
+//                contactStats[0] += 1
+
+                val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+                val tCoeff = tMap[agent.infectionType] ?: 0.0
+                val externalInfluence = tCoeff * curTemp + 1.0
+
+                val randNum = (0..9999).random() * 0.0001
+                val susceptibility = when (agent.infectionType) {
+                    "fluA" -> agent.fluASusceptibility
+                    "fluB" -> agent.fluBSusceptibility
+                    "RV" -> agent.RVSusceptibility
+                    "RSV" -> agent.RSVSusceptibility
+                    else -> 0.0
+                }
+                var probab = agent.infectivity * susceptibility * externalInfluence * durationCoeff
+//                println("Age: ${agent.age}, Age2: ${agent2.age}, DurCoef: $durationCoeff, Inf: ${agent.infectivity}, Ig: ${agent.getIgLevel()} Susc: $susceptibility, curT: $curTemp, ExInfl: $externalInfluence, Prob: $probab")
+//                readLine()
+//                probabStats[0] += probab
+                if (randNum < probab) {
+                    agent2.healthStatus = 3
+                    agent2.infectionType = agent.infectionType
+                }
+            }
+        }
+    }
+
+//    private fun contactsInHouseholdForAgentInHoliday(household: Household, agent: Agent, tempCoeff: Double, tempCoeff2: Double,
+//                                                 kinderHoliday: Boolean, schoolHoliday: Boolean,
+//                                                 universityHoliday: Boolean, workingHoliday: Boolean) {
+//        household.agents.forEach { agent2 ->
+//            if (agent2.healthStatus == 0) {
+//                if ((agent2.activityStatus == 0) ||
+//                        ((agent2.activityStatus == 1) && kinderHoliday) ||
+//                        ((agent2.activityStatus == 2) && schoolHoliday) ||
+//                        ((agent2.age == 7) && workingHoliday) ||
+//                        ((agent2.activityStatus == 3) && universityHoliday) ||
+//                        ((agent2.activityStatus == 4) && universityHoliday) ||
+//                        ((agent2.activityStatus == 5) && workingHoliday)) {
+//                    if ((agent.infectionType == "BoV") && (agent2.age > 4)) {
+//                        return
+//                    }
+//                    val durationCoeff = getWeekendHouseholdContactDuration() / 24.0
+////                    contactStats[0] += 1
+//                    val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+//                    val externalInfluence = tempCoeff * curTemp + 1
+////                    val externalInfluence = exp(-tempCoeff / (1 + exp(-tempCoeff2 * (temp[tempDay] ?: 1.0))))
+//
+//                    val randNum = (0..9999).random() * 0.0001
+//                    val probab = agent.infectivity * agent2.susceptibility * externalInfluence * durationCoeff
+//                    probabStats[0] += probab
+//                    if (randNum < probab) {
+//                        agent2.healthStatus = 3
+//                    }
 //                }
 //            }
 //        }
+//    }
 
-        //println(households.size)
-        workplace.generateLastBarabasiAlbertNetwork()
-        school.generateLastBarabasiAlbertNetworks()
-        kindergarten.generateLastBarabasiAlbertNetworks()
-        college.generateLastBarabasiAlbertNetworks()
-        university.generateLastBarabasiAlbertNetworks()
-        println("World creation has ended")
-    }
-
-    private fun contactsInHouseholdForAgent(household: Household, agent: Agent, scale: Double, durationCoeff: Double, tempCoeff: Double) {
-        household.agents.forEach { agent2 ->
-            if (agent2.healthStatus == 0) {
-                contactStats[0] += 1
+//    private fun contactsInGroupForAgent(group: Group, agent: Agent, scale: Double, tMap: Double) {
+    private fun contactsInGroupForAgent(group: Group, agent: Agent, tMap: Map<String, Double>, durCoeff: Double) {
+        group.agents.forEachIndexed { index, agent2 ->
+            val agent2IsImmune = when (agent.infectionType) {
+                "fluA" -> agent2.fluAImmunity
+                "fluB" -> agent2.fluBImmunity
+                "RV" -> agent2.RVImmunity
+                "RSV" -> agent2.RSVImmunity
+                else -> true
+            }
+            if ((agent2.healthStatus == 0) &&
+                    (!agent2IsImmune) &&
+                    (!agent2.isOnMotherLeave)) {
+                if ((agent.infectionType == "BoV") && (agent2.age > 4)) {
+                    return
+                }
+                val durationCoeff = when (agent.activityStatus) {
+                    1 -> durCoeff * getKindergartenContactDuration() / 24.0 + (1 - durCoeff)
+                    2 -> durCoeff * getSchoolContactDuration() / 24.0 + (1 - durCoeff)
+                    4 -> durCoeff * getUniversityContactDuration() / 24.0 + (1 - durCoeff)
+                    5 -> durCoeff * getWorkplaceContactDuration() / 24.0 + (1 - durCoeff)
+                    else -> 1.0
+                }
                 val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
-                val externalInfluence = tempCoeff * curTemp + 1
+                val tCoeff = tMap[agent.infectionType] ?: 0.0
+                val externalInfluence = tCoeff * curTemp + 1.0
+
+//                when (agent2.activityStatus) {
+//                    1 -> contactStats[1] += 1
+//                    2 -> contactStats[2] += 1
+//                    3 -> contactStats[3] += 1
+//                    4 -> contactStats[4] += 1
+//                    5 -> contactStats[5] += 1
+//                }
 
                 val randNum = (0..9999).random() * 0.0001
-                val probab = agent.infectivity * agent2.susceptibility * scale * externalInfluence * durationCoeff
-                probabStats[0] += probab
-//                if (probab > 0.1) {
-//                println("Age: ${agent.age}, Days Infected: ${agent.daysInfected}, Should be infected: ${agent.shouldBeInfected}, Virus load: ${agent.getViralShedding()}")
-//                println("Inf: ${agent.infectivity}; Probability: $probab")
-//                    readLine()
+                val susceptibility = when (agent.infectionType) {
+                    "fluA" -> agent.fluASusceptibility
+                    "fluB" -> agent.fluBSusceptibility
+                    "RV" -> agent.RVSusceptibility
+                    "RSV" -> agent.RSVSusceptibility
+                    else -> 0.0
+                }
+                var probab = agent.infectivity * susceptibility * externalInfluence * durationCoeff
+//                if (index !in agent.connectedAgents) {
+//                    probab *= 0.75
+//                }
+//                when (agent2.activityStatus) {
+//                    1 -> probabStats[1] += probab
+//                    2 -> probabStats[2] += probab
+//                    3 -> probabStats[3] += probab
+//                    4 -> probabStats[4] += probab
+//                    5 -> probabStats[5] += probab
 //                }
                 if (randNum < probab) {
                     agent2.healthStatus = 3
+                    agent2.infectionType = agent.infectionType
                 }
             }
         }
     }
 
-//    private fun contactsInHouseholdForAgentInHoliday(household: Household, agent: Agent, scale: Double, coeffT: Double,
-//                                                     kinderHoliday: Boolean, schoolHoliday: Boolean,
-//                                                     universityHoliday: Boolean, workingHoliday: Boolean) {
-    private fun contactsInHouseholdForAgentInHoliday(household: Household, agent: Agent, scale: Double, durationCoeff: Double, tempCoeff: Double,
-                                                 kinderHoliday: Boolean, schoolHoliday: Boolean,
-                                                 universityHoliday: Boolean, workingHoliday: Boolean) {
-        household.agents.forEach { agent2 ->
-            if (agent2.healthStatus == 0) {
-                if ((agent2.activityStatus == 0) ||
-                        ((agent2.activityStatus == 1) && kinderHoliday) ||
-                        ((agent2.activityStatus == 2) && schoolHoliday) ||
-                        ((agent2.age == 7) && workingHoliday) ||
-                        ((agent2.activityStatus == 3) && universityHoliday) ||
-                        ((agent2.activityStatus == 4) && universityHoliday) ||
-                        ((agent2.activityStatus == 5) && workingHoliday)) {
-                    contactStats[0] += 1
-                    val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
-                    val externalInfluence = tempCoeff * curTemp + 1
-
-                    val randNum = (0..9999).random() * 0.0001
-                    val probab = agent.infectivity * agent2.susceptibility * scale * externalInfluence * durationCoeff
-                    probabStats[0] += probab
-                    if (randNum < probab) {
-                        agent2.healthStatus = 3
-                    }
-                }
-            }
-        }
-    }
-
-//    private fun contactsInGroupForAgent(group: Group, agent: Agent, scale: Double, coeffT: Double) {
-    private fun contactsInGroupForAgent(group: Group, agent: Agent, scale1: Double, scale2: Double, scale3: Double, scale4: Double, scale5: Double, durationCoeff: Double, tempCoeff: Double) {
-        // var s = 0
+    private fun contactsInGroupForAgentAtWork(group: Group, agent: Agent, tMap: Map<String, Double>, durCoeff: Double) {
         group.agents.forEachIndexed { index, agent2 ->
-            if ((agent2.healthStatus == 0) && (index in agent.connectedAgents)) {
-                // s += 1
+            val agent2IsImmune = when (agent.infectionType) {
+                "fluA" -> agent2.fluAImmunity
+                "fluB" -> agent2.fluBImmunity
+                "RV" -> agent2.RVImmunity
+                "RSV" -> agent2.RSVImmunity
+                else -> true
+            }
+            if ((agent2.healthStatus == 0) &&
+                    (!agent2IsImmune) &&
+                    (index in agent.connectedWorkAgents) &&
+                    (!agent2.isOnMotherLeave)) {
+                if ((agent.infectionType == "BoV") && (agent2.age > 4)) {
+                    return
+                }
+                val durationCoeff = durCoeff * getWorkplaceContactDuration() / 24.0 + (1 - durCoeff)
                 val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
-                val externalInfluence = tempCoeff * curTemp + 1
-                val scale = when(agent.activityStatus) {
-                    1 -> scale1
-                    2 -> scale2
-                    3 -> scale3
-                    4 -> scale4
-                    5 -> scale5
-                    else -> 1.0
-                }
+                val tCoeff = tMap[agent.infectionType] ?: 0.0
+                val externalInfluence = tCoeff * curTemp + 1.0
 
-                when (agent2.activityStatus) {
-                    1 -> contactStats[1] += 1
-                    2 -> contactStats[2] += 1
-                    3 -> contactStats[3] += 1
-                    4 -> contactStats[4] += 1
-                    5 -> contactStats[5] += 1
-                }
+//                contactStats[5] += 1
 
                 val randNum = (0..9999).random() * 0.0001
-                val probab = agent.infectivity * agent2.susceptibility * scale * externalInfluence * durationCoeff
-                when (agent2.activityStatus) {
-                    1 -> probabStats[1] += probab
-                    2 -> probabStats[2] += probab
-                    3 -> probabStats[3] += probab
-                    4 -> probabStats[4] += probab
-                    5 -> probabStats[5] += probab
+                val susceptibility = when (agent.infectionType) {
+                    "fluA" -> agent.fluASusceptibility
+                    "fluB" -> agent.fluBSusceptibility
+                    "RV" -> agent.RVSusceptibility
+                    "RSV" -> agent.RSVSusceptibility
+                    else -> 0.0
                 }
+                var probab = agent.infectivity * susceptibility * externalInfluence * durationCoeff
+//                probabStats[5] += probab
                 if (randNum < probab) {
                     agent2.healthStatus = 3
+                    agent2.infectionType = agent.infectionType
                 }
             }
         }
-    //println("S $s")
     }
 
-    var contactStats = arrayListOf(0, 0, 0, 0, 0, 0)
-    var probabStats = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+//    private fun contactsWhenNoOtherActivityAvailable(group: Group, agent: Agent, tempCoeff: Double) {
+//        group.agents.forEachIndexed { index, agent2 ->
+//            if ((agent2.healthStatus == 0) && (index in agent.connectedAgentsForVacation)) {
+//                val durationCoeff = getContactDurationDuringVacation() / 24.0
+//                val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+//                val externalInfluence = tempCoeff * curTemp + 1
+//
+//                val randNum = (0..9999).random() * 0.0001
+//                val probab = agent.infectivity * agent2.susceptibility * externalInfluence * durationCoeff
+//                if (randNum < probab) {
+//                    agent2.healthStatus = 3
+//                }
+//            }
+//        }
+//    }
 
-    fun runSimulation(a: Double, scale1: Double, scale2: Double, scale3: Double, scale4: Double, scale5: Double,
-                      scaleHome: Double, coeffT: Double, immDur: Int, randomFluChance: Int): ArrayList<ArrayList<Int>> {
+//    var contactStats = arrayListOf(0, 0, 0, 0, 0, 0)
+//    var probabStats = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+
+    private fun randomInfection(agent: Agent) {
+        if ((0..99).random() < 33) {
+            val isA = ((0..2).random() < 2)
+            if (isA) {
+                if (!agent.fluAImmunity) {
+                    agent.healthStatus = 3
+                    agent.infectionType = "fluA"
+                }
+            } else {
+                if (!agent.fluBImmunity) {
+                    agent.healthStatus = 3
+                    agent.infectionType = "fluB"
+                }
+            }
+        } else {
+            if ((0..99).random() < 33) {
+                if (!agent.RVImmunity) {
+                    agent.healthStatus = 3
+                    agent.infectionType = "RV"
+                }
+            } else if ((0..99).random() < 30) {
+                if (!agent.RSVImmunity) {
+                    agent.healthStatus = 3
+                    agent.infectionType = "RSV"
+                }
+            }
+        }
+    }
+
+    fun runSimulation(a: Double, bMap: Map<String, Double>, tMap: Map<String, Double>,
+                      imMap: Map<String, Int>, durCoeff: Double): ArrayList<ArrayList<Int>> {
 
         val worldStats2 = arrayListOf(0, 0, 0, 0)
         val worldStats3 = arrayListOf(arrayListOf(0, 0, 0, 0))
+        val worldStats4 = arrayListOf(0, 0, 0, 0)
+
+        households.parallelStream().forEach { household ->
+            household.agents.forEach { agent ->
+                agent.findSusceptibility(bMap)
+            }
+        }
 
         while(true) {
 
+//            if ((month == 11) && (day == 15)) {
+//                households.parallelStream().forEach { household ->
+//                    household.agents.forEach { agent ->
+//                        agent.healthStatus = when (agent.age) {
+//                            in 0..2 -> if ((0..999).random() < 12) 3 else 0
+//                            in 3..6 -> if ((0..999).random() < 6) 3 else 0
+//                            in 7..14 -> if ((0..999).random() < 3) 3 else 0
+//                            else -> if ((0..999).random() < 2) 3 else 0
+//                        }
+//                        if (agent.healthStatus == 3) {
+//                            agent.infectionType = if ((0..2).random() < 2) "fluA" else "fluB"
+//                        }
+//                    }
+//                }
+//            }
+
             worldStats[3] = 0
+            worldStats[4] = 0
 
             worldStats2[0] = 0
             worldStats2[1] = 0
             worldStats2[2] = 0
             worldStats2[3] = 0
 
-            contactStats = arrayListOf(0, 0, 0, 0, 0, 0)
-            probabStats = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+            worldStats4[0] = 0
+            worldStats4[1] = 0
+            worldStats4[2] = 0
+            worldStats4[3] = 0
+
+//            contactStats = arrayListOf(0, 0, 0, 0, 0, 0)
+//            probabStats = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
             var holiday = false
             if (dayOfTheWeek == 7) {
@@ -2006,24 +2563,18 @@ class World {
             households.parallelStream().forEach { household ->
                 household.agents.forEach { agent ->
                     if (agent.healthStatus == 1) {
-                        val durationCoeff = household.getContactDuration() / 24.0
+                        agent.isStayingHomeWhenNoOtherActivityAvailable = (0..1).random() == 0
                         agent.findInfectivity(a)
-//                        println("Age: ${agent.age}, Days Infected: ${agent.daysInfected}, Should be infected: ${agent.shouldBeInfected}, Virus load: ${agent.viralLoad}, Infectivity: ${agent.infectivity}")
-//                        println("Connected agents size: ${agent.connectedAgents.size}")
-//                        contactsInHouseholdForAgent(household, agent, scale, coeffT)
-                        contactsInHouseholdForAgent(household, agent, scaleHome, durationCoeff, coeffT)
+                        contactsInHouseholdForAgent(household, false, agent, tMap, durCoeff)
                     }
                 }
             }
-//            readLine()
 
             if ((universityHoliday) && (schoolHoliday) && (kinderHoliday) && (workingHoliday)) {
                 households.parallelStream().forEach { household ->
                     household.agents.forEach { agent ->
                         if (agent.healthStatus == 1) {
-                            val durationCoeff = household.getWeekendContactDuration() / 24.0
-//                            contactsInHouseholdForAgent(household, agent, scale, coeffT)
-                            contactsInHouseholdForAgent(household, agent, scaleHome, durationCoeff, coeffT)
+                            contactsInHouseholdForAgent(household, true, agent, tMap, durCoeff)
                         }
                     }
                 }
@@ -2031,35 +2582,29 @@ class World {
                 households.parallelStream().forEach { household ->
                     household.agents.forEach { agent ->
                         if (agent.healthStatus == 1) {
-                            val durationCoeff = household.getWeekendContactDuration() / 24.0
-//                            contactsInHouseholdForAgent(household, agent, scale, coeffT)
-                            contactsInHouseholdForAgent(household, agent, scaleHome, durationCoeff, coeffT)
+                            contactsInHouseholdForAgent(household, true, agent, tMap, durCoeff)
                         }
                     }
                 }
             } else {
                 if (!workingHoliday) {
                     if (!kinderHoliday) {
-                        kindergarten.groupsByAge.forEach { groupByAge ->
+                        kindergarten.groupsByAge.parallelStream().forEach { groupByAge ->
                             groupByAge.forEach { group ->
                                 group.agents.forEach { agent ->
                                     if ((agent.healthStatus == 1) &&
                                             (!agent.isStayingHomeWhenInfected)) {
-//                                            contactsInGroupForAgent(group, agent, scale, coeffT)
-                                        val durationCoeff = kindergarten.getContactDuration() / 24.0
-                                        contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
+                                        contactsInGroupForAgent(group, agent, tMap, durCoeff)
                                     }
                                 }
                             }
                         }
                     }
-                    workplace.workingGroups.forEach { group ->
+                    workplace.workingGroups.parallelStream().forEach { group ->
                         group.agents.forEach { agent ->
                             if ((agent.healthStatus == 1) &&
-                                    (!agent.isStayingHomeWhenInfected)) {
-//                                    contactsInGroupForAgent(group, agent, scale, coeffT)
-                                val durationCoeff = workplace.getContactDuration() / 24.0
-                                contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
+                                    (!agent.isStayingHomeWhenInfected) && (!agent.isOnMotherLeave)) {
+                                contactsInGroupForAgentAtWork(group, agent, tMap, durCoeff)
                             }
                         }
                     }
@@ -2073,9 +2618,7 @@ class World {
                                 group.agents.forEach { agent ->
                                     if ((agent.healthStatus == 1) &&
                                             (!agent.isStayingHomeWhenInfected)) {
-//                                            contactsInGroupForAgent(group, agent, scale, coeffT)
-                                        val durationCoeff = school.getContactDuration() / 24.0
-                                        contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
+                                        contactsInGroupForAgent(group, agent, tMap, durCoeff)
                                     }
                                 }
                             }
@@ -2083,105 +2626,389 @@ class World {
                     }
                 }
                 if (!universityHoliday) {
-                    university.groupsByAge.forEach { groupByAge ->
+                    university.groupsByAge.parallelStream().forEach { groupByAge ->
                         groupByAge.forEach { group ->
                             group.agents.forEach { agent ->
                                 if ((agent.healthStatus == 1) &&
-                                        (!agent.isStayingHomeWhenInfected)) {
-//                                        contactsInGroupForAgent(group, agent, scale, coeffT)
-                                    val durationCoeff = university.getContactDuration() / 24.0
-                                    contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
-                                }
-                            }
-                        }
-                    }
-                    college.groupsByAge.forEach { groupByAge ->
-                        groupByAge.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if ((agent.healthStatus == 1) &&
-                                        (!agent.isStayingHomeWhenInfected)) {
-//                                        contactsInGroupForAgent(group, agent, scale, coeffT)
-                                    val durationCoeff = college.getContactDuration() / 24.0
-                                    contactsInGroupForAgent(group, agent, scale1, scale2, scale3, scale4, scale5, durationCoeff, coeffT)
+                                        (!agent.isStayingHomeWhenInfected) && (!agent.isOnMotherLeave)) {
+                                    contactsInGroupForAgent(group, agent, tMap, durCoeff)
                                 }
                             }
                         }
                     }
                 }
-                households.parallelStream().forEach { household ->
-                    household.agents.forEach { agent ->
-                        if (agent.healthStatus == 1) {
-                            if ((agent.activityStatus == 0) ||
-                                    (agent.isStayingHomeWhenInfected) ||
-                                    ((agent.activityStatus == 1) && kinderHoliday) ||
-                                    ((agent.activityStatus == 2) && schoolHoliday) ||
-                                    ((agent.age == 7) && workingHoliday) ||
-                                    ((agent.activityStatus == 3) && universityHoliday) ||
-                                    ((agent.activityStatus == 4) && universityHoliday) ||
-                                    ((agent.activityStatus == 5) && workingHoliday)) {
-//                                contactsInHouseholdForAgentInHoliday(household, agent, scale, coeffT,
+//                households.parallelStream().forEach { household ->
+//                    household.agents.forEach { agent ->
+//                        if (agent.healthStatus == 1) {
+//                            if ((agent.activityStatus == 0) ||
+//                                    (agent.isStayingHomeWhenInfected) ||
+//                                    ((agent.activityStatus == 1) && kinderHoliday) ||
+//                                    ((agent.activityStatus == 2) && schoolHoliday) ||
+//                                    ((agent.age == 7) && workingHoliday) ||
+//                                    ((agent.activityStatus == 3) && universityHoliday) ||
+//                                    ((agent.activityStatus == 4) && universityHoliday) ||
+//                                    ((agent.activityStatus == 5) && workingHoliday)) {
+//                                contactsInHouseholdForAgentInHoliday(household, agent, tMap, tMap2,
 //                                        kinderHoliday, schoolHoliday, universityHoliday,
 //                                        workingHoliday)
-                                val durationCoeff = household.getWeekendContactDuration() / 24.0
-                                contactsInHouseholdForAgentInHoliday(household, agent, scaleHome, durationCoeff, coeffT,
-                                        kinderHoliday, schoolHoliday, universityHoliday,
-                                        workingHoliday)
+//                            }
+//                        }
+//                    }
+//                }
+
+//                if (kinderHoliday) {
+//                    kindergarten.groupsByAgeForVacationContacts.forEach { groupByAge ->
+//                        groupByAge.forEach { group ->
+//                            group.agents.forEach { agent ->
+//                                if ((agent.healthStatus == 1) &&
+//                                        (!agent.isStayingHomeWhenInfected)) {
+//                                    contactsInGroupForAgentInVacation(group, agent, tMap)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                if (schoolHoliday) {
+//                    school.groupsByAgeForVacationContacts.forEach { groupByAge ->
+//                        groupByAge.forEach { group ->
+//                            group.agents.forEach { agent ->
+//                                if ((agent.healthStatus == 1) &&
+//                                        (!agent.isStayingHomeWhenInfected)) {
+//                                    contactsInGroupForAgentInVacation(group, agent, tMap)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                if (universityHoliday) {
+//                    university.groupsByAgeForVacationContacts.forEach { groupByAge ->
+//                        groupByAge.forEach { group ->
+//                            group.agents.forEach { agent ->
+//                                if ((agent.healthStatus == 1) &&
+//                                        (!agent.isStayingHomeWhenInfected)) {
+//                                    contactsInGroupForAgentInVacation(group, agent, tMap)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                population.groupsByAge.parallelStream().forEach { groupByAge ->
+//                    groupByAge.forEach { group ->
+//                        group.agents.forEach { agent ->
+//                            if ((agent.activityStatus == 0) ||
+//                                    (agent.isStayingHomeWhenInfected) ||
+//                                    ((agent.activityStatus == 1) && kinderHoliday) ||
+//                                    ((agent.activityStatus == 2) && schoolHoliday) ||
+//                                    ((agent.age == 7) && workingHoliday) ||
+//                                    ((agent.activityStatus == 4) && universityHoliday) ||
+//                                    ((agent.activityStatus == 5) && workingHoliday)) {
+//                                agent.isStayingHomeWhenNoOtherActivityAvailable = (0..1).random() == 0
+//                                if (agent.isStayingHomeWhenInfected) {
+//                                    agent.isStayingHomeWhenNoOtherActivityAvailable = true
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                population.groupsByAge.parallelStream().forEach { groupByAge ->
+//                    groupByAge.forEach { group ->
+//                        group.agents.forEach { agent ->
+//                            if ((agent.activityStatus == 0) ||
+//                                    (agent.isStayingHomeWhenInfected) ||
+//                                    ((agent.activityStatus == 1) && kinderHoliday) ||
+//                                    ((agent.activityStatus == 2) && schoolHoliday) ||
+//                                    ((agent.age == 7) && workingHoliday) ||
+//                                    ((agent.activityStatus == 4) && universityHoliday) ||
+//                                    ((agent.activityStatus == 5) && workingHoliday)) {
+//                                if ((!agent.isStayingHomeWhenNoOtherActivityAvailable) &&
+//                                        (agent.healthStatus == 1) &&
+//                                        (!agent.isStayingHomeWhenInfected) &&
+//                                        (!agent.isOnMotherLeave)) {
+//
+//                                    group.agents.forEach { agent2 ->
+//                                        if ((agent2.activityStatus == 0) ||
+//                                                (agent2.isStayingHomeWhenInfected) ||
+//                                                ((agent2.activityStatus == 1) && kinderHoliday) ||
+//                                                ((agent2.activityStatus == 2) && schoolHoliday) ||
+//                                                ((agent2.age == 7) && workingHoliday) ||
+//                                                ((agent2.activityStatus == 4) && universityHoliday) ||
+//                                                ((agent2.activityStatus == 5) && workingHoliday)) {
+//                                            val isImmune = when (agent.infectionType) {
+//                                                "fluA" -> agent.fluAImmunity
+//                                                "fluB" -> agent.fluBImmunity
+//                                                "RV" -> agent.RVImmunity
+//                                                "RSV" -> agent.RSVImmunity
+//                                                else -> true
+//                                            }
+//                                            if ((!agent2.isStayingHomeWhenNoOtherActivityAvailable) &&
+//                                                    (agent2.healthStatus == 0) &&
+//                                                    (!isImmune) &&
+//                                                    (!agent2.isOnMotherLeave)) {
+//
+//                                                val durationCoeff = getContactDurationWhenNoOtherActivitiesAvailable() / 24.0
+//                                                val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+//                                                val tCoeff = tMap[agent.infectionType] ?: 0.0
+//                                                val externalInfluence = tCoeff * curTemp + 1
+//
+//                                                val randNum = (0..9999).random() * 0.0001
+//                                                val susceptibility = when (agent.infectionType) {
+//                                                    "fluA" -> agent.fluASusceptibility
+//                                                    "fluB" -> agent.fluBSusceptibility
+//                                                    "RV" -> agent.RVSusceptibility
+//                                                    "RSV" -> agent.RSVSusceptibility
+//                                                    else -> 0.0
+//                                                }
+//                                                val probab = agent.infectivity *
+//                                                        susceptibility *
+//                                                        externalInfluence *
+//                                                        durationCoeff
+//                                                if (randNum < probab) {
+//                                                    agent2.healthStatus = 3
+//                                                    agent2.infectionType = agent.infectionType
+//                                                }
+//
+//                                            }
+//                                        }
+//                                    }
+//
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+
+//                households.parallelStream().forEach { household ->
+//                    household.agents.forEach { agent ->
+//                        if ((agent.activityStatus == 0) ||
+//                                (agent.isStayingHomeWhenInfected) ||
+//                                ((agent.activityStatus == 1) && kinderHoliday) ||
+//                                ((agent.activityStatus == 2) && schoolHoliday) ||
+//                                ((agent.age == 7) && workingHoliday) ||
+//                                ((agent.activityStatus == 4) && universityHoliday) ||
+//                                ((agent.activityStatus == 5) && workingHoliday)) {
+//                            agent.isStayingHomeWhenNoOtherActivityAvailable = (0..1).random() == 0
+//                        }
+//                    }
+//                }
+
+                households.parallelStream().forEach { household ->
+                    household.agents.forEach { agent ->
+                        if ((agent.activityStatus == 0) ||
+                                (agent.isStayingHomeWhenInfected) ||
+                                ((agent.activityStatus == 1) && kinderHoliday) ||
+                                ((agent.activityStatus == 2) && schoolHoliday) ||
+                                ((agent.age == 7) && workingHoliday) ||
+                                ((agent.activityStatus == 4) && universityHoliday) ||
+                                ((agent.activityStatus == 5) && workingHoliday)) {
+
+                            if ((agent.isStayingHomeWhenNoOtherActivityAvailable) &&
+                                    (agent.healthStatus == 1)) {
+
+                                household.agents.forEach { agent2 ->
+                                    if ((agent2.activityStatus == 0) ||
+                                            (agent2.isStayingHomeWhenInfected) ||
+                                            ((agent2.activityStatus == 1) && kinderHoliday) ||
+                                            ((agent2.activityStatus == 2) && schoolHoliday) ||
+                                            ((agent2.age == 7) && workingHoliday) ||
+                                            ((agent2.activityStatus == 4) && universityHoliday) ||
+                                            ((agent2.activityStatus == 5) && workingHoliday)) {
+                                        val agent2IsImmune = when (agent.infectionType) {
+                                            "fluA" -> agent2.fluAImmunity
+                                            "fluB" -> agent2.fluBImmunity
+                                            "RV" -> agent2.RVImmunity
+                                            "RSV" -> agent2.RSVImmunity
+                                            else -> true
+                                        }
+                                        if ((agent2.isStayingHomeWhenNoOtherActivityAvailable) &&
+                                                (!agent2IsImmune) &&
+                                                (agent2.healthStatus == 0)) {
+
+                                            if ((agent.infectionType == "BoV") && (agent2.age > 4)) {
+
+                                            } else {
+                                                val durationCoeff = durCoeff * getAdditionalHouseholdContactDuration() / 24.0 + (1 - durCoeff)
+                                                val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+                                                val tCoeff = tMap[agent.infectionType] ?: 0.0
+                                                val externalInfluence = tCoeff * curTemp + 1.0
+
+                                                val randNum = (0..9999).random() * 0.0001
+                                                val susceptibility = when (agent.infectionType) {
+                                                    "fluA" -> agent.fluASusceptibility
+                                                    "fluB" -> agent.fluBSusceptibility
+                                                    "RV" -> agent.RVSusceptibility
+                                                    "RSV" -> agent.RSVSusceptibility
+                                                    else -> 0.0
+                                                }
+                                                val probab = agent.infectivity *
+                                                        susceptibility *
+                                                        externalInfluence *
+                                                        durationCoeff
+                                                if (randNum < probab) {
+                                                    agent2.healthStatus = 3
+                                                    agent2.infectionType = agent.infectionType
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
                             }
                         }
                     }
                 }
-                if (kinderHoliday) {
-                    kindergarten.groupsByAge.forEach { groupByAge ->
-                        groupByAge.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if (agent.healthStatus == 0) {
-                                    if ((0..999999).random() < randomFluChance) {
-                                        agent.healthStatus = 3
+
+                households.parallelStream().forEach { household ->
+                    household.agents.forEach { agent ->
+                        if ((agent.activityStatus == 0) ||
+                                (agent.isStayingHomeWhenInfected) ||
+                                ((agent.activityStatus == 1) && kinderHoliday) ||
+                                ((agent.activityStatus == 2) && schoolHoliday) ||
+                                ((agent.age == 7) && workingHoliday) ||
+                                ((agent.activityStatus == 4) && universityHoliday) ||
+                                ((agent.activityStatus == 5) && workingHoliday)) {
+                            agent.isStayingHomeWhenNoOtherActivityAvailable = (0..1).random() == 0
+
+                            if ((!agent.isStayingHomeWhenNoOtherActivityAvailable) &&
+                                    (agent.healthStatus == 1) &&
+                                    (!agent.isStayingHomeWhenInfected) &&
+                                    (!agent.isOnMotherLeave)) {
+
+
+                                val group = when (agent.age) {
+
+                                    in 0..6 -> {
+                                        val classNum = when (agent.age) {
+                                            0 -> 0
+                                            1 -> 1
+                                            2 -> if ((0..1).random() == 0) 1 else 2
+                                            3 -> if ((0..1).random() == 0) 2 else 3
+                                            4 -> if ((0..1).random() == 0) 3 else 4
+                                            5 -> if ((0..1).random() == 0) 4 else 5
+                                            6 -> 5
+                                            else -> -1
+                                        }
+                                        kindergarten.groupsByAge[classNum][(0 until kindergarten.groupsByAge[classNum].size).random()]
+                                    }
+                                    in 7..18 -> {
+                                        val classNum = when (agent.age) {
+                                            7 -> 0
+                                            8 -> if ((0..1).random() == 0) 0 else 1
+                                            9 -> if ((0..1).random() == 0) 1 else 2
+                                            10 -> if ((0..1).random() == 0) 2 else 3
+                                            11 -> if ((0..1).random() == 0) 3 else 4
+                                            12 -> if ((0..1).random() == 0) 4 else 5
+                                            13 -> if ((0..1).random() == 0) 5 else 6
+                                            14 -> if ((0..1).random() == 0) 6 else 7
+                                            15 -> if ((0..1).random() == 0) 7 else 8
+                                            16 -> if ((0..1).random() == 0) 8 else 9
+                                            17 -> if ((0..1).random() == 0) 9 else 10
+                                            18 -> 10
+                                            else -> -1
+                                        }
+                                        school.groupsByAge[classNum][(0 until school.groupsByAge[classNum].size).random()]
+                                    }
+                                    in 19..24 -> {
+                                        val classNum = when (agent.age) {
+                                            19 -> if ((0..1).random() == 0) 0 else 1
+                                            20 -> if ((0..1).random() == 0) 1 else 2
+                                            21 -> if ((0..1).random() == 0) 2 else 3
+                                            22 -> if ((0..1).random() == 0) 3 else 4
+                                            23 -> if ((0..1).random() == 0) 4 else 5
+                                            24 -> 5
+                                            else -> -1
+                                        }
+                                        university.groupsByAge[classNum][(0 until school.groupsByAge[classNum].size).random()]
+                                    }
+                                    in 25..64 -> {
+                                        workplace.workingGroups[(0 until workplace.workingGroups.size).random()]
+                                    }
+                                    else -> Group()
+                                }
+
+                                for (agent2 in group.agents) {
+                                    val randNum = (0..9999).random() * 0.0001
+                                    if (randNum < 1 / group.agents.size) {
+                                        if ((agent2.activityStatus == 0) ||
+                                                (agent2.isStayingHomeWhenInfected) ||
+                                                ((agent2.activityStatus == 1) && kinderHoliday) ||
+                                                ((agent2.activityStatus == 2) && schoolHoliday) ||
+                                                ((agent2.age == 7) && workingHoliday) ||
+                                                ((agent2.activityStatus == 4) && universityHoliday) ||
+                                                ((agent2.activityStatus == 5) && workingHoliday)) {
+
+                                            val agent2IsImmune = when (agent.infectionType) {
+                                                "fluA" -> agent2.fluAImmunity
+                                                "fluB" -> agent2.fluBImmunity
+                                                "RV" -> agent2.RVImmunity
+                                                "RSV" -> agent2.RSVImmunity
+                                                else -> true
+                                            }
+
+                                            if ((!agent2.isStayingHomeWhenNoOtherActivityAvailable) &&
+                                                    (agent2.healthStatus == 0) &&
+                                                    (!agent2IsImmune) &&
+                                                    (!agent2.isOnMotherLeave)) {
+
+                                                val durationCoeff = durCoeff * getContactDurationWhenNoOtherActivitiesAvailable() / 24.0 + (1 - durCoeff)
+                                                val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+                                                val tCoeff = tMap[agent.infectionType] ?: 0.0
+                                                val externalInfluence = tCoeff * curTemp + 1.0
+
+                                                val randNum = (0..9999).random() * 0.0001
+                                                val susceptibility = when (agent.infectionType) {
+                                                    "fluA" -> agent.fluASusceptibility
+                                                    "fluB" -> agent.fluBSusceptibility
+                                                    "RV" -> agent.RVSusceptibility
+                                                    "RSV" -> agent.RSVSusceptibility
+                                                    else -> 0.0
+                                                }
+                                                val probab = agent.infectivity *
+                                                        susceptibility *
+                                                        externalInfluence *
+                                                        durationCoeff
+                                                if (randNum < probab) {
+                                                    agent2.healthStatus = 3
+                                                    agent2.infectionType = agent.infectionType
+                                                }
+
+                                            }
+
+                                        }
                                     }
                                 }
+
                             }
                         }
                     }
                 }
-                if (schoolHoliday) {
-                    school.groupsByAge.forEach { groupByAge ->
-                        groupByAge.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if (agent.healthStatus == 0) {
-                                    if ((0..999999).random() < randomFluChance) {
-                                        agent.healthStatus = 3
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if (universityHoliday) {
-                    university.groupsByAge.forEach { groupByAge ->
-                        groupByAge.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if (agent.healthStatus == 0) {
-                                    if ((0..999999).random() < randomFluChance) {
-                                        agent.healthStatus = 3
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    college.groupsByAge.forEach { groupByAge ->
-                        groupByAge.forEach { group ->
-                            group.agents.forEach { agent ->
-                                if (agent.healthStatus == 0) {
-                                    if ((0..999999).random() < randomFluChance) {
-                                        agent.healthStatus = 3
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+
             }
 
+//            district.districts.parallelStream().forEach { d ->
+//                d.forEach { group ->
+//                    group.agents.forEach { agent ->
+//                        if ((agent.healthStatus == 1) && (!agent.isStayingHomeWhenInfected)) {
+//                            val agent2 = group.agents[(0 until group.agents.size).random()]
+//                            if (agent2.healthStatus == 0) {
+//                                if ((agent.infectionType == "BoV") && (agent2.age > 4)) {
+//
+//                                } else {
+//                                    val durationCoeff = getDistrictContactDuration() / 24.0
+//
+//                                    val curTemp = ((temp[tempDay] ?: 1.0) - minTemp) / maxMinTemp
+//                                    val externalInfluence = tMap * curTemp + 1
+//
+//                                    val randNum = (0..99999).random() * 0.00001
+//                                    val probab = agent.infectivity * agent2.susceptibility * externalInfluence * durationCoeff
+//                                    if (randNum < probab) {
+//                                        agent2.healthStatus = 3
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
 
             households.forEach { household ->
                 household.agents.forEach { agent ->
@@ -2192,52 +3019,35 @@ class World {
                             worldStats[1] += 1
                             worldStats[3] += 1
 
-                            when (agent.age) {
-                                in (0..2) -> {
-                                    worldStats3[worldStats3.size - 1][0] += 1
-                                    worldStats2[0] += 1
-                                }
-                                in (3..6) -> {
-                                    worldStats3[worldStats3.size - 1][1] += 1
-                                    worldStats2[1] += 1
-                                }
-                                in (7..14) -> {
-                                    worldStats3[worldStats3.size - 1][2] += 1
-                                    worldStats2[2] += 1
-                                }
-                                else -> {
-                                    worldStats3[worldStats3.size - 1][3] += 1
-                                    worldStats2[3] += 1
-                                }
+                            when (agent.infectionType) {
+                                "fluA" -> worldStats4[0] += 1
+                                "fluB" -> worldStats4[1] += 1
+                                "RV" -> worldStats4[2] += 1
+                                "RSV" -> worldStats4[3] += 1
                             }
 
-                            agent.daysInfected = 0
-                            agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-                            agent.shouldBeInfected = agent.willBeInfected()
-                            household.numOfInfected += 1
-                        }
-                        1 -> {
-                            if (agent.daysInfected == agent.shouldBeInfected) {
-                                agent.healthStatus = 2
-                                agent.daysImmune = 1
-                                worldStats[1] -= 1
-                                worldStats[2] += 1
-                                agent.isStayingHomeWhenInfected = false
-                                household.numOfInfected -= 1
-                            } else {
-                                agent.daysInfected += 1
-                                if (!agent.isStayingHomeWhenInfected) {
-                                    agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-                                }
-                            }
-                        }
-                        0 -> {
-                            if ((0..999999).random() < randomFluChance) {
-                                agent.healthStatus = 1
-                                worldStats[0] -= 1
-                                worldStats[1] += 1
-                                worldStats[3] += 1
+//                            when (agent.age) {
+//                                in (0..2) -> {
+//                                    worldStats3[worldStats3.size - 1][0] += 1
+//                                    worldStats2[0] += 1
+//                                }
+//                                in (3..6) -> {
+//                                    worldStats3[worldStats3.size - 1][1] += 1
+//                                    worldStats2[1] += 1
+//                                }
+//                                in (7..14) -> {
+//                                    worldStats3[worldStats3.size - 1][2] += 1
+//                                    worldStats2[2] += 1
+//                                }
+//                                else -> {
+//                                    worldStats3[worldStats3.size - 1][3] += 1
+//                                    worldStats2[3] += 1
+//                                }
+//                            }
 
+                            agent.updateHealthParameters()
+                            if (agent.isStayingHomeWhenInfected) {
+                                worldStats[4] += 1
                                 when (agent.age) {
                                     in (0..2) -> {
                                         worldStats3[worldStats3.size - 1][0] += 1
@@ -2256,15 +3066,101 @@ class World {
                                         worldStats2[3] += 1
                                     }
                                 }
-
-                                agent.daysInfected = 0
-                                agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-                                agent.shouldBeInfected = agent.willBeInfected()
-                                household.numOfInfected += 1
+                                if (agent.age < 14) {
+                                    for (otherAgent in household.agents) {
+                                        if (otherAgent.isMother) {
+                                            otherAgent.isOnMotherLeave = true
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+//                            household.numOfInfected += 1
+                        }
+                        1 -> {
+                            if (agent.daysInfected == agent.shouldBeInfected) {
+                                when (agent.infectionType) {
+                                    "fluA" -> agent.fluAImmunity = true
+                                    "fluB" -> agent.fluBImmunity = true
+                                    "RV" -> agent.RVImmunity = true
+                                    "RSV" -> agent.RSVImmunity = true
+                                }
+                                agent.healthStatus = 2
+                                agent.daysImmune = 1
+                                worldStats[1] -= 1
+                                worldStats[2] += 1
+                                if ((agent.age < 14) && (agent.isStayingHomeWhenInfected)) {
+                                    for (otherAgent in household.agents) {
+                                        if (otherAgent.isMother) {
+                                            otherAgent.isOnMotherLeave = false
+                                            break
+                                        }
+                                    }
+                                }
+//                                household.numOfInfected -= 1
+                            } else {
+                                agent.daysInfected += 1
+                                if (!agent.isStayingHomeWhenInfected) {
+                                    agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
+                                    if (agent.isStayingHomeWhenInfected) {
+                                        worldStats[4] += 1
+                                        when (agent.age) {
+                                            in (0..2) -> {
+                                                worldStats3[worldStats3.size - 1][0] += 1
+                                                worldStats2[0] += 1
+                                            }
+                                            in (3..6) -> {
+                                                worldStats3[worldStats3.size - 1][1] += 1
+                                                worldStats2[1] += 1
+                                            }
+                                            in (7..14) -> {
+                                                worldStats3[worldStats3.size - 1][2] += 1
+                                                worldStats2[2] += 1
+                                            }
+                                            else -> {
+                                                worldStats3[worldStats3.size - 1][3] += 1
+                                                worldStats2[3] += 1
+                                            }
+                                        }
+                                        if (agent.age < 14) {
+                                            for (otherAgent in household.agents) {
+                                                if (otherAgent.isMother) {
+                                                    otherAgent.isOnMotherLeave = true
+                                                    break
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                         2 -> {
-                            if (agent.daysImmune == immDur) {
+//                            val immDur = imMap[agent.infectionType] ?: 0
+
+//                            when(agent.age) {
+//                                in 0..2 -> if (agent.daysImmune == 30) {
+//                                    agent.healthStatus = 0
+//                                    worldStats[0] += 1
+//                                    worldStats[2] -= 1
+//                                } else {
+//                                    agent.daysImmune += 1
+//                                }
+//                                in 3..14 -> if (agent.daysImmune == 45) {
+//                                    agent.healthStatus = 0
+//                                    worldStats[0] += 1
+//                                    worldStats[2] -= 1
+//                                } else {
+//                                    agent.daysImmune += 1
+//                                }
+//                                else -> if (agent.daysImmune == 60) {
+//                                    agent.healthStatus = 0
+//                                    worldStats[0] += 1
+//                                    worldStats[2] -= 1
+//                                } else {
+//                                    agent.daysImmune += 1
+//                                }
+//                            }
+                            if (agent.daysImmune == 30) {
                                 agent.healthStatus = 0
                                 worldStats[0] += 1
                                 worldStats[2] -= 1
@@ -2272,41 +3168,67 @@ class World {
                                 agent.daysImmune += 1
                             }
                         }
+                        0 -> {
+                            if (agent.age < 18) {
+                                if ((0..9999).random() < 2) {
+                                    randomInfection(agent)
+                                }
+                            } else {
+                                if ((0..9999).random() == 0) {
+                                    randomInfection(agent)
+                                }
+                            }
+                        }
+                    }
+                    if (agent.RVImmunity) {
+                        if (agent.RVImmunityDays == imMap["RV"]) {
+                            agent.RVImmunityDays = 0
+                            agent.RVImmunity = false
+                        } else {
+                            agent.RVImmunityDays += 1
+                        }
+                    }
+                    if (agent.RSVImmunity) {
+                        if (agent.RSVImmunityDays == imMap["RSV"]) {
+                            agent.RSVImmunityDays = 0
+                            agent.RSVImmunity = false
+                        } else {
+                            agent.RSVImmunityDays += 1
+                        }
                     }
                 }
             }
-            //readLine()
 
-            if (contactStats[0] == 0) {
-                probabStats[0] = 0.0
-            } else {
-                probabStats[0] /= contactStats[0].toDouble()
-            }
-            if (contactStats[1] == 0) {
-                probabStats[1] = 0.0
-            } else {
-                probabStats[1] /= contactStats[1].toDouble()
-            }
-            if (contactStats[2] == 0) {
-                probabStats[2] = 0.0
-            } else {
-                probabStats[2] /= contactStats[2].toDouble()
-            }
-            if (contactStats[3] == 0) {
-                probabStats[3] = 0.0
-            } else {
-                probabStats[3] /= contactStats[3].toDouble()
-            }
-            if (contactStats[4] == 0) {
-                probabStats[4] = 0.0
-            } else {
-                probabStats[4] /= contactStats[4].toDouble()
-            }
-            if (contactStats[5] == 0) {
-                probabStats[5] = 0.0
-            } else {
-                probabStats[5] /= contactStats[5].toDouble()
-            }
+//            if (contactStats[0] == 0) {
+//                probabStats[0] = 0.0
+//            } else {
+//                probabStats[0] /= contactStats[0].toDouble()
+//            }
+//            if (contactStats[1] == 0) {
+//                probabStats[1] = 0.0
+//            } else {
+//                probabStats[1] /= contactStats[1].toDouble()
+//            }
+//            if (contactStats[2] == 0) {
+//                probabStats[2] = 0.0
+//            } else {
+//                probabStats[2] /= contactStats[2].toDouble()
+//            }
+//            if (contactStats[3] == 0) {
+//                probabStats[3] = 0.0
+//            } else {
+//                probabStats[3] /= contactStats[3].toDouble()
+//            }
+//            if (contactStats[4] == 0) {
+//                probabStats[4] = 0.0
+//            } else {
+//                probabStats[4] /= contactStats[4].toDouble()
+//            }
+//            if (contactStats[5] == 0) {
+//                probabStats[5] = 0.0
+//            } else {
+//                probabStats[5] /= contactStats[5].toDouble()
+//            }
 
             writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\results.xlsx",
                     globalDay, worldStats)
@@ -2314,19 +3236,21 @@ class World {
             writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\resultsByAge.xlsx",
                     globalDay, worldStats2)
 
+            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\resultsByEtiology.xlsx",
+                    globalDay, worldStats4)
 
-            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\contacts.xlsx",
-                    globalDay, contactStats)
 
-            writeTableResult2("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\probab.xlsx",
-                    globalDay, probabStats)
+//            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\contacts.xlsx",
+//                    globalDay, contactStats)
+//
+//            writeTableResult2("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\probab.xlsx",
+//                    globalDay, probabStats)
 
 
             dayOfTheWeek += 1
             if (dayOfTheWeek == 8) {
                 dayOfTheWeek = 1
                 worldStats3.add(arrayListOf(0, 0, 0, 0))
-//                break
             }
             day += 1
             if ((month == 7) && (day == 31)) {
@@ -2347,12 +3271,6 @@ class World {
                     (month == 2) and (day == 29)) {
                 day = 1
                 month += 1
-
-
-//                if (month == 10) break
-
-
-
                 println("Month $month")
             } else if ((month == 12) && (day == 32)) {
                 day = 1
@@ -2360,6 +3278,7 @@ class World {
                 year += 1
                 println("Month 1")
             }
+//            readLine()
         }
         return worldStats3
     }
@@ -2367,37 +3286,46 @@ class World {
     fun resetState() {
         day = 31
         month = 7
+        year = 1
 
         globalDay = 0
+        tempDay = 212
         dayOfTheWeek = 1
 
-        tempDay = 212
-
-        worldStats = arrayListOf(0, 0, 0, 0)
+        // Susceptible, Infected, New Cases
+        worldStats = arrayListOf(0, 0, 0, 0, 0)
 
         households.forEach { household ->
             household.agents.forEach { agent ->
-                agent.healthStatus = if ((0..10000).random() < 15) 1 else {
-                    if (agent.age < 18) {
-                        if ((1..100).random() < 33) 2 else 0
-                    } else 0
+                agent.healthStatus = when (agent.age) {
+                    in 0..2 -> if ((0..99).random() == 0) 1 else 0
+                    in 3..6 -> if ((0..999).random() < 5) 1 else 0
+                    in 7..14 -> if ((0..999).random() < 3) 1 else 0
+                    else -> if ((0..999).random() < 2) 1 else 0
                 }
-                agent.shouldBeInfected = agent.willBeInfected()
-                agent.daysInfected = if (agent.healthStatus == 1) {
-                    (1..agent.shouldBeInfected).random()
+                agent.infectionType = if (agent.healthStatus == 1) {
+                    if ((0..99).random() < 50) {
+                        "RV"
+                    } else {
+                        "RSV"
+                    }
                 } else {
-                    0
+                    "none"
                 }
+                agent.daysImmune = if (agent.healthStatus == 2) 1 else 0
+
+                agent.fluAImmunity = false
+                agent.fluBImmunity = false
+                agent.RVImmunity = false
+                agent.RSVImmunity = false
+
+                agent.RVImmunityDays = 0
+                agent.RSVImmunityDays = 0
+
+                agent.updateHealthParameters()
+                agent.daysInfected = if (agent.healthStatus == 1) ((1 - agent.incubationPeriod)..agent.shouldBeInfected).random() else 0
                 agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-                agent.daysImmune = 0
-
-                when (agent.healthStatus) {
-                    0 -> worldStats[0] += 1
-                    1 -> worldStats[1] += 1
-                    2 -> worldStats[2] += 1
-                }
             }
-
         }
     }
 

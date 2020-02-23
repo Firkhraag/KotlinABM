@@ -5,6 +5,7 @@ class Group {
 //    var numOfAgents = 0
 //    var numOfInfected = 0
     val agents = arrayListOf<Agent>()
+    var hasAdult = false
 
 //    fun getNumOfInfected(): Int {
 //        var numOfInfected = 0

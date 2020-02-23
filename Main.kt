@@ -4,127 +4,30 @@ import org.apache.commons.math3.distribution.GammaDistribution
 
 fun main(args: Array<String>) {
 
-//    val zipfDistribution = org.apache.commons.math3.distribution.ZipfDistribution(3000, 1.0)
-//    val work = Workplace()
-//    for (i in (0..100000)) {
-//        work.addAgent(Agent(true, 27))
-//    }
-//    work.generateLastBarabasiAlbertNetwork()
-//    work.workingGroups.forEach { gr ->
-//        var sum = 0
-//        gr.agents.forEach { ag ->
-//            sum += ag.connectedAgents.size
-//        }
-//        sum /= gr.agents.size
-//        println(sum)
-//    }
-
-//    val school = School()
-//    for (i in (0..100000)) {
-//        school.addAgent(Agent(true, 16))
-//    }
-//    school.generateLastBarabasiAlbertNetworks()
-//    school.groupsByAge.forEach { grba ->
-//        grba.forEach { gr ->
-//            var sum = 0
-//            gr.agents.forEach { ag ->
-////                println("Agent num: ${ag.connectedAgents.size}")
-//                sum += ag.connectedAgents.size
-//            }
-//            sum /= gr.agents.size
-//            println(sum)
-//        }
-//    }
-
-//    val kindergarten = Kindergarten()
-//    for (i in (0..100000)) {
-//        kindergarten.addAgent(Agent(true, 4))
-//    }
-//    kindergarten.generateLastBarabasiAlbertNetworks()
-//    kindergarten.groupsByAge.forEach { grba ->
-//        grba.forEach { gr ->
-//            var sum = 0
-//            gr.agents.forEach { ag ->
-//                //                println("Agent num: ${ag.connectedAgents.size}")
-//                sum += ag.connectedAgents.size
-//            }
-//            sum /= gr.agents.size
-//            println(sum)
-//        }
-//    }
-
     val results0 = arrayListOf(0.2599200205892993, 0.272402005514911, 0.280852355479778, 0.3317237988050256, 0.3612360133236301, 0.4452647422884397, 0.5812420165716423, 0.7387064668172568, 0.738126261274406, 0.7962544895516422, 0.8041765228431466, 0.8362817567087601, 0.8407839724084024, 0.8639821891045476, 0.7672400813214967, 0.7733132311221573, 0.8045376518968776, 0.8456918102514591, 0.8554711871796584, 0.8094962979498108, 0.8423829715996499, 0.8727286745728761, 0.6756393470200418, 0.8173416755996189, 0.7620099315870351, 0.7707672718514078, 0.7877821036480497, 0.7078217583297145, 0.682360166494158, 0.6763160128278134, 0.6745890695389893, 0.5801114174414649, 0.6702584655524646, 0.6463394974410566, 0.6996342732114021, 0.6730803968209872, 0.6788283564717529, 0.7039800879684065, 0.715215232984277, 0.49162865847608755, 0.46699761126355027, 0.5269400166881201, 0.5172777188206853, 0.5140498198901083, 0.4546083763539264, 0.36492424858925393, 0.3390036676870314, 0.3189266071382491, 0.24709940612534745, 0.23149773724113973, 0.2166161453515001, 0.23665359822676357)
     val results3 = arrayListOf(0.20053254096694018, 0.19930023666913163, 0.21734407060506358, 0.25067728627860797, 0.30018387480405767, 0.39934123970048074, 0.6236521746868556, 0.837270057575446, 0.8593343082569915, 0.9750600925617207, 1.070654732886268, 1.1247099523729711, 1.1591498449708728, 1.1769923848451342, 0.9616237351587668, 0.8989194714666332, 0.9792577650686439, 1.0287563879365005, 1.0060422470230235, 0.8624678739478279, 0.8830874753018786, 0.9266106707829381, 0.6486221820763193, 0.8464852140150422, 0.9437893111144836, 1.0169858022331295, 1.033767661739198, 0.9642313445189639, 0.9335003476779781, 0.8912523779960742, 0.8687931436163027, 0.7083566602969316, 0.7694624449677444, 0.8639374401915175, 0.8910658924917696, 0.8775707278382526, 0.898051082277691, 0.8892390370394582, 0.8780054678998308, 0.4900041589311082, 0.42862873491156606, 0.5284492975415631, 0.545477276665971, 0.5222926412884844, 0.4104229151725802, 0.2858086327560294, 0.26735442689738176, 0.24530889184682095, 0.17913815730933, 0.1655931344283034, 0.15378056071361898, 0.17463500508305152)
     val results7 = arrayListOf(0.19853688699094044, 0.209003915357049, 0.20989251375550114, 0.2613355037948711, 0.3544251278700086, 0.6265970006330742, 1.215595573572181, 1.5215536089857957, 1.4506524653853308, 1.513669744058164, 1.5642342274062153, 1.617127029726646, 1.6587082593243843, 1.5468117648800408, 0.9396504114654604, 1.0172343692487569, 1.2688178877620533, 1.541267727282903, 1.7114198252323904, 1.478353466037265, 1.6340194053136416, 1.6247708604834497, 0.645525038569238, 1.19706839529593, 1.8229022459148225, 2.1965103157113712, 2.216993999845126, 2.0448900884187715, 1.842479473501923, 1.6782011095515827, 1.5550455031994987, 1.1613477288540273, 1.4397752888785202, 1.1343445135737953, 0.891586304030537, 1.1066933436960988, 1.279237039783461, 1.3937210425363558, 1.3196978841055313, 0.6582302154136733, 0.6240842444622652, 0.8192367226869451, 0.704087963434036, 0.48265104734689485, 0.2905062806006702, 0.19616720488633044, 0.20274682704490496, 0.20083674739791943, 0.154111123331247, 0.13002110416265567, 0.14214335891891797, 0.17128746343767465)
     val results15 = arrayListOf(0.859118587187209, 0.9106161276158562, 0.9947894151994604, 1.1097436107554262, 1.2699593940813598, 1.4080752322206422, 1.945578752011805, 2.6133564118109867, 2.667192193640916, 2.624751792163124, 2.5774333841401327, 2.6047594440387223, 2.90491114552821, 2.65063178758322, 2.0416436186158955, 2.298482619386478, 2.5204060072200556, 2.7668732910729887, 2.84197891409285, 2.395235515492463, 2.8752140375914217, 3.1113009706066834, 2.1036196249241006, 3.5884491385747537, 4.1303009539008055, 4.581691529476108, 4.904866920736672, 4.398612185595407, 4.0294047947061395, 3.6806575428399992, 3.4938155784819345, 2.5474249510959033, 3.233783390625598, 2.8709712490075847, 2.870201660950182, 2.7742920958219592, 2.628890773089618, 2.5581022960701625, 2.408378183297291, 1.1739939379456446, 1.2717182407542378, 1.7832421283031696, 1.6564222695196131, 1.683828522627956, 1.4164235926235913, 1.0397971378498359, 1.2307917995386273, 1.1309491385941524, 1.0620671527363237, 0.8257743804699228, 0.8134787089771803, 0.8455147682517531)
 
+    // var a = 0.125
+//    var a = 0.07
+//    var a = 0.5
+    var a = 1.0
+    var bMap = mapOf("fluA" to 2.0, "fluB" to 2.0, "RV" to 3.5, "RSV" to 5.0)
+    var tMap = mapOf("fluA" to -1.0, "fluB" to -0.85, "RV" to -0.1, "RSV" to -0.2)
+    var imMap = mapOf("fluA" to 366, "fluB" to 366, "RV" to 30, "RSV" to 30)
+    var durationCoeff = 1.0
+
     val world = World()
 
-    while (true) {
 
-//        println("Write scale")
-//        val scale = readLine() ?: "1.0"
-
-//        println("Write scale 0-2")
-//        val scale1 = readLine() ?: "1.0"
-//
-//        println("Write scale 3-6")
-//        val scale2 = readLine() ?: "1.0"
-//
-//        println("Write scale 7-14")
-//        val scale3 = readLine() ?: "1.0"
-//
-//        println("Write scale 15-17")
-//        val scale4 = readLine() ?: "1.0"
-//
-//        println("Write scale 18+")
-//        val scale5 = readLine() ?: "1.0"
-
-//        println("Write a")
-//        val a = readLine() ?: "1.0"
-//
-//        println("Write scale1")
-//        val scale1 = readLine() ?: "1.0"
-//
-//        println("Write scale2")
-//        val scale2 = readLine() ?: "1.0"
-//
-//        println("Write scale3")
-//        val scale3 = readLine() ?: "1.0"
-//
-//        println("Write scale4")
-//        val scale4 = readLine() ?: "1.0"
-//
-//        println("Write scale5")
-//        val scale5 = readLine() ?: "1.0"
-//
-//        println("Write scale6")
-//        val scale6 = readLine() ?: "1.0"
-//
-//        println("Write tempSuscCoeff")
-//        val tempSuscCoeff = readLine() ?: "1.0"
-//
-//        println("Write immunity duration")
-//        val immDur = readLine() ?: "1"
-//
-//        println("Write random flu chance")
-//        val randomFluChance = readLine() ?: "1"
-
-//        val worldStats3 = world.runSimulation(a.toDouble(), scale1.toDouble(), scale2.toDouble(), scale3.toDouble(), scale4.toDouble(), scale5.toDouble(), scale6.toDouble(), tempSuscCoeff.toDouble(), immDur.toInt(), randomFluChance.toInt())
-        val worldStats3 = world.runSimulation(0.04, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -0.2, 60, 50)
-        var error = 0.0
-        for (i in (0..51)) {
-            error += (worldStats3[i][0] - results0[i]) * (worldStats3[i][0] - results0[i])
-            error += (worldStats3[i][1] - results3[i]) * (worldStats3[i][1] - results3[i])
-            error += (worldStats3[i][2] - results7[i]) * (worldStats3[i][2] - results7[i])
-            error += (worldStats3[i][3] - results15[i]) * (worldStats3[i][3] - results15[i])
-        }
-//        if (error < 200.0) {
-            println("Error: $error; a: $a; Scales: $scale1, $scale2, $scale3, $scale4, $scale5, $scale6; TempSuscCoeff: $tempSuscCoeff; ImmDur: $immDur; RandomFluChance: $randomFluChance")
-//        }
-
-        world.resetState()
-        break
+    val worldStats3 = world.runSimulation(a, bMap, tMap, imMap, durationCoeff)
+    var error = 0.0
+    for (i in (0..51)) {
+        error += (worldStats3[i][0] / 9863 - results0[i]) * (worldStats3[i][0] / 9863 - results0[i])
+        error += (worldStats3[i][1] / 9863 - results3[i]) * (worldStats3[i][1] / 9863 - results3[i])
+        error += (worldStats3[i][2] / 9863 - results7[i]) * (worldStats3[i][2] / 9863 - results7[i])
+        error += (worldStats3[i][3] / 9863 - results15[i]) * (worldStats3[i][3] / 9863 - results15[i])
     }
-
+    println("Error: $error")
 }
