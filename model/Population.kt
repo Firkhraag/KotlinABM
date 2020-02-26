@@ -1,6 +1,6 @@
 package model
 
-import utility.generateBarabasiAlbertNetwork
+//import utility.generateBarabasiAlbertNetwork
 //import utility.generateBarabasiAlbertNetworkForVacation
 
 class Population {

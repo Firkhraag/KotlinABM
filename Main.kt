@@ -13,14 +13,33 @@ fun main(args: Array<String>) {
 //    var a = 0.07
 //    var a = 0.5
     var a = 1.0
-    var bMap = mapOf("fluA" to 2.0, "fluB" to 2.0, "RV" to 3.5, "RSV" to 5.0)
-    var tMap = mapOf("fluA" to -1.0, "fluB" to -0.85, "RV" to -0.1, "RSV" to -0.2)
-    var imMap = mapOf("fluA" to 366, "fluB" to 366, "RV" to 30, "RSV" to 30)
+    var bMap = mapOf("fluA" to 1.85, "fluB" to 1.85, "RV" to 3.25, "RSV" to 5.25, "AdV" to 5.25, "PIV" to 4.25, "CoV" to 4.25)
+    var tMap = mapOf("fluA" to -0.9, "fluB" to -0.6, "RV" to -0.2, "RSV" to -0.6, "AdV" to -0.2, "PIV" to -0.2, "CoV" to -0.4)
+//    var imMap = mapOf("fluA" to 366, "fluB" to 366, "RV" to 45, "RSV" to 30, "AdV" to 60, "PIV" to 366)
+    var imMap = mapOf("fluA" to 366, "fluB" to 366, "RV" to 60, "RSV" to 30, "AdV" to 150, "PIV" to 366, "CoV" to 366)
     var durationCoeff = 1.0
 
+//    for (i1 in arrayListOf(1.7, 1.85, 1.9)) {
+//        for (i2 in arrayListOf(1.7, 1.85, 1.9)) {
+//            for (i3 in arrayListOf(3.1, 3.25, 3.4)) {
+//                for (i4 in arrayListOf(5.1, 5.25, 5.4)) {
+//                    for (i5 in arrayListOf(5.1, 5.25, 5.4)) {
+//                        for (i6 in arrayListOf(4.1, 4.25, 4.4)) {
+//                            for (i7 in arrayListOf(4.1, 4.25, 4.4)) {
+//                                for (j1 in arrayListOf(-0.8, -0.9, -1.0)) {
+//                                    for (j2 in arrayListOf(-0.8, -0.9, -1.0)) {
+//
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
     val world = World()
-
-
     val worldStats3 = world.runSimulation(a, bMap, tMap, imMap, durationCoeff)
     var error = 0.0
     for (i in (0..51)) {

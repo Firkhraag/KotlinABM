@@ -7,13 +7,9 @@ class Agent(val isMale: Boolean, var age: Int) {
     var isMother = false
     var isOnMotherLeave = false
 
-    var isStayingHomeWhenNoOtherActivityAvailable = false
-
     var month = (1..12).random()
 
-    var connectedAgents = arrayListOf<Int>()
     var connectedWorkAgents = arrayListOf<Int>()
-//    var friends = arrayListOf<Agent>()
 
     var healthStatus = when (age) {
         in 0..2 -> if ((0..99).random() == 0) 1 else 0
@@ -22,32 +18,25 @@ class Agent(val isMale: Boolean, var age: Int) {
         else -> if ((0..999).random() < 2) 1 else 0
     }
 
-//    var healthStatus = when (age) {
-//        in 0..2 -> if ((0..99).random() == 0) 1 else 0
-//        in 3..6 -> if ((0..999).random() < 2) 1 else 0
-//        in 7..14 -> if ((0..999).random() < 1) 1 else 0
-//        else -> if ((0..999).random() < 1) 1 else 0
-//    }
-
     var infectionType = if (healthStatus == 1) {
-        if ((0..99).random() < 50) {
-            "RV"
-//            "RSV"
+        if (age < 16) {
+            when ((0..99).random()) {
+                in 0..31 -> "RV" // 32%
+                in 32..59 -> "RSV" // 28%
+                in 60..78 -> "AdV" // 19%
+                in 79..92 -> "PIV"// 14%
+                else -> "CoV" // 7%
+            }
         } else {
-            "RSV"
+            when ((0..99).random()) {
+                in 0..28 -> "RV" // 29%
+                in 29..46 -> "RSV" // 18%
+                in 47..62 -> "AdV" // 16%
+                in 63..81 -> "PIV" // 19%
+                else -> "CoV" // 18%
+            }
         }
-    } else {
-        "none"
-    }
-
-//    var healthStatus = when (age) {
-//        in 0..2 -> if ((0..999).random() < 12) 1 else 0
-//        in 3..6 -> if ((0..999).random() < 6) 1 else 0
-//        in 7..14 -> if ((0..999).random() < 3) 1 else 0
-//        else -> if ((0..999).random() < 2) 1 else 0
-//    }
-
-//    var healthStatus = 0
+    } else "none"
 
     var daysImmune = if (healthStatus == 2) 1 else 0
 
@@ -55,93 +44,62 @@ class Agent(val isMale: Boolean, var age: Int) {
     var fluBImmunity = false
     var RVImmunity = false
     var RSVImmunity = false
+    var AdVImmunity = false
+    var PIVImmunity = false
+    var CoVImmunity = false
 
     var RVImmunityDays = 0
     var RSVImmunityDays = 0
+    var AdVImmunityDays = 0
 
-//    fun getTypeOfInfection(globalMonth: Int): String {
-//        when (age) {
-//            0 -> when ((0..99).random()) {
-//                in 0..28 -> "FluA" // 29%
-//                in 29..46 -> "FluB" // 18%
-//                in 29..46 -> "FluB" // 18%
-//                else -> "BoV" // 18%
-//            }
-//        }
-//    }
-
-//    fun getTypeOfInfection(globalMonth: Int): String {
-//        return "none"
-//    }
-
-    fun willBeInfected(): Int {
-        val rand = java.util.Random()
+    private fun willBeInfected(): Int {
         return if (healthStatus == 1) {
-            when (age) {
-                in 0..1 -> when(infectionType) {
-                    "BoV" -> (50.0 + rand.nextGaussian() * 5.0).roundToInt()
-                    "RV" -> (12.1 + rand.nextGaussian() * 1.5).roundToInt()
-                    "fluA" -> (9.5 + rand.nextGaussian() * 1.5).roundToInt()
-                    "fluB" -> (8.5 + rand.nextGaussian() * 1.0).roundToInt()
-                    "MPV" -> (11.1 + rand.nextGaussian() * 1.5).roundToInt()
-                    "RSV" -> (9.0 + rand.nextGaussian() * 1.5).roundToInt()
-                    "PIV" -> (8.2 + rand.nextGaussian() * 1.5).roundToInt()
-                    "AdV" -> (7.0 + rand.nextGaussian() * 0.5).roundToInt()
+            if (age < 16) {
+                when(infectionType) {
+                    "fluA" -> 9
+                    "fluB" -> 8
+                    "RV" -> 11
+                    "RSV" -> 9
+                    "AdV" -> 9
+                    "PIV" -> 8
+                    "CoV" -> 8
                     else -> 7
                 }
-                in 2..15 -> when(infectionType) {
-                    "BoV" -> (40.0 + rand.nextGaussian() * 5.0).roundToInt()
-                    "RV" -> (11.1 + rand.nextGaussian() * 1.5).roundToInt()
-                    "fluA" -> (8.0 + rand.nextGaussian() * 1.5).roundToInt()
-                    "fluB" -> (7.0 + rand.nextGaussian() * 1.0).roundToInt()
-                    "MPV" -> (10.5 + rand.nextGaussian() * 1.5).roundToInt()
-                    "RSV" -> (6.5 + rand.nextGaussian() * 1.5).roundToInt()
-                    "PIV" -> (7.9 + rand.nextGaussian() * 1.5).roundToInt()
-                    "AdV" -> (6.5 + rand.nextGaussian() * 0.5).roundToInt()
-                    else -> 7
-                }
-                else -> when(infectionType) {
-                    "RV" -> (10.1 + rand.nextGaussian() * 1.5).roundToInt()
-                    "fluA" -> (4.8 + rand.nextGaussian() * 0.5).roundToInt()
-                    "fluB" -> (4.0 + rand.nextGaussian() * 0.5).roundToInt()
-                    "MPV" -> (10.0 + rand.nextGaussian() * 1.5).roundToInt()
-                    "RSV" -> (8.4 + rand.nextGaussian() * 1.5).roundToInt()
-                    "PIV" -> (7.7 + rand.nextGaussian() * 1.5).roundToInt()
-                    "AdV" -> (6.0 + rand.nextGaussian() * 0.5).roundToInt()
+            } else {
+                when(infectionType) {
+                    "fluA" -> 5
+                    "fluB" -> 4
+                    "RV" -> 10
+                    "RSV" -> 7
+                    "AdV" -> 8
+                    "PIV" -> 7
+                    "CoV" -> 7
                     else -> 7
                 }
             }
         } else 0
     }
 
-    fun willHaveIncubationPeriod(): Int {
-        if (healthStatus == 0) {
-            return 0
-        }
+    private fun willHaveIncubationPeriod(): Int {
         return when (infectionType) {
-            "AdV" -> if ((0..1).random() == 0) 5 else 6
-//            "CoV" -> if ((0..1).random() == 0) 2 else 3
             "fluA" -> 1
             "fluB" -> 0
-            "PIV" -> 2
-            "RV" -> if ((0..1).random() == 0) 1 else 2
-            "RSV" -> if ((0..1).random() == 0) 4 else 3
-//            "EV" -> 5
-            "BoV" -> 4
-            "MPV" -> if ((0..1).random() == 0) 4 else 5
+            "AdV" -> 6
+            "CoV" -> 3
+            "PIV" -> 3
+            "RV" -> 2
+            "RSV" -> 4
             else -> 0
         }
     }
 
     // 25% chance of being asymptomatic
     private fun willBeAsymptomatic(): Boolean {
-        return if (healthStatus == 1) {
-            (0..99).random() >= 75
-        } else false
+        return (0..99).random() >= 75
     }
 
     fun shouldStayAtHome(): Boolean {
-        if ((isAsymptomatic) || (healthStatus == 0)) {
+        if (isAsymptomatic) {
             return false
         }
         return when (daysInfected) {
@@ -165,79 +123,54 @@ class Agent(val isMale: Boolean, var age: Int) {
     }
 
     private fun willBeMeanViralLoad(): Double {
-        val rand = java.util.Random()
-        if (healthStatus == 0) {
-            return 0.0
-        }
         return when(infectionType) {
-            "AdV" -> {
-                when(age) {
-                    in 0..2 -> 4.1 + rand.nextGaussian() * 0.5
-                    in 3..15 -> 3.075 + rand.nextGaussian() * 0.5
-                    else -> 2.05 + rand.nextGaussian() * 0.5
-                }
-            }
-//            "CoV" -> {
-//                when(age) {
-//                    in 0..2 -> 4.93 + rand.nextGaussian() * 0.5
-//                    in 3..15 -> 3.6975 + rand.nextGaussian() * 0.5
-//                    else -> 2.465 + rand.nextGaussian() * 0.5
-//                }
-//            }
-            "BoV" -> {
-                when(age) {
-                    in 0..2 -> 4.1 + rand.nextGaussian() * 0.5
-                    in 3..15 -> 3.075 + rand.nextGaussian() * 0.5
-                    else -> 2.05 + rand.nextGaussian() * 0.5
-                }
-            }
-            "MPV" -> {
-                when(age) {
-                    in 0..2 -> 5.0 + rand.nextGaussian() * 0.5
-                    in 3..15 -> 3.6975 + rand.nextGaussian() * 0.5
-                    else -> 2.465 + rand.nextGaussian() * 0.5
-                }
-            }
             "fluA" -> {
                 when(age) {
-                    in 0..2 -> 4.6 + rand.nextGaussian() * 0.5
-                    in 3..15 -> 3.45 + rand.nextGaussian() * 0.5
-                    else -> 2.3 + rand.nextGaussian() * 0.5
+                    in 0..2 -> 4.6
+                    in 3..15 -> 3.45
+                    else -> 2.3
                 }
             }
             "fluB" -> {
                 when(age) {
-                    in 0..2 -> 4.7 + rand.nextGaussian() * 0.5
-                    in 3..15 -> 3.525 + rand.nextGaussian() * 0.5
-                    else -> 2.35 + rand.nextGaussian() * 0.5
+                    in 0..2 -> 4.7
+                    in 3..15 -> 3.53
+                    else -> 2.35
                 }
             }
-            "PIV" -> {
-                when(age) {
-                    in 0..2 -> 4.7 + rand.nextGaussian() * 0.5
-                    in 3..15 -> 3.525 + rand.nextGaussian() * 0.5
-                    else -> 2.35 + rand.nextGaussian() * 0.5
-                }
-            }
-//            "EV" -> {
-//                when(age) {
-//                    in 0..2 -> 3.9 + rand.nextGaussian() * 0.5
-//                    in 3..15 -> 2.925 + rand.nextGaussian() * 0.5
-//                    else -> 1.95 + rand.nextGaussian() * 0.5
-//                }
-//            }
             "RV" -> {
                 when(age) {
-                    in 0..2 -> 3.5 + rand.nextGaussian() * 0.5
-                    in 3..15 -> 2.625 + rand.nextGaussian() * 0.5
-                    else -> 1.75 + rand.nextGaussian() * 0.5
+                    in 0..2 -> 3.5
+                    in 3..15 -> 2.63
+                    else -> 1.75
                 }
             }
             "RSV" -> {
                 when(age) {
-                    in 0..2 -> 6.0 + rand.nextGaussian() * 0.5
-                    in 3..15 -> 4.5 + rand.nextGaussian() * 0.5
-                    else -> 2.25 + rand.nextGaussian() * 0.5
+                    in 0..2 -> 6.0
+                    in 3..15 -> 4.5
+                    else -> 2.25
+                }
+            }
+            "AdV" -> {
+                when(age) {
+                    in 0..2 -> 4.1
+                    in 3..15 -> 3.08
+                    else -> 2.05
+                }
+            }
+            "PIV" -> {
+                when(age) {
+                    in 0..2 -> 4.7
+                    in 3..15 -> 3.53
+                    else -> 2.35
+                }
+            }
+            "CoV" -> {
+                when(age) {
+                    in 0..2 -> 4.93
+                    in 3..15 -> 3.7
+                    else -> 2.47
                 }
             }
             else -> 0.0
@@ -249,13 +182,13 @@ class Agent(val isMale: Boolean, var age: Int) {
             if (incubationPeriod == 1) {
                 meanViralLoad / 2
             } else {
-                val k = -(meanViralLoad / 2) / ((1 - incubationPeriod) - (1 - incubationPeriod) / 2)
-                val b = (meanViralLoad / 2) * (1 - incubationPeriod) / ((1 - incubationPeriod) - (1 - incubationPeriod) / 2)
+                val k = meanViralLoad / (incubationPeriod - 1)
+                val b = k * (incubationPeriod - 1)
                 k * daysInfected + b
             }
         } else {
-            val k = -(meanViralLoad) / (shouldBeInfected - (1 + shouldBeInfected) / 2)
-            val b = (meanViralLoad) * shouldBeInfected / (shouldBeInfected - (1 + shouldBeInfected) / 2)
+            val k = 2 * meanViralLoad / (1 - shouldBeInfected)
+            val b = -k * shouldBeInfected
             if (isAsymptomatic) {
                 1/2 * (k * daysInfected + b)
             } else {
@@ -295,39 +228,9 @@ class Agent(val isMale: Boolean, var age: Int) {
         meanViralLoad = willBeMeanViralLoad()
     }
 
-//    var infectionType = "none"
-//    private var isAsymptomatic = false
-//    var meanViralLoad = 0.0
-//    var incubationPeriod = 0
-//    var daysInfected = 0
-//    var isStayingHomeWhenInfected = false
-//    var shouldBeInfected = 0
-//
-//    fun initializeHealthParameters(globalMonth: Int) {
-//        infectionType = getTypeOfInfection(globalMonth)
-//        isAsymptomatic = willBeAsymptomatic()
-//        isStayingHomeWhenInfected = shouldStayAtHome()
-//        incubationPeriod = willHaveIncubationPeriod()
-//        shouldBeInfected = willBeInfected()
-//        daysInfected = if (healthStatus == 1) ((1 - incubationPeriod)..shouldBeInfected).random() else 0
-//        meanViralLoad = willBeMeanViralLoad()
-//    }
-
-//    fun updateHealthParameters(globalMonth: Int) {
-//        infectionType = getTypeOfInfection(globalMonth)
-//        isAsymptomatic = willBeAsymptomatic()
-//        isStayingHomeWhenInfected = shouldStayAtHome()
-//        incubationPeriod = willHaveIncubationPeriod()
-//        shouldBeInfected = willBeInfected()
-//        daysInfected = 1 - incubationPeriod
-//        meanViralLoad = willBeMeanViralLoad()
-//    }
-
     //1.1347
     //1.09
     //0.9
-
-
     private fun getIgGLevel(): Double {
         val rand = java.util.Random()
         return when (age) {
@@ -372,42 +275,42 @@ class Agent(val isMale: Boolean, var age: Int) {
             in 17..18 -> min(385.0, max(46.3,179.21 + rand.nextGaussian() * 89.92))
             in 19..29 -> min(436.86, max(52.54,203.35 + rand.nextGaussian() * 102.0))
             in 30..59 -> min(476.18, max(57.26,221.65 + rand.nextGaussian() * 111.18))
-            else -> min(428.56, max(51.5,199.485 + rand.nextGaussian() * 100.01))
+            else -> min(428.56, max(51.5,199.49 + rand.nextGaussian() * 100.01))
         }
     }
 
-//    private fun getIgMLevel(): Double {
-//        val rand = java.util.Random()
-//        return when (age) {
-//            0 -> {
-//                when (month) {
-//                    1 -> min(29.6, max(17.3,18.5 + rand.nextGaussian() * 3.5))
-//                    in 2..6 -> min(145.0, max(18.4,57.3 + rand.nextGaussian() * 37.4))
-//                    in 7..9 -> min(146.0, max(26.4,68.7 + rand.nextGaussian() * 38.9))
-//                    else -> min(180.0, max(23.5,86.1 + rand.nextGaussian() * 40.3))
-//                }
-//            }
-//            1 -> min(201.0, max(25.6,98.3 + rand.nextGaussian() * 40.3))
-//            2 -> min(199.0, max(36.0,92.5 + rand.nextGaussian() * 33.9))
-//            3 -> min(188.0, max(26.1,86.1 + rand.nextGaussian() * 35.3))
-//            in 4..5 -> min(207.0, max(33.3,105.8 + rand.nextGaussian() * 40.8))
-//            in 6..7 -> min(220.0, max(30.5,97.6 + rand.nextGaussian() * 42.9))
-//            in 8..9 -> min(257.0, max(33.7,93.9 + rand.nextGaussian() * 49.3))
-//            in 10..11 -> min(187.0, max(30.0,102.4 + rand.nextGaussian() * 38.8))
-//            in 12..13 -> min(206.0, max(44.0,120.9 + rand.nextGaussian() * 43.8))
-//            in 14..15 -> min(205.0, max(33.0,99.7 + rand.nextGaussian() * 49.7))
-//            else -> min(198.5, max(75.0,130.9 + rand.nextGaussian() * 44.5))
-//        }
-//    }
+    private fun getIgMLevel(): Double {
+        val rand = java.util.Random()
+        return when (age) {
+            0 -> {
+                when (month) {
+                    1 -> min(50.9, max(5.1,16.89 + rand.nextGaussian() * 8.87))
+                    in 2..4 -> min(68.5, max(15.2,34.21 + rand.nextGaussian() * 13.55))
+                    in 5..7 -> min(130.0, max(26.9,69.05 + rand.nextGaussian() * 29.73))
+                    else -> min(162.0, max(24.2,73.42 + rand.nextGaussian() * 35.76))
+                }
+            }
+            1 -> min(195.0, max(38.6,115.25 + rand.nextGaussian() * 41.63))
+            2 -> min(236.0, max(42.7,104.66 + rand.nextGaussian() * 40.55))
+            in 3..5 -> min(198.0, max(58.7,115.60 + rand.nextGaussian() * 39.24))
+            in 6..8 -> min(242.0, max(50.3,108.05 + rand.nextGaussian() * 41.27))
+            in 9..11 -> min(213.0, max(37.4,104.95 + rand.nextGaussian() * 43.68))
+            in 12..16 -> min(197.0, max(42.4,119.16 + rand.nextGaussian() * 39.31))
+            in 17..18 -> min(323.0, max(60.7,130.60 + rand.nextGaussian() * 64.32))
+            in 19..29 -> min(366.51, max(68.88,148.19 + rand.nextGaussian() * 72.98))
+            in 30..59 -> min(399.5, max(75.08,161.53 + rand.nextGaussian() * 79.55))
+            else -> min(359.55, max(67.57,145.38 + rand.nextGaussian() * 71.6))
+        }
+    }
 
-    fun getIgLevel(): Double {
-//        val igGMax = 1820.0
+    private fun getIgLevel(): Double {
         val igGMax = 3005.46
         val igGMin = 217.0
         val igAMax = 476.18
         val igAMin = 6.67
-//        val igMMax = 257.0
-        return (getIgGLevel() + getIgALevel() - igGMin - igAMin) / (igGMax + igAMax - igGMin - igAMin)
+        val igMMax = 399.5
+        val igMMin = 5.1
+        return (getIgGLevel() + getIgALevel() + getIgMLevel() - igGMin - igAMin - igMMin) / (igGMax + igAMax + igMMax - igGMin - igAMin - igMMin)
     }
 
     var infectivity = 0.0
@@ -419,15 +322,18 @@ class Agent(val isMale: Boolean, var age: Int) {
     var fluBSusceptibility = 0.0
     var RVSusceptibility = 0.0
     var RSVSusceptibility = 0.0
+    var AdVSusceptibility = 0.0
+    var PIVSusceptibility = 0.0
+    var CoVSusceptibility = 0.0
     fun findSusceptibility(bMap: Map<String, Double>) {
 //        fluASusceptibility = (bMap["fluA"] ?: 0.0) * getIgLevel() + 1.0
-//        fluBSusceptibility = (bMap["fluB"] ?: 0.0) * getIgLevel() + 1.0
-//        RVSusceptibility = (bMap["RV"] ?: 0.0) * getIgLevel() + 1.0
-//        RSVSusceptibility = (bMap["RSV"] ?: 0.0) * getIgLevel() + 1.0
         fluASusceptibility = 2 / (1 + exp((bMap["fluA"] ?: 0.0) * getIgLevel()))
         fluBSusceptibility = 2 / (1 + exp((bMap["fluB"] ?: 0.0) * getIgLevel()))
         RVSusceptibility = 2 / (1 + exp((bMap["RV"] ?: 0.0) * getIgLevel()))
         RSVSusceptibility = 2 / (1 + exp((bMap["RSV"] ?: 0.0) * getIgLevel()))
+        AdVSusceptibility = 2 / (1 + exp((bMap["AdV"] ?: 0.0) * getIgLevel()))
+        PIVSusceptibility = 2 / (1 + exp((bMap["PIV"] ?: 0.0) * getIgLevel()))
+        CoVSusceptibility = 2 / (1 + exp((bMap["CoV"] ?: 0.0) * getIgLevel()))
     }
 
     // Data from census

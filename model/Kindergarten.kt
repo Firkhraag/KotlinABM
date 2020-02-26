@@ -1,26 +1,8 @@
 package model
 
-import utility.generateBarabasiAlbertNetwork
-//import utility.generateBarabasiAlbertNetworkForVacation
+//import utility.generateBarabasiAlbertNetwork
 
 class Kindergarten {
-
-    private val m = 3
-
-    fun generateLastBarabasiAlbertNetworks() {
-        groupsByAge.forEach { groupByAge ->
-            if (groupByAge.size > 0) {
-                if (groupByAge[groupByAge.size - 1].agents.size < m) {
-                    generateBarabasiAlbertNetwork(
-                            groupByAge[groupByAge.size - 1],
-                            groupByAge[groupByAge.size - 1].agents.size)
-                } else {
-                    generateBarabasiAlbertNetwork(
-                            groupByAge[groupByAge.size - 1], m)
-                }
-            }
-        }
-    }
 
     private fun findNumberOfPeople(classNum: Int): Int {
         return when (classNum) {
@@ -82,39 +64,7 @@ class Kindergarten {
             false,
             false)
 
-//    private val vacationGroupSize = 100
-//    val groupsByAgeForVacationContacts = arrayListOf(
-//            arrayListOf<Group>(),
-//            arrayListOf(),
-//            arrayListOf(),
-//            arrayListOf(),
-//            arrayListOf(),
-//            arrayListOf())
-
-
-//    fun addAdult(agent: Agent) {
-//        for (group in ageGroup) {
-//            if (!group.hasAdult) {
-//                group.hasAdult = true
-//                group.addAgent(agent)
-//                groupFound = true
-//                kindergarten.adultNeeded[groupIndex] = false
-//                break
-//            }
-//        }
-//    }
-
     fun addAgent(agent: Agent) {
-//        val classNum = when (agent.age) {
-//            1 -> 0
-//            2 -> if ((0..1).random() == 0) 0 else 1
-//            3 -> if ((0..1).random() == 0) 1 else 2
-//            4 -> if ((0..1).random() == 0) 2 else 3
-//            5 -> if ((0..1).random() == 0) 3 else 4
-//            6 -> if ((0..1).random() == 0) 4 else 5
-//            7 -> 5
-//            else -> 99
-//        }
         val classNum = when (agent.age) {
             0 -> 0
             1 -> 1
@@ -128,25 +78,14 @@ class Kindergarten {
         if (groupsByAge[classNum].size == 0) {
             groupsByAge[classNum].add(Group())
 
-//            groupsByAgeForVacationContacts[classNum].add(Group())
             adultNeeded[classNum] = true
         }
         if (groupsByAge[classNum][groupsByAge[classNum].size - 1].agents.size == currentGroupSize[classNum]) {
-            generateBarabasiAlbertNetwork(
-                    groupsByAge[classNum][groupsByAge[classNum].size - 1], m)
             groupsByAge[classNum].add(Group())
             currentGroupSize[classNum] = findNumberOfPeople(classNum)
             adultNeeded[classNum] = true
         }
 
-//        if (groupsByAgeForVacationContacts[classNum][groupsByAgeForVacationContacts[classNum].size - 1].agents.size == vacationGroupSize) {
-//            generateBarabasiAlbertNetworkForVacation(
-//                    groupsByAgeForVacationContacts[classNum][groupsByAgeForVacationContacts[classNum].size - 1], 2)
-//            groupsByAgeForVacationContacts[classNum].add(Group())
-//        }
-
         groupsByAge[classNum][groupsByAge[classNum].size - 1].addAgent(agent)
-
-//        groupsByAgeForVacationContacts[classNum][groupsByAgeForVacationContacts[classNum].size - 1].addAgent(agent)
     }
 }
