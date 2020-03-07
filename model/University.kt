@@ -2,8 +2,9 @@ package model
 
 class University {
 
-    private fun findNumberOfPeople(classNum: Int): Int {
-        return when (classNum) {
+    // Number of people in a group
+    private fun findNumberOfPeople(groupNum: Int): Int {
+        return when (groupNum) {
             0 -> when ((0..99).random()) {
                 in (0..19) -> 14
                 in (20..79) -> 15
@@ -63,7 +64,8 @@ class University {
             false)
 
     fun addAgent(agent: Agent) {
-        val classNum = when (agent.age) {
+        // Group number by age
+        val groupNum = when (agent.age) {
             18 -> 0
             19 -> if ((0..1).random() == 0) 0 else 1
             20 -> if ((0..1).random() == 0) 1 else 2
@@ -73,17 +75,17 @@ class University {
             24 -> 5
             else -> 99
         }
-        if (groupsByAge[classNum].size == 0) {
-            groupsByAge[classNum].add(Group())
+        if (groupsByAge[groupNum].size == 0) {
+            groupsByAge[groupNum].add(Group())
 
-            adultNeeded[classNum] = true
+            adultNeeded[groupNum] = true
         }
-        if (groupsByAge[classNum][groupsByAge[classNum].size - 1].agents.size == currentGroupSize[classNum]) {
-            groupsByAge[classNum].add(Group())
-            currentGroupSize[classNum] = findNumberOfPeople(classNum)
-            adultNeeded[classNum] = true
+        if (groupsByAge[groupNum][groupsByAge[groupNum].size - 1].agents.size == currentGroupSize[groupNum]) {
+            groupsByAge[groupNum].add(Group())
+            currentGroupSize[groupNum] = findNumberOfPeople(groupNum)
+            adultNeeded[groupNum] = true
         }
 
-        groupsByAge[classNum][groupsByAge[classNum].size - 1].addAgent(agent)
+        groupsByAge[groupNum][groupsByAge[groupNum].size - 1].addAgent(agent)
     }
 }

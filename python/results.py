@@ -13,14 +13,13 @@ def find_num_of_people_each_year(x):
     return interpolate.splev(x, tck)
 
 
-df = pd.read_csv(r'D:\Dev\Projects\KotlinProjects\MasterThesis\src\output\results.csv', header=None)
-dfAge = pd.read_csv(r'D:\Dev\Projects\KotlinProjects\MasterThesis\src\output\resultsByAge.csv', header=None)
-dfEti = pd.read_csv(r'D:\Dev\Projects\KotlinProjects\MasterThesis\src\output\resultsByEtiology.csv', header=None)
+df = pd.read_csv(r'..\output\results.csv', header=None)
+dfAge = pd.read_csv(r'..\output\resultsByAge.csv', header=None)
+dfEti = pd.read_csv(r'..\output\resultsByEtiology.csv', header=None)
 
-# df_cont = pd.read_csv(r'D:\Dev\Projects\KotlinProjects\MasterThesis\src\output\contacts.csv', header=None)
-# df_prob = pd.read_csv(r'D:\Dev\Projects\KotlinProjects\MasterThesis\src\output\probab.csv', header=None)
-# df_prob = df_prob.fillna(0)
-
+# Starting from 31th week: after 98 12
+rsvData = [5, 6, 3, 5, 4, 3, 5, 6, 6, 4, 6, 5, 6, 7, 5, 8, 12, 17, 12, 17, 20, 12, 6, 9, 22, 18, 32, 80, 62, 50, 64,
+           98, 130, 150, 110, 108, 88, 70, 55, 58, 56, 42, 33, 37, 33, 28, 21, 9, 7, 6, 5, 4]
 
 temp = {213: 19.1,
         214: 19.0, 215: 18.9, 216: 18.8, 217: 18.7, 218: 18.6, 219: 18.5, 220: 18.4, 221: 18.3,
@@ -78,37 +77,15 @@ for year in range(1998, 2003):
 
 mean_flu = flu.mean(axis=0)
 
-# plt.figure()
-# plt.plot(np.linspace(1, 365, 365), df.iloc[:365, 0] / 9864000)
-# # plt.title("Susceptible")
-# # plt.xlabel("День")
-# # plt.ylabel("Количество человек")
-# # plt.figure()
-# plt.plot(np.linspace(1, 365, 365), df.iloc[:365, 1] / 9864000, c="r")
-# # plt.title("Infected")
-# # plt.xlabel("День")
-# # plt.ylabel("Количество человек")
-# # plt.figure()
-# plt.plot(np.linspace(1, 365, 365), df.iloc[:365, 2] / 9864000, c="y")
-# # plt.title("Recovered")
-# plt.title("Результаты")
-# plt.xlabel("День")
-# plt.ylabel("Доля людей")
-
-# plt.figure()
-# plt.plot(np.linspace(1, 365, 365), df.iloc[:365, 3] / 9863, c="g")
-# plt.title("Новые случаи")
-# plt.xlabel("День")
-# plt.ylabel("Ежедневная заболеваемость")
-
-corr, pval = pearsonr(list(temp_arr), list(df.iloc[:, 3]))
-print('Pearsons correlation: %.3f' % corr)
+corr, pval = pearsonr(list(temp_arr), list(df.iloc[:, 1]))
+print('Pearson correlation for model: %.3f' % corr)
 print('P-value: %.5f' % pval)
 
+# Find mean values for each week in different groups
 res = np.zeros(53)
 j = 0
 for i in range(0, 365):
-    res[j] += df.iloc[i, 3]
+    res[j] += df.iloc[i, 0]
     if (i + 1) % 7 == 0:
         res[j] = res[j] / 9863
         j += 1
@@ -116,7 +93,7 @@ for i in range(0, 365):
 res_recorded = np.zeros(53)
 j = 0
 for i in range(0, 365):
-    res_recorded[j] += df.iloc[i, 4]
+    res_recorded[j] += df.iloc[i, 1]
     if (i + 1) % 7 == 0:
         res_recorded[j] = res_recorded[j] / 9863
         j += 1
@@ -151,6 +128,7 @@ for i in range(0, 365):
         j += 1
 
 
+# Find mean values for each week in different etiologies
 resA = np.zeros(53)
 j = 0
 for i in range(0, 365):
@@ -204,160 +182,19 @@ for i in range(0, 365):
         j += 1
 
 
-# plt.figure()
-# plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
-# plt.plot(np.linspace(1, 52, 52), res[:52], c='b', label="модель")
-# plt.title("Общая заболеваемость")
-# plt.xlabel("Неделя")
-# plt.ylabel("Количество случаев на 1000 чел.")
-# plt.legend()
-# plt.show()
-#
 plt.figure()
 plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
 plt.plot(np.linspace(1, 52, 52), res_recorded[:52], c='b', label="модель")
 plt.title("Регистрируемая общая заболеваемость")
-plt.xlabel("Неделя")
+plt.xlabel("Месяц")
 plt.ylabel("Количество случаев на 1000 чел.")
+plt.xticks(np.linspace(1, 52, 12), ('Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'))
 plt.legend()
 plt.show()
 
-# resCont0 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resCont0[j] += df_cont.iloc[i, 0]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-#
-# resCont1 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resCont1[j] += df_cont.iloc[i, 1]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-#
-# resCont2 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resCont2[j] += df_cont.iloc[i, 2]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-
-# resCont4 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resCont4[j] += df_cont.iloc[i, 4]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-#
-# resCont5 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resCont5[j] += df_cont.iloc[i, 5]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-
-# plt.figure()
-# # plt.plot(np.linspace(1, 365, 365), df_cont.iloc[:, 0], c='r', label="дом")
-# # plt.plot(np.linspace(1, 365, 365), df_cont.iloc[:, 1], c='g', label="детсад")
-# # plt.plot(np.linspace(1, 365, 365), df_cont.iloc[:, 2], c='b', label="школа")
-# # plt.plot(np.linspace(1, 365, 365), df_cont.iloc[:, 3], c='y', label="институт")
-# # plt.plot(np.linspace(1, 365, 365), df_cont.iloc[:, 4], c='m', label="универ")
-# # plt.plot(np.linspace(1, 365, 365), df_cont.iloc[:, 5], c='k', label="работа")
-# plt.plot(np.linspace(1, 52, 52), resCont0[:52], c='r', label="дом")
-# plt.plot(np.linspace(1, 52, 52), resCont1[:52], c='g', label="детсад")
-# plt.plot(np.linspace(1, 52, 52), resCont2[:52], c='b', label="школа")
-# # plt.plot(np.linspace(1, 52, 52), resCont3[:52], c='y', label="институт")
-# plt.plot(np.linspace(1, 52, 52), resCont4[:52], c='m', label="универ")
-# plt.plot(np.linspace(1, 52, 52), resCont5[:52], c='k', label="работа")
-# plt.title("Число контактов между восприимчивыми и больными агентами")
-# plt.xlabel("Неделя")
-# plt.ylabel("Число контактов")
-# plt.legend()
-# plt.show()
-
-# resProbab0 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resProbab0[j] += df_prob.iloc[i, 0]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-#
-# resProbab1 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resProbab1[j] += df_prob.iloc[i, 1]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-#
-# resProbab2 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resProbab2[j] += df_prob.iloc[i, 2]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-
-# resProbab3 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resProbab3[j] += df_prob.iloc[i, 3]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-
-# resProbab4 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resProbab4[j] += df_prob.iloc[i, 4]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-#
-# resProbab5 = np.zeros(53)
-# j = 0
-# for i in range(0, 365):
-#     resProbab5[j] += df_prob.iloc[i, 5]
-#     if (i + 1) % 7 == 0:
-#         j += 1
-
-# plt.figure()
-# plt.plot(np.linspace(1, 365, 365), df_prob.iloc[:, 0], c='r', label="дом")
-# plt.plot(np.linspace(1, 365, 365), df_prob.iloc[:, 1], c='g', label="детсад")
-# plt.plot(np.linspace(1, 365, 365), df_prob.iloc[:, 2], c='b', label="школа")
-# plt.plot(np.linspace(1, 365, 365), df_prob.iloc[:, 3], c='y', label="институт")
-# plt.plot(np.linspace(1, 365, 365), df_prob.iloc[:, 4], c='m', label="универ")
-# plt.plot(np.linspace(1, 365, 365), df_prob.iloc[:, 5], c='k', label="работа")
-# plt.title("Вероятность заражения при контакте")
-# plt.xlabel("День")
-# plt.ylabel("Вероятность")
-# plt.legend()
-# plt.show()
-
-# plt.figure()
-# plt.plot(np.linspace(1, 52, 52), resProbab0[:52], c='r', label="дом")
-# plt.plot(np.linspace(1, 52, 52), resProbab1[:52], c='g', label="детсад")
-# plt.plot(np.linspace(1, 52, 52), resProbab2[:52], c='b', label="школа")
-# # plt.plot(np.linspace(1, 52, 52), resProbab3[:52], c='y', label="институт")
-# plt.plot(np.linspace(1, 52, 52), resProbab4[:52], c='m', label="универ")
-# plt.plot(np.linspace(1, 52, 52), resProbab5[:52], c='k', label="работа")
-# plt.title("Средняя вероятность заражения при контакте")
-# plt.xlabel("Неделя")
-# plt.ylabel("Вероятность")
-# plt.legend()
-# plt.show()
-
-
-# plt.figure()
-# plt.plot(np.linspace(1, 365, 365), temp_arr, c='r')
-# plt.title("Температура")
-# plt.xlabel("День")
-# plt.ylabel("°C")
-# plt.show()
-
-
 diff = 0
 for week in range(1, 53):
-    diff += (mean_flu[str(week)] - res[week - 1]) * (mean_flu[str(week)] - res[week - 1])
-
-print("Error: ", diff)
+    diff += (mean_flu[str(week)] - res_recorded[week - 1]) * (mean_flu[str(week)] - res_recorded[week - 1])
 
 temp_arr2 = []
 for week in range(1, 53):
@@ -370,12 +207,12 @@ for week in range(0, 52):
     temp_arr2[week] /= 7
 
 corr, pval = pearsonr(list(temp_arr2), list(mean_flu))
-print('Pearsons correlation: %.3f' % corr)
+print('Pearson correlation for data: %.3f' % corr)
 print('P-value: %.5f' % pval)
 
 plt.figure()
 plt.scatter(temp_arr2, mean_flu, c='r', label="данные")
-plt.title("Зависимость заболеваемости от температуры")
+plt.title("Зависимость регистрируемой заболеваемости от температуры")
 
 plt.scatter(temp_arr2, res_recorded[:52], c='b', label="модель")
 plt.xlabel("Температура, ℃")
@@ -384,6 +221,7 @@ plt.legend()
 plt.show()
 
 mean_flu = flu.mean(axis=1)
+
 plt.figure()
 plt.plot(np.linspace(1, 52, 52), resA[:52], c='r', label="FluA")
 plt.plot(np.linspace(1, 52, 52), resB[:52], c='b', label="FluB")
@@ -392,57 +230,12 @@ plt.plot(np.linspace(1, 52, 52), resRSV[:52], c='m', label="RSV")
 plt.plot(np.linspace(1, 52, 52), resAdV[:52], c='y', label="AdV")
 plt.plot(np.linspace(1, 52, 52), resPIV[:52], c='k', label="PIV")
 plt.plot(np.linspace(1, 52, 52), resCoV[:52], c='c', label="CoV")
-plt.title("Заболеваемость для различных этиологий")
-plt.xlabel("Неделя")
+plt.title("Полученная заболеваемость для различных этиологий")
+plt.xlabel("Месяц")
 plt.ylabel("Количество случаев на 1000 чел.")
+plt.xticks(np.linspace(1, 52, 12), ('Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'))
 plt.legend()
 plt.show()
-
-plt.figure()
-plt.plot(np.linspace(1, 52, 52), resA[:52], c='r')
-plt.title("FluA")
-plt.xlabel("Неделя")
-plt.ylabel("Количество случаев на 1000 чел.")
-plt.figure()
-plt.plot(np.linspace(1, 52, 52), resB[:52], c='b')
-plt.title("FluB")
-plt.xlabel("Неделя")
-plt.ylabel("Количество случаев на 1000 чел.")
-plt.figure()
-plt.plot(np.linspace(1, 52, 52), resRV[:52], c='g')
-plt.title("RV")
-plt.xlabel("Неделя")
-plt.ylabel("Количество случаев на 1000 чел.")
-plt.figure()
-plt.plot(np.linspace(1, 52, 52), resRSV[:52], c='m')
-plt.title("RSV")
-plt.xlabel("Неделя")
-plt.ylabel("Количество случаев на 1000 чел.")
-plt.figure()
-plt.plot(np.linspace(1, 52, 52), resAdV[:52], c='y')
-plt.title("AdV")
-plt.xlabel("Неделя")
-plt.ylabel("Количество случаев на 1000 чел.")
-plt.figure()
-plt.plot(np.linspace(1, 52, 52), resPIV[:52], c='k')
-plt.title("PIV")
-plt.xlabel("Неделя")
-plt.ylabel("Количество случаев на 1000 чел.")
-plt.figure()
-plt.plot(np.linspace(1, 52, 52), resCoV[:52], c='c')
-plt.title("CoV")
-plt.xlabel("Неделя")
-plt.ylabel("Количество случаев на 1000 чел.")
-plt.legend()
-plt.show()
-
-# diff = 0
-# for week in range(1, 53):
-#     # diff += (mean_flu[week] - res[week]) * (mean_flu[week] - res[week])
-#     diff += (mean_flu[str(week)] - res[week]) * (mean_flu[str(week)] - res[week])
-#
-# print(diff)
-
 
 flu = pd.read_csv(r'C:\Users\sigla\Desktop\MasterWork\Flu0-2.csv', index_col=0)
 flu = flu.loc[:, str(1998):]
@@ -455,11 +248,12 @@ plt.figure()
 plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
 plt.plot(np.linspace(1, 52, 52), res0_2[:52], c='b', label="модель")
 plt.title("Регистрируемая заболеваемость для возрастной группы 0-2")
-plt.xlabel("Неделя")
+plt.xlabel("Месяц")
 plt.ylabel("Количество случаев на 1000 чел.")
+plt.xticks(np.linspace(1, 52, 12), ('Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'))
 plt.legend()
+plt.show()
 
-print("0-2 ", list(mean_flu))
 
 diff1 = 0
 for week in range(1, 53):
@@ -478,11 +272,12 @@ plt.figure()
 plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
 plt.plot(np.linspace(1, 52, 52), res3_6[:52], c='b', label="модель")
 plt.title("Регистрируемая заболеваемость для возрастной группы 3-6")
-plt.xlabel("Неделя")
+plt.xlabel("Месяц")
 plt.ylabel("Количество случаев на 1000 чел.")
+plt.xticks(np.linspace(1, 52, 12), ('Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'))
 plt.legend()
+plt.show()
 
-print("3-6 ", list(mean_flu))
 
 diff2 = 0
 for week in range(1, 53):
@@ -501,11 +296,12 @@ plt.figure()
 plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
 plt.plot(np.linspace(1, 52, 52), res7_14[:52], c='b', label="модель")
 plt.title("Регистрируемая заболеваемость для возрастной группы 7-14")
-plt.xlabel("Неделя")
+plt.xlabel("Месяц")
 plt.ylabel("Количество случаев на 1000 чел.")
+plt.xticks(np.linspace(1, 52, 12), ('Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'))
 plt.legend()
+plt.show()
 
-print("7-14 ", list(mean_flu))
 
 diff3 = 0
 for week in range(1, 53):
@@ -524,8 +320,9 @@ plt.figure()
 plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
 plt.plot(np.linspace(1, 52, 52), res15[:52], c='b', label="модель")
 plt.title("Регистрируемая заболеваемость для возрастной группы 15+")
-plt.xlabel("Неделя")
+plt.xlabel("Месяц")
 plt.ylabel("Количество случаев на 1000 чел.")
+plt.xticks(np.linspace(1, 52, 12), ('Авг', 'Сен', 'Окт', 'Ноя', 'Дек', 'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'))
 plt.legend()
 plt.show()
 
@@ -535,6 +332,6 @@ for week in range(1, 53):
 
 print("Error15: ", diff4)
 
-print("15+ ", list(mean_flu))
 
-print("Global error: ", diff1 + diff2 + diff3 + diff4)
+print("Sum of errors: ", diff1 + diff2 + diff3 + diff4)
+print("Global error: ", diff)

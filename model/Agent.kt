@@ -12,29 +12,17 @@ class Agent(val isMale: Boolean, var age: Int) {
     var connectedWorkAgents = arrayListOf<Int>()
 
     var healthStatus = when (age) {
-        in 0..2 -> if ((0..99).random() == 0) 1 else 0
-        in 3..6 -> if ((0..999).random() < 5) 1 else 0
-        in 7..14 -> if ((0..999).random() < 3) 1 else 0
+        in 0..2 -> if ((0..99).random() < 2) 1 else 0
+        in 3..6 -> if ((0..999).random() < 8) 1 else 0
+        in 7..14 -> if ((0..999).random() < 5) 1 else 0
         else -> if ((0..999).random() < 2) 1 else 0
     }
 
     var infectionType = if (healthStatus == 1) {
-        if (age < 16) {
-            when ((0..99).random()) {
-                in 0..31 -> "RV" // 32%
-                in 32..59 -> "RSV" // 28%
-                in 60..78 -> "AdV" // 19%
-                in 79..92 -> "PIV"// 14%
-                else -> "CoV" // 7%
-            }
-        } else {
-            when ((0..99).random()) {
-                in 0..28 -> "RV" // 29%
-                in 29..46 -> "RSV" // 18%
-                in 47..62 -> "AdV" // 16%
-                in 63..81 -> "PIV" // 19%
-                else -> "CoV" // 18%
-            }
+        when ((0..99).random()) {
+            in 0..59 -> "RV" // 60%
+            in 60..89 -> "AdV" // 30%
+            else -> "PIV"// 10%
         }
     } else "none"
 
@@ -50,45 +38,59 @@ class Agent(val isMale: Boolean, var age: Int) {
 
     var RVImmunityDays = 0
     var RSVImmunityDays = 0
+    var PIVImmunityDays = 0
     var AdVImmunityDays = 0
+    var CoVImmunityDays = 0
+
+//    var fluAImmunity = (0..9).random() == 0
+//    var fluBImmunity = (0..9).random() == 0
+//    var RVImmunity = false
+//    var RSVImmunity = false
+//    var AdVImmunity = false
+//    var PIVImmunity = false
+//    var CoVImmunity = false
+//
+//    var RVImmunityDays = 0
+//    var RSVImmunityDays = 0
+//    var PIVImmunityDays = 0
+//    var AdVImmunityDays = 0
+//    var CoVImmunityDays = 0
 
     private fun willBeInfected(): Int {
-        return if (healthStatus == 1) {
-            if (age < 16) {
-                when(infectionType) {
-                    "fluA" -> 9
-                    "fluB" -> 8
-                    "RV" -> 11
-                    "RSV" -> 9
-                    "AdV" -> 9
-                    "PIV" -> 8
-                    "CoV" -> 8
-                    else -> 7
-                }
-            } else {
-                when(infectionType) {
-                    "fluA" -> 5
-                    "fluB" -> 4
-                    "RV" -> 10
-                    "RSV" -> 7
-                    "AdV" -> 8
-                    "PIV" -> 7
-                    "CoV" -> 7
-                    else -> 7
-                }
+        return if (age < 16) {
+            when(infectionType) {
+                "fluA" -> 9
+                "fluB" -> 8
+                "RV" -> 11
+                "RSV" -> 9
+                "AdV" -> 9
+                "PIV" -> 8
+                "CoV" -> 8
+                else -> 0
             }
-        } else 0
+        } else {
+            when(infectionType) {
+                "fluA" -> 5
+                "fluB" -> 4
+                "RV" -> 10
+                "RSV" -> 7
+                "AdV" -> 8
+                "PIV" -> 7
+                "CoV" -> 7
+                else -> 0
+            }
+        }
     }
 
     private fun willHaveIncubationPeriod(): Int {
         return when (infectionType) {
             "fluA" -> 1
-            "fluB" -> 0
-            "AdV" -> 6
-            "CoV" -> 3
-            "PIV" -> 3
+            "fluB" -> 1
             "RV" -> 2
             "RSV" -> 4
+            "AdV" -> 6
+            "PIV" -> 3
+            "CoV" -> 3
             else -> 0
         }
     }
@@ -98,6 +100,7 @@ class Agent(val isMale: Boolean, var age: Int) {
         return (0..99).random() >= 75
     }
 
+    // Isolation and registration
     fun shouldStayAtHome(): Boolean {
         if (isAsymptomatic) {
             return false
@@ -122,6 +125,7 @@ class Agent(val isMale: Boolean, var age: Int) {
         }
     }
 
+    // Mean viral load
     private fun willBeMeanViralLoad(): Double {
         return when(infectionType) {
             "fluA" -> {
@@ -212,7 +216,7 @@ class Agent(val isMale: Boolean, var age: Int) {
 
 //    val pneumoniaMultiplier = 1.3
 
-    private var isAsymptomatic = willBeAsymptomatic()
+    var isAsymptomatic = willBeAsymptomatic()
     var incubationPeriod = willHaveIncubationPeriod()
     var shouldBeInfected = willBeInfected()
     var daysInfected = if (healthStatus == 1) ((1 - incubationPeriod)..shouldBeInfected).random() else 0
@@ -228,9 +232,10 @@ class Agent(val isMale: Boolean, var age: Int) {
         meanViralLoad = willBeMeanViralLoad()
     }
 
-    //1.1347
-    //1.09
-    //0.9
+    // Ig Multipliers
+    // Multiplier for 19-29 compared to previous age group: 1.1347
+    // Multiplier for 30-59 compared to previous age group: 1.09
+    // Multiplier for 60+ compared to previous age group: 0.9
     private fun getIgGLevel(): Double {
         val rand = java.util.Random()
         return when (age) {
@@ -250,7 +255,7 @@ class Agent(val isMale: Boolean, var age: Int) {
             in 12..16 -> min(1610.0, max(636.0,1123.56 + rand.nextGaussian() * 203.83))
             in 17..18 -> min(2430.0, max(688.0,1277.20 + rand.nextGaussian() * 361.89))
             in 19..29 -> min(2757.3, max(780.6,1449.2 + rand.nextGaussian() * 410.63))
-            in 30..59 -> min(3005.46, max(850.85,1579.628 + rand.nextGaussian() * 447.59))
+            in 30..59 -> min(3005.46, max(850.85,1579.63 + rand.nextGaussian() * 447.59))
             else -> min(2704.91, max(765.77,1421.67 + rand.nextGaussian() * 369.57))
         }
     }
@@ -314,8 +319,8 @@ class Agent(val isMale: Boolean, var age: Int) {
     }
 
     var infectivity = 0.0
-    fun findInfectivity(a: Double) {
-        infectivity = a * findViralLoad() / 12.0
+    fun findInfectivity() {
+        infectivity = findViralLoad() / 12.0
     }
 
     var fluASusceptibility = 0.0
@@ -326,14 +331,13 @@ class Agent(val isMale: Boolean, var age: Int) {
     var PIVSusceptibility = 0.0
     var CoVSusceptibility = 0.0
     fun findSusceptibility(bMap: Map<String, Double>) {
-//        fluASusceptibility = (bMap["fluA"] ?: 0.0) * getIgLevel() + 1.0
-        fluASusceptibility = 2 / (1 + exp((bMap["fluA"] ?: 0.0) * getIgLevel()))
-        fluBSusceptibility = 2 / (1 + exp((bMap["fluB"] ?: 0.0) * getIgLevel()))
-        RVSusceptibility = 2 / (1 + exp((bMap["RV"] ?: 0.0) * getIgLevel()))
-        RSVSusceptibility = 2 / (1 + exp((bMap["RSV"] ?: 0.0) * getIgLevel()))
-        AdVSusceptibility = 2 / (1 + exp((bMap["AdV"] ?: 0.0) * getIgLevel()))
-        PIVSusceptibility = 2 / (1 + exp((bMap["PIV"] ?: 0.0) * getIgLevel()))
-        CoVSusceptibility = 2 / (1 + exp((bMap["CoV"] ?: 0.0) * getIgLevel()))
+        fluASusceptibility = 2 / (1 + exp((bMap["fluA"] ?: error("Required")) * getIgLevel()))
+        fluBSusceptibility = 2 / (1 + exp((bMap["fluB"] ?: error("Required")) * getIgLevel()))
+        RVSusceptibility = 2 / (1 + exp((bMap["RV"] ?: error("Required")) * getIgLevel()))
+        RSVSusceptibility = 2 / (1 + exp((bMap["RSV"] ?: error("Required")) * getIgLevel()))
+        AdVSusceptibility = 2 / (1 + exp((bMap["AdV"] ?: error("Required")) * getIgLevel()))
+        PIVSusceptibility = 2 / (1 + exp((bMap["PIV"] ?: error("Required")) * getIgLevel()))
+        CoVSusceptibility = 2 / (1 + exp((bMap["CoV"] ?: error("Required")) * getIgLevel()))
     }
 
     // Data from census
@@ -348,26 +352,26 @@ class Agent(val isMale: Boolean, var age: Int) {
         in 16..17 -> 2
         // 10% в колледж, 40% в школе, 50% - в универе
         // Школа / универ
-        18 -> if ((0..1).random() == 0) 2 else 4
+        18 -> if ((0..1).random() == 0) 2 else 3
         // 50% - универ, 50% - работа
-        in 19..22 -> if ((0..1).random() == 0) 4 else 5
+        in 19..22 -> if ((0..1).random() == 0) 3 else 4
         // Магистратура / работа
-        in 23..24 -> if ((0..99).random() < 82) 5 else {
-            if ((0..9).random() < 6) 4 else 0
+        in 23..24 -> if ((0..99).random() < 82) 4 else {
+            if ((0..9).random() < 6) 3 else 0
         }
         // Работа
         in 25..64 -> {
             if (isMale) when (age) {
-                in 25..29 -> if ((0..99).random() < 82) 5 else 0
-                in 30..39 -> if ((0..99).random() < 95) 5 else 0
-                in 40..49 -> if ((0..99).random() < 94) 5 else 0
-                in 50..59 -> if ((0..99).random() < 88) 5 else 0
-                else -> if ((0..99).random() < 51) 5 else 0
+                in 25..29 -> if ((0..99).random() < 82) 4 else 0
+                in 30..39 -> if ((0..99).random() < 95) 4 else 0
+                in 40..49 -> if ((0..99).random() < 94) 4 else 0
+                in 50..59 -> if ((0..99).random() < 88) 4 else 0
+                else -> if ((0..99).random() < 51) 4 else 0
             } else when (age) {
-                in 23..29 -> if ((0..99).random() < 74) 5 else 0
-                in 30..39 -> if ((0..99).random() < 85) 5 else 0
-                in 40..49 -> if ((0..99).random() < 89) 5 else 0
-                in 50..59 -> if ((0..99).random() < 70) 5 else 0
+                in 23..29 -> if ((0..99).random() < 74) 4 else 0
+                in 30..39 -> if ((0..99).random() < 85) 4 else 0
+                in 40..49 -> if ((0..99).random() < 89) 4 else 0
+                in 50..59 -> if ((0..99).random() < 70) 4 else 0
                 else -> if ((0..99).random() < 29) 5 else 0
             }
         }

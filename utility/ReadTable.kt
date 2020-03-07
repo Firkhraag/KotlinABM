@@ -4,7 +4,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import java.io.FileInputStream
 import java.io.IOException
 
-fun readTableFloat(filepath: String, numOfRows: Int, numOfCols: Int, array: ArrayList<ArrayList<Double>>) {
+fun readTableDouble(filepath: String, numOfRows: Int, numOfCols: Int, array: ArrayList<ArrayList<Double>>) {
     try {
         val inputStream = FileInputStream(filepath)
         val xlWb = WorkbookFactory.create(inputStream)

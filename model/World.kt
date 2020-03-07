@@ -3,10 +3,12 @@ package model
 import utility.readTableInt
 import utility.writeTableResult
 import kotlinx.coroutines.*
+import kotlin.math.exp
 import kotlin.math.max
 
 class World {
 
+    // Contact durations
     private fun getHouseholdContactDuration(): Double {
         val rand = java.util.Random()
         return max(0.0,12.0 + rand.nextGaussian() * 2.0)
@@ -37,6 +39,9 @@ class World {
         return max(0.0,3.07 + rand.nextGaussian() * 2.07)
     }
 
+    private var durationBias = 8.0
+
+    // Temperatures
     private val temp = arrayListOf(-5.8, -5.9, -5.9, -5.9,
         -6.0, -6.0, -6.1, -6.1, -6.2, -6.2, -6.2, -6.3,
         -6.3, -6.4, -6.5, -6.5, -6.6, -6.6, -6.7, -6.7,
@@ -82,30 +87,30 @@ class World {
         -4.8, -4.9, -5.0, -5.0, -5.1, -5.2, -5.2, -5.3,
         -5.3, -5.4, -5.4, -5.4, -5.5, -5.5, -5.5, -5.6,
         -5.6, -5.6, -5.7, -5.7, -5.7, -5.7, -5.8, -5.8
-)
+    )
 
-//    private val maxTemp = 19.4
     private val minTemp = -7.2
-
     private val maxMinTemp = 26.6
 
-    private var day = 31
-    private var month = 7
-    private var year = 1
+    // Date
+    private var day = 1
+    private var month = 8
 
     private var globalDay = 0
-    private var tempDay = 212
+    private var tempDay = 211
     private var dayOfTheWeek = 1
 
-    // Susceptible, Infected, New Cases
-    private var worldStats = arrayListOf(0, 0, 0, 0, 0)
+    // New cases, New cases registered
+    private var worldStats = arrayListOf(0, 0)
 
+    // Collectives
     private val kindergarten = Kindergarten()
     private val school = School()
     private val university = University()
     private val workplace = Workplace()
     private val households = arrayListOf<Household>()
 
+    // Create agent
     private fun createAgent(okatoIndex: Int,
                             biasedIndex: Int,
                             districtsInfoMatrix: ArrayList<ArrayList<Int>>,
@@ -397,7 +402,8 @@ class World {
                         Agent(false, (18..24).random())
                     }
                 }
-                in ageDistributionInDistrictsMatrix[10][biasedIndex] + 1..ageDistributionInDistrictsMatrix[11][biasedIndex] -> {
+                in ageDistributionInDistrictsMatrix[10][biasedIndex] +
+                        1..ageDistributionInDistrictsMatrix[11][biasedIndex] -> {
                     randomNum = (1..100).random()
                     if (randomNum in (1..districtsInfoMatrix[okatoIndex][156])) {
                         if (isMale != null) {
@@ -421,7 +427,8 @@ class World {
                         }
                     }
                 }
-                in ageDistributionInDistrictsMatrix[11][biasedIndex] + 1..ageDistributionInDistrictsMatrix[12][biasedIndex] -> {
+                in ageDistributionInDistrictsMatrix[11][biasedIndex] +
+                        1..ageDistributionInDistrictsMatrix[12][biasedIndex] -> {
                     randomNum = (1..100).random()
                     if (randomNum in (1..districtsInfoMatrix[okatoIndex][157])) {
                         if (isMale != null) {
@@ -445,7 +452,8 @@ class World {
                         }
                     }
                 }
-                in ageDistributionInDistrictsMatrix[12][biasedIndex] + 1..ageDistributionInDistrictsMatrix[13][biasedIndex] -> {
+                in ageDistributionInDistrictsMatrix[12][biasedIndex] +
+                        1..ageDistributionInDistrictsMatrix[13][biasedIndex] -> {
                     randomNum = (1..100).random()
                     if (randomNum in (1..districtsInfoMatrix[okatoIndex][158])) {
                         if (isMale != null) {
@@ -578,64 +586,10 @@ class World {
             when (agent.activityStatus) {
                 1 -> kindergarten.addAgent(agent)
                 2 -> school.addAgent(agent)
-                4 -> university.addAgent(agent)
-                5 -> {
-                    workplace.addAgent(agent)
-//                    var groupFound = false
-//                    for ((groupIndex, ageGroup) in kindergarten.groupsByAge.withIndex()) {
-//                        if (kindergarten.adultNeeded[groupIndex]) {
-//                            for (group in ageGroup) {
-//                                if (!group.hasAdult) {
-//                                    group.hasAdult = true
-//                                    group.addAgent(agent)
-//                                    groupFound = true
-//                                    kindergarten.adultNeeded[groupIndex] = false
-//                                    break
-//                                }
-//                            }
-//                        }
-//                    }
-//                    if (!groupFound) {
-//                        for ((groupIndex, ageGroup) in school.groupsByAge.withIndex()) {
-//                            if (school.adultNeeded[groupIndex]) {
-//                                for (group in ageGroup) {
-//                                    if (!group.hasAdult) {
-//                                        group.hasAdult = true
-//                                        group.addAgent(agent)
-//                                        groupFound = true
-//                                        school.adultNeeded[groupIndex] = false
-//                                        break
-//                                    }
-//                                }
-//                            }
-//                        }
-//                        if (!groupFound) {
-//                            for ((groupIndex, ageGroup) in university.groupsByAge.withIndex()) {
-//                                if (university.adultNeeded[groupIndex]) {
-//                                    for (group in ageGroup) {
-//                                        if (!group.hasAdult) {
-//                                            group.hasAdult = true
-//                                            group.addAgent(agent)
-//                                            groupFound = true
-//                                            university.adultNeeded[groupIndex] = false
-//                                            break
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                            if (!groupFound) {
-//                                workplace.addAgent(agent)
-//                            }
-//                        }
-//                    }
-                }
+                3 -> university.addAgent(agent)
+                4 -> workplace.addAgent(agent)
             }
 
-            when (agent.healthStatus) {
-                0 -> worldStats[0] += 1
-                1 -> worldStats[1] += 1
-                2 -> worldStats[2] += 1
-            }
             household.addAgent(agent)
         }
         households.add(household)
@@ -2161,16 +2115,7 @@ class World {
             processAll(districtsInfoMatrix, ageDistributionInDistrictsMatrix)
         }
         println("Households created")
-
         workplace.generateLastBarabasiAlbertNetwork()
-        println("Workplaces created")
-//        school.generateLastBarabasiAlbertNetworks()
-//        println("Schools created")
-//        kindergarten.generateLastBarabasiAlbertNetworks()
-//        println("Kindergartens created")
-//        university.generateLastBarabasiAlbertNetworks()
-//        println("Universities created")
-
         println("World creation has ended")
     }
 
@@ -2189,14 +2134,15 @@ class World {
             }
             if ((agent2.healthStatus == 0) && (!agent2IsImmune)) {
                 val durationCoeff = if (additionalContactInHoliday) {
-                    getAdditionalHouseholdContactDuration() / 24.0
+                    1 / (1 + exp(
+                            -getAdditionalHouseholdContactDuration() + durationBias))
                 } else {
-                    getHouseholdContactDuration() / 24.0
+                    1 / (1 + exp(
+                            -getHouseholdContactDuration() + durationBias))
                 }
 
                 val curTemp = (temp[tempDay] - minTemp) / maxMinTemp
-                val tCoeff = tMap[agent.infectionType] ?: 0.0
-                val externalInfluence = tCoeff * curTemp + 1.0
+                val externalInfluence = (tMap[agent.infectionType] ?: error("Required")) * curTemp + 1.0
 
                 val randNum = (0..9999).random() * 0.0001
                 val susceptibility = when (agent.infectionType) {
@@ -2210,9 +2156,6 @@ class World {
                     else -> 0.0
                 }
                 var probab = agent.infectivity * susceptibility * externalInfluence * durationCoeff
-//                println("Age: ${agent.age}, Age2: ${agent2.age}, DurCoef: $durationCoeff, Inf: ${agent.infectivity}, Ig: ${agent.getIgLevel()} Susc: $susceptibility, curT: $curTemp, ExInfl: $externalInfluence, Prob: $probab")
-//                readLine()
-//                probabStats[0] += probab
                 if (randNum < probab) {
                     agent2.healthStatus = 3
                     agent2.infectionType = agent.infectionType
@@ -2231,30 +2174,25 @@ class World {
                 "AdV" -> agent2.AdVImmunity
                 "PIV" -> agent2.PIVImmunity
                 "CoV" -> agent2.CoVImmunity
-                else -> true
+                else -> error("Not found")
             }
             if ((agent2.healthStatus == 0) &&
                     (!agent2IsImmune) &&
                     (!agent2.isOnMotherLeave)) {
 
                 val durationCoeff = when (agent.activityStatus) {
-                    1 -> getKindergartenContactDuration() / 24.0
-                    2 -> getSchoolContactDuration() / 24.0
-                    4 -> getUniversityContactDuration() / 24.0
-                    5 -> getWorkplaceContactDuration() / 24.0
+                    1 -> 1 / (1 + exp(
+                            -getKindergartenContactDuration() + durationBias))
+                    2 -> 1 / (1 + exp(
+                            -getSchoolContactDuration() + durationBias))
+                    3 -> 1 / (1 + exp(
+                            -getUniversityContactDuration() + durationBias))
+                    4 -> 1 / (1 + exp(
+                            -getWorkplaceContactDuration() + durationBias))
                     else -> 1.0
                 }
                 val curTemp = (temp[tempDay] - minTemp) / maxMinTemp
-                val tCoeff = tMap[agent.infectionType] ?: 0.0
-                val externalInfluence = tCoeff * curTemp + 1.0
-
-//                when (agent2.activityStatus) {
-//                    1 -> contactStats[1] += 1
-//                    2 -> contactStats[2] += 1
-//                    3 -> contactStats[3] += 1
-//                    4 -> contactStats[4] += 1
-//                    5 -> contactStats[5] += 1
-//                }
+                val externalInfluence = (tMap[agent.infectionType] ?: error("Required")) * curTemp + 1.0
 
                 val randNum = (0..9999).random() * 0.0001
                 val susceptibility = when (agent.infectionType) {
@@ -2265,16 +2203,9 @@ class World {
                     "AdV" -> agent2.AdVSusceptibility
                     "PIV" -> agent2.PIVSusceptibility
                     "CoV" -> agent2.CoVSusceptibility
-                    else -> 0.0
+                    else -> error("Not found")
                 }
                 var probab = agent.infectivity * susceptibility * externalInfluence * durationCoeff
-//                when (agent2.activityStatus) {
-//                    1 -> probabStats[1] += probab
-//                    2 -> probabStats[2] += probab
-//                    3 -> probabStats[3] += probab
-//                    4 -> probabStats[4] += probab
-//                    5 -> probabStats[5] += probab
-//                }
                 if (randNum < probab) {
                     agent2.healthStatus = 3
                     agent2.infectionType = agent.infectionType
@@ -2293,19 +2224,17 @@ class World {
                 "AdV" -> agent2.AdVImmunity
                 "PIV" -> agent2.PIVImmunity
                 "CoV" -> agent2.CoVImmunity
-                else -> true
+                else -> error("Not found")
             }
             if ((agent2.healthStatus == 0) &&
                     (!agent2IsImmune) &&
                     (index in agent.connectedWorkAgents) &&
                     (!agent2.isOnMotherLeave)) {
 
-                val durationCoeff = getWorkplaceContactDuration() / 24.0
+                val durationCoeff = 1 / (1 + exp(
+                        -getWorkplaceContactDuration() + durationBias))
                 val curTemp = (temp[tempDay] - minTemp) / maxMinTemp
-                val tCoeff = tMap[agent.infectionType] ?: 0.0
-                val externalInfluence = tCoeff * curTemp + 1.0
-
-//                contactStats[5] += 1
+                val externalInfluence = (tMap[agent.infectionType] ?: error("Required")) * curTemp + 1.0
 
                 val randNum = (0..9999).random() * 0.0001
                 val susceptibility = when (agent.infectionType) {
@@ -2316,10 +2245,9 @@ class World {
                     "AdV" -> agent2.AdVSusceptibility
                     "PIV" -> agent2.PIVSusceptibility
                     "CoV" -> agent2.CoVSusceptibility
-                    else -> 0.0
+                    else -> error("Not found")
                 }
                 var probab = agent.infectivity * susceptibility * externalInfluence * durationCoeff
-//                probabStats[5] += probab
                 if (randNum < probab) {
                     agent2.healthStatus = 3
                     agent2.infectionType = agent.infectionType
@@ -2329,101 +2257,126 @@ class World {
     }
 
     private fun randomInfection(agent: Agent) {
-        if (agent.age < 16) {
+        if ((globalDay < 90) || (globalDay > 320)) {
             when ((0..99).random()) {
-                in 0..4 -> {
-                    if (!agent.fluAImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "fluA"
-                    }
-                } // 5%
-                in 5..9 -> {
-                    if (!agent.fluBImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "fluB"
-                    }
-                } // 5%
-                in 10..39 -> {
+                in 0..49 -> {
                     if (!agent.RVImmunity) {
                         agent.healthStatus = 3
                         agent.infectionType = "RV"
                     }
-                } // 30%
-                in 40..65 -> {
-                    if (!agent.RSVImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "RSV"
-                    }
-                } // 26%
-                in 66..82 -> {
+                } // 50%
+                in 50..74 -> {
                     if (!agent.AdVImmunity) {
                         agent.healthStatus = 3
                         agent.infectionType = "AdV"
                     }
-                } // 17%
-                in 83..94 -> {
+                } // 25%
+                else -> {
                     if (!agent.PIVImmunity) {
                         agent.healthStatus = 3
                         agent.infectionType = "PIV"
                     }
-                } // 12%
-                else -> {
-                    if (!agent.CoVImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "CoV"
-                    }
-                } // 5%
+                }// 25%
             }
         } else {
-            when ((0..99).random()) {
-                in 0..32 -> {
-                    if (!agent.fluAImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "fluA"
-                    }
-                } // 33%
-                in 33..50 -> {
-                    if (!agent.fluBImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "fluB"
-                    }
-                } // 18%
-                in 51..68 -> {
-                    if (!agent.RVImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "RV"
-                    }
-                } // 18%
-                in 69..76 -> {
-                    if (!agent.RSVImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "RSV"
-                    }
-                } // 8%
-                in 77..82 -> {
-                    if (!agent.AdVImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "AdV"
-                    }
-                } // 6%
-                in 83..91 -> {
-                    if (!agent.PIVImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "PIV"
-                    }
-                } // 9%
-                else -> {
-                    if (!agent.CoVImmunity) {
-                        agent.healthStatus = 3
-                        agent.infectionType = "CoV"
-                    }
-                } // 8%
+            if (agent.age < 16) {
+                when ((0..99).random()) {
+                    in 0..4 -> {
+                        if (!agent.fluAImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "fluA"
+                        }
+                    } // 5%
+                    in 5..9 -> {
+                        if (!agent.fluBImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "fluB"
+                        }
+                    } // 5%
+                    in 10..39 -> {
+                        if (!agent.RVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "RV"
+                        }
+                    } // 30%
+                    in 40..65 -> {
+                        if (!agent.RSVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "RSV"
+                        }
+                    } // 26%
+                    in 66..82 -> {
+                        if (!agent.AdVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "AdV"
+                        }
+                    } // 17%
+                    in 83..94 -> {
+                        if (!agent.PIVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "PIV"
+                        }
+                    } // 12%
+                    else -> {
+                        if (!agent.CoVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "CoV"
+                        }
+                    } // 5%
+                }
+            } else {
+                when ((0..99).random()) {
+                    in 0..32 -> {
+                        if (!agent.fluAImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "fluA"
+                        }
+                    } // 33%
+                    in 33..50 -> {
+                        if (!agent.fluBImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "fluB"
+                        }
+                    } // 18%
+                    in 51..68 -> {
+                        if (!agent.RVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "RV"
+                        }
+                    } // 18%
+                    in 69..76 -> {
+                        if (!agent.RSVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "RSV"
+                        }
+                    } // 8%
+                    in 77..82 -> {
+                        if (!agent.AdVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "AdV"
+                        }
+                    } // 6%
+                    in 83..91 -> {
+                        if (!agent.PIVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "PIV"
+                        }
+                    } // 9%
+                    else -> {
+                        if (!agent.CoVImmunity) {
+                            agent.healthStatus = 3
+                            agent.infectionType = "CoV"
+                        }
+                    } // 8%
+                }
             }
         }
     }
 
-    fun runSimulation(a: Double, bMap: Map<String, Double>, tMap: Map<String, Double>,
-                      imMap: Map<String, Int>, durCoeff: Double): ArrayList<ArrayList<Int>> {
+    fun runSimulation(db: Double, bMap: Map<String, Double>, tMap: Map<String, Double>,
+                      imMap: Map<String, Int>): ArrayList<ArrayList<Int>> {
+
+        durationBias = db
 
         val worldStats2 = arrayListOf(0, 0, 0, 0)
         val worldStats3 = arrayListOf(arrayListOf(0, 0, 0, 0))
@@ -2437,8 +2390,8 @@ class World {
 
         while(true) {
 
-            worldStats[3] = 0
-            worldStats[4] = 0
+            worldStats[0] = 0
+            worldStats[1] = 0
 
             worldStats2[0] = 0
             worldStats2[1] = 0
@@ -2452,9 +2405,6 @@ class World {
             worldStats4[4] = 0
             worldStats4[5] = 0
             worldStats4[6] = 0
-
-//            contactStats = arrayListOf(0, 0, 0, 0, 0, 0)
-//            probabStats = arrayListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
             var holiday = false
             if (dayOfTheWeek == 7) {
@@ -2486,12 +2436,9 @@ class World {
                 kinderHoliday = true
             }
 
-            // Каникулы 2007/2008
-            //
+            // Каникулы
             // Осенние - с 05.11.2007 г. по 11.11.2007 г. - 7 дней;
-            //
             // Зимние - с 26.12.2007 г. по 09.01.2008 г. - 15 дней;
-            //
             // Весенние - с 22.03.2008 г. по 31.03.2008 г. - 10 дней.
             var schoolHoliday = false
             if (month in arrayListOf(6, 7, 8)) {
@@ -2534,7 +2481,7 @@ class World {
             households.parallelStream().forEach { household ->
                 household.agents.forEach { agent ->
                     if (agent.healthStatus == 1) {
-                        agent.findInfectivity(a)
+                        agent.findInfectivity()
                         contactsInHouseholdForAgent(household, false, agent, tMap)
                     }
                 }
@@ -2615,8 +2562,8 @@ class World {
                                 ((agent.activityStatus == 1) && kinderHoliday) ||
                                 ((agent.activityStatus == 2) && schoolHoliday) ||
                                 ((agent.age == 7) && workingHoliday) ||
-                                ((agent.activityStatus == 4) && universityHoliday) ||
-                                ((agent.activityStatus == 5) && workingHoliday)) {
+                                ((agent.activityStatus == 3) && universityHoliday) ||
+                                ((agent.activityStatus == 4) && workingHoliday)) {
 
                             if (agent.healthStatus == 1) {
 
@@ -2626,8 +2573,8 @@ class World {
                                             ((agent2.activityStatus == 1) && kinderHoliday) ||
                                             ((agent2.activityStatus == 2) && schoolHoliday) ||
                                             ((agent2.age == 7) && workingHoliday) ||
-                                            ((agent2.activityStatus == 4) && universityHoliday) ||
-                                            ((agent2.activityStatus == 5) && workingHoliday)) {
+                                            ((agent2.activityStatus == 3) && universityHoliday) ||
+                                            ((agent2.activityStatus == 4) && workingHoliday)) {
 
                                         val agent2IsImmune = when (agent.infectionType) {
                                             "fluA" -> agent2.fluAImmunity
@@ -2642,10 +2589,13 @@ class World {
                                         if ((!agent2IsImmune) &&
                                                 (agent2.healthStatus == 0)) {
 
-                                            val durationCoeff = getAdditionalHouseholdContactDuration() / 24.0
+                                            val durationCoeff = 1 / (1 + exp(
+                                                    -getAdditionalHouseholdContactDuration() + durationBias))
+
+//                                            val durationCoeff = getAdditionalHouseholdContactDuration() / 24.0
                                             val curTemp = (temp[tempDay] - minTemp) / maxMinTemp
-                                            val tCoeff = tMap[agent.infectionType] ?: 0.0
-                                            val externalInfluence = tCoeff * curTemp + 1.0
+                                            val externalInfluence = (tMap[agent.infectionType] ?: error("Required")) *
+                                                    curTemp + 1.0
 
                                             val randNum = (0..9999).random() * 0.0001
                                             val susceptibility = when (agent.infectionType) {
@@ -2683,9 +2633,7 @@ class World {
                     when (agent.healthStatus) {
                         3 -> {
                             agent.healthStatus = 1
-                            worldStats[0] -= 1
-                            worldStats[1] += 1
-                            worldStats[3] += 1
+                            worldStats[0] += 1
 
                             when (agent.infectionType) {
                                 "fluA" -> worldStats4[0] += 1
@@ -2697,28 +2645,9 @@ class World {
                                 "CoV" -> worldStats4[6] += 1
                             }
 
-//                            when (agent.age) {
-//                                in (0..2) -> {
-//                                    worldStats3[worldStats3.size - 1][0] += 1
-//                                    worldStats2[0] += 1
-//                                }
-//                                in (3..6) -> {
-//                                    worldStats3[worldStats3.size - 1][1] += 1
-//                                    worldStats2[1] += 1
-//                                }
-//                                in (7..14) -> {
-//                                    worldStats3[worldStats3.size - 1][2] += 1
-//                                    worldStats2[2] += 1
-//                                }
-//                                else -> {
-//                                    worldStats3[worldStats3.size - 1][3] += 1
-//                                    worldStats2[3] += 1
-//                                }
-//                            }
-
                             agent.updateHealthParameters()
                             if (agent.isStayingHomeWhenInfected) {
-                                worldStats[4] += 1
+                                worldStats[1] += 1
                                 when (agent.age) {
                                     in (0..2) -> {
                                         worldStats3[worldStats3.size - 1][0] += 1
@@ -2760,8 +2689,6 @@ class World {
                                 }
                                 agent.healthStatus = 2
                                 agent.daysImmune = 1
-                                worldStats[1] -= 1
-                                worldStats[2] += 1
                                 if ((agent.age < 14) && (agent.isStayingHomeWhenInfected)) {
                                     for (otherAgent in household.agents) {
                                         if (otherAgent.isMother) {
@@ -2775,7 +2702,7 @@ class World {
                                 if (!agent.isStayingHomeWhenInfected) {
                                     agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
                                     if (agent.isStayingHomeWhenInfected) {
-                                        worldStats[4] += 1
+                                        worldStats[1] += 1
                                         when (agent.age) {
                                             in (0..2) -> {
                                                 worldStats3[worldStats3.size - 1][0] += 1
@@ -2809,14 +2736,12 @@ class World {
                         2 -> {
                             if (agent.daysImmune == 14) {
                                 agent.healthStatus = 0
-                                worldStats[0] += 1
-                                worldStats[2] -= 1
                             } else {
                                 agent.daysImmune += 1
                             }
                         }
                         0 -> {
-                            if (agent.age < 18) {
+                            if (agent.age < 16) {
                                 if ((0..9999).random() < 2) {
                                     randomInfection(agent)
                                 }
@@ -2851,39 +2776,24 @@ class World {
                             agent.AdVImmunityDays += 1
                         }
                     }
+                    if (agent.PIVImmunity) {
+                        if (agent.PIVImmunityDays == imMap["PIV"]) {
+                            agent.PIVImmunityDays = 0
+                            agent.PIVImmunity = false
+                        } else {
+                            agent.PIVImmunityDays += 1
+                        }
+                    }
+                    if (agent.CoVImmunity) {
+                        if (agent.CoVImmunityDays == imMap["CoV"]) {
+                            agent.CoVImmunityDays = 0
+                            agent.CoVImmunity = false
+                        } else {
+                            agent.CoVImmunityDays += 1
+                        }
+                    }
                 }
             }
-
-//            if (contactStats[0] == 0) {
-//                probabStats[0] = 0.0
-//            } else {
-//                probabStats[0] /= contactStats[0].toDouble()
-//            }
-//            if (contactStats[1] == 0) {
-//                probabStats[1] = 0.0
-//            } else {
-//                probabStats[1] /= contactStats[1].toDouble()
-//            }
-//            if (contactStats[2] == 0) {
-//                probabStats[2] = 0.0
-//            } else {
-//                probabStats[2] /= contactStats[2].toDouble()
-//            }
-//            if (contactStats[3] == 0) {
-//                probabStats[3] = 0.0
-//            } else {
-//                probabStats[3] /= contactStats[3].toDouble()
-//            }
-//            if (contactStats[4] == 0) {
-//                probabStats[4] = 0.0
-//            } else {
-//                probabStats[4] /= contactStats[4].toDouble()
-//            }
-//            if (contactStats[5] == 0) {
-//                probabStats[5] = 0.0
-//            } else {
-//                probabStats[5] /= contactStats[5].toDouble()
-//            }
 
             writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\results.xlsx",
                     globalDay, worldStats)
@@ -2894,21 +2804,13 @@ class World {
             writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\resultsByEtiology.xlsx",
                     globalDay, worldStats4)
 
-
-//            writeTableResult("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\contacts.xlsx",
-//                    globalDay, contactStats)
-//
-//            writeTableResult2("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\output\\probab.xlsx",
-//                    globalDay, probabStats)
-
-
             dayOfTheWeek += 1
             if (dayOfTheWeek == 8) {
                 dayOfTheWeek = 1
                 worldStats3.add(arrayListOf(0, 0, 0, 0))
             }
             day += 1
-            if ((month == 7) && (day == 31)) {
+            if ((month == 7) && (day == 32)) {
                 break
             }
 
@@ -2930,59 +2832,11 @@ class World {
             } else if ((month == 12) && (day == 32)) {
                 day = 1
                 month = 1
-                year += 1
                 println("Month 1")
             }
-//            readLine()
         }
         return worldStats3
     }
-
-//    fun resetState() {
-//        day = 31
-//        month = 7
-//        year = 1
-//
-//        globalDay = 0
-//        tempDay = 212
-//        dayOfTheWeek = 1
-//
-//        // Susceptible, Infected, New Cases
-//        worldStats = arrayListOf(0, 0, 0, 0, 0)
-//
-//        households.forEach { household ->
-//            household.agents.forEach { agent ->
-//                agent.healthStatus = when (agent.age) {
-//                    in 0..2 -> if ((0..99).random() == 0) 1 else 0
-//                    in 3..6 -> if ((0..999).random() < 5) 1 else 0
-//                    in 7..14 -> if ((0..999).random() < 3) 1 else 0
-//                    else -> if ((0..999).random() < 2) 1 else 0
-//                }
-//                agent.infectionType = if (agent.healthStatus == 1) {
-//                    if ((0..99).random() < 50) {
-//                        "RV"
-//                    } else {
-//                        "RSV"
-//                    }
-//                } else {
-//                    "none"
-//                }
-//                agent.daysImmune = if (agent.healthStatus == 2) 1 else 0
-//
-//                agent.fluAImmunity = false
-//                agent.fluBImmunity = false
-//                agent.RVImmunity = false
-//                agent.RSVImmunity = false
-//
-//                agent.RVImmunityDays = 0
-//                agent.RSVImmunityDays = 0
-//
-//                agent.updateHealthParameters()
-//                agent.daysInfected = if (agent.healthStatus == 1) ((1 - agent.incubationPeriod)..agent.shouldBeInfected).random() else 0
-//                agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
-//            }
-//        }
-//    }
 
     init {
 
@@ -2994,5 +2848,365 @@ class World {
         readTableInt("D:\\Dev\\Projects\\KotlinProjects\\MasterThesis\\src\\Tables\\districts.xlsx",
                 107, 163, districtsInfoMatrix)
         addHouseholdsToPool(districtsInfoMatrix, ageDistributionInDistrictsMatrix)
+    }
+
+    fun runR0(db: Double, bMap: Map<String, Double>, tMap: Map<String, Double>, infection: String, m: Int, d: Int): Int {
+
+        durationBias = db
+
+        month = m
+        day = d
+        tempDay = when (month) {
+            1 -> 8
+            2 -> 39
+            3 -> 67
+            4 -> 97
+            5 -> 128
+            6 -> 158
+            7 -> 188
+            8 -> 219
+            9 -> 250
+            10 -> 280
+            11 -> 312
+            12 -> 342
+            else -> -1
+        }
+
+        globalDay = 0
+        dayOfTheWeek = 1
+
+        var numOfInfected = 0
+        households.parallelStream().forEach { household ->
+            household.agents.forEach { agent ->
+
+                agent.fluAImmunity = false
+                agent.fluBImmunity = false
+                agent.RVImmunity = false
+                agent.RSVImmunity = false
+                agent.AdVImmunity = false
+                agent.PIVImmunity = false
+                agent.CoVImmunity = false
+
+                agent.RVImmunityDays = 0
+                agent.RSVImmunityDays = 0
+                agent.PIVImmunityDays = 0
+                agent.AdVImmunityDays = 0
+                agent.CoVImmunityDays = 0
+
+                agent.isOnMotherLeave = false
+
+                agent.healthStatus = 0
+                agent.isAsymptomatic = false
+                agent.incubationPeriod = 0
+                agent.shouldBeInfected = 0
+                agent.daysInfected = 0
+                agent.isStayingHomeWhenInfected = false
+                agent.meanViralLoad = 0.0
+                agent.findSusceptibility(bMap)
+            }
+        }
+
+        val foundHousehold = households[(0 until households.size).random()]
+        val foundAgent = foundHousehold.agents[(0 until foundHousehold.agents.size).random()]
+        foundAgent.infectionType = infection
+        foundAgent.healthStatus = 1
+        foundAgent.updateHealthParameters()
+
+        if (foundAgent.isStayingHomeWhenInfected) {
+            if (foundAgent.age < 14) {
+                for (otherAgent in foundHousehold.agents) {
+                    if (otherAgent.isMother) {
+                        otherAgent.isOnMotherLeave = true
+                        break
+                    }
+                }
+            }
+        }
+
+        while(true) {
+
+            var holiday = false
+            if (dayOfTheWeek == 7) {
+                holiday = true
+            }
+            if ((month == 1) && (day in arrayListOf(1, 2, 3, 7))) {
+                holiday = true
+            }
+            if ((month == 5) && (day in arrayListOf(1, 9))) {
+                holiday = true
+            }
+            if ((month == 2) && (day == 23)) {
+                holiday = true
+            }
+            if ((month == 3) && (day == 8)) {
+                holiday = true
+            }
+            if ((month == 6) && (day == 12)) {
+                holiday = true
+            }
+
+            var workingHoliday = false
+            if (dayOfTheWeek == 6) {
+                workingHoliday = true
+            }
+
+            var kinderHoliday = false
+            if (month in arrayListOf(7, 8)) {
+                kinderHoliday = true
+            }
+
+            var schoolHoliday = false
+            if (month in arrayListOf(6, 7, 8)) {
+                schoolHoliday = true
+            }
+            if ((month == 11) && (day in arrayListOf(5, 6, 7, 8, 9, 10, 11))) {
+                schoolHoliday = true
+            }
+            if ((month == 12) && (day in arrayListOf(26, 27, 28, 29, 30, 31))) {
+                schoolHoliday = true
+            }
+            if ((month == 1) && (day in arrayListOf(6, 7, 8, 9))) {
+                schoolHoliday = true
+            }
+            if ((month == 3) && (day in arrayListOf(22, 23, 24, 25, 26, 27, 28, 29, 30, 31))) {
+                schoolHoliday = true
+            }
+
+            var universityHoliday = false
+            if ((month == 12) && (day in arrayListOf(22, 23, 24, 25, 26, 27, 28, 29, 30, 31))) {
+                universityHoliday = true
+            }
+            if (month == 1) {
+                if (day !in arrayListOf(11, 15, 19, 23, 27)) {
+                    universityHoliday = true
+                }
+            }
+            if (month == 6) {
+                if (day !in arrayListOf(11, 15, 19, 23, 27)) {
+                    universityHoliday = true
+                }
+            }
+            if (month in arrayListOf(7, 8)) {
+                universityHoliday = true
+            }
+            if ((month == 2) && (day in arrayListOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))) {
+                universityHoliday = true
+            }
+
+            households.parallelStream().forEach { household ->
+                household.agents.forEach { agent ->
+                    if (agent.healthStatus == 1) {
+                        agent.findInfectivity()
+                        contactsInHouseholdForAgent(household, false, agent, tMap)
+                    }
+                }
+            }
+
+            if ((universityHoliday) && (schoolHoliday) && (kinderHoliday) && (workingHoliday)) {
+                households.parallelStream().forEach { household ->
+                    household.agents.forEach { agent ->
+                        if (agent.healthStatus == 1) {
+                            contactsInHouseholdForAgent(household, true, agent, tMap)
+                        }
+                    }
+                }
+            } else if (holiday) {
+                households.parallelStream().forEach { household ->
+                    household.agents.forEach { agent ->
+                        if (agent.healthStatus == 1) {
+                            contactsInHouseholdForAgent(household, true, agent, tMap)
+                        }
+                    }
+                }
+            } else {
+                if (!workingHoliday) {
+                    if (!kinderHoliday) {
+                        kindergarten.groupsByAge.parallelStream().forEach { groupByAge ->
+                            groupByAge.forEach { group ->
+                                group.agents.forEach { agent ->
+                                    if ((agent.healthStatus == 1) &&
+                                            (!agent.isStayingHomeWhenInfected)) {
+                                        contactsInGroupForAgent(group, agent, tMap)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    workplace.workingGroups.parallelStream().forEach { group ->
+                        group.agents.forEach { agent ->
+                            if ((agent.healthStatus == 1) &&
+                                    (!agent.isStayingHomeWhenInfected) && (!agent.isOnMotherLeave)) {
+                                contactsInGroupForAgentAtWork(group, agent, tMap)
+                            }
+                        }
+                    }
+                }
+                if (!schoolHoliday) {
+                    school.groupsByAge.forEachIndexed { index, groupByAge ->
+                        if ((index == 0) && (workingHoliday)) {
+
+                        } else {
+                            groupByAge.forEach { group ->
+                                group.agents.forEach { agent ->
+                                    if ((agent.healthStatus == 1) &&
+                                            (!agent.isStayingHomeWhenInfected)) {
+                                        contactsInGroupForAgent(group, agent, tMap)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!universityHoliday) {
+                    university.groupsByAge.parallelStream().forEach { groupByAge ->
+                        groupByAge.forEach { group ->
+                            group.agents.forEach { agent ->
+                                if ((agent.healthStatus == 1) &&
+                                        (!agent.isStayingHomeWhenInfected) && (!agent.isOnMotherLeave)) {
+                                    contactsInGroupForAgent(group, agent, tMap)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                households.parallelStream().forEach { household ->
+                    household.agents.forEach { agent ->
+                        if ((agent.activityStatus == 0) ||
+                                (agent.isStayingHomeWhenInfected) ||
+                                ((agent.activityStatus == 1) && kinderHoliday) ||
+                                ((agent.activityStatus == 2) && schoolHoliday) ||
+                                ((agent.age == 7) && workingHoliday) ||
+                                ((agent.activityStatus == 3) && universityHoliday) ||
+                                ((agent.activityStatus == 4) && workingHoliday)) {
+
+                            if (agent.healthStatus == 1) {
+
+                                household.agents.forEach { agent2 ->
+                                    if ((agent2.activityStatus == 0) ||
+                                            (agent2.isStayingHomeWhenInfected) ||
+                                            ((agent2.activityStatus == 1) && kinderHoliday) ||
+                                            ((agent2.activityStatus == 2) && schoolHoliday) ||
+                                            ((agent2.age == 7) && workingHoliday) ||
+                                            ((agent2.activityStatus == 3) && universityHoliday) ||
+                                            ((agent2.activityStatus == 4) && workingHoliday)) {
+
+                                        val agent2IsImmune = when (agent.infectionType) {
+                                            "fluA" -> agent2.fluAImmunity
+                                            "fluB" -> agent2.fluBImmunity
+                                            "RV" -> agent2.RVImmunity
+                                            "RSV" -> agent2.RSVImmunity
+                                            "AdV" -> agent2.AdVImmunity
+                                            "PIV" -> agent2.PIVImmunity
+                                            "CoV" -> agent2.CoVImmunity
+                                            else -> true
+                                        }
+                                        if ((!agent2IsImmune) &&
+                                                (agent2.healthStatus == 0)) {
+
+                                            val durationCoeff = 1 / (1 + exp(
+                                                    -getAdditionalHouseholdContactDuration() + durationBias))
+
+//                                            val durationCoeff = getAdditionalHouseholdContactDuration() / 24.0
+
+                                            val curTemp = (temp[tempDay] - minTemp) / maxMinTemp
+                                            val externalInfluence = (tMap[agent.infectionType] ?: error("Required")) *
+                                                    curTemp + 1.0
+
+                                            val randNum = (0..9999).random() * 0.0001
+                                            val susceptibility = when (agent.infectionType) {
+                                                "fluA" -> agent.fluASusceptibility
+                                                "fluB" -> agent.fluBSusceptibility
+                                                "RV" -> agent.RVSusceptibility
+                                                "RSV" -> agent.RSVSusceptibility
+                                                "AdV" -> agent2.AdVSusceptibility
+                                                "PIV" -> agent2.PIVSusceptibility
+                                                "CoV" -> agent2.CoVSusceptibility
+                                                else -> 0.0
+                                            }
+                                            val probab = agent.infectivity *
+                                                    susceptibility *
+                                                    externalInfluence *
+                                                    durationCoeff
+                                            if (randNum < probab) {
+                                                agent2.healthStatus = 3
+                                                agent2.infectionType = agent.infectionType
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            households.forEach { household ->
+                household.agents.forEach { agent ->
+                    when (agent.healthStatus) {
+                        3 -> {
+                            numOfInfected += 1
+                            agent.healthStatus = 2
+                        }
+                        1 -> {
+                            if (agent.daysInfected == agent.shouldBeInfected) {
+                                agent.healthStatus = 2
+                                agent.daysImmune = 1
+                            } else {
+                                agent.daysInfected += 1
+                                if (!agent.isStayingHomeWhenInfected) {
+                                    agent.isStayingHomeWhenInfected = agent.shouldStayAtHome()
+                                    if (agent.isStayingHomeWhenInfected) {
+                                        if (agent.age < 14) {
+                                            for (otherAgent in household.agents) {
+                                                if (otherAgent.isMother) {
+                                                    otherAgent.isOnMotherLeave = true
+                                                    break
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            dayOfTheWeek += 1
+            if (dayOfTheWeek == 8) {
+                dayOfTheWeek = 1
+            }
+            day += 1
+            if (globalDay == 18) {
+                break
+            }
+
+            globalDay += 1
+            tempDay += 1
+            if (tempDay == 366) {
+                tempDay = 0
+            }
+            if (tempDay == 59) {
+                tempDay = 60
+            }
+
+            if ((month in arrayListOf(1, 3, 5, 7, 8, 10) && (day == 32)) ||
+                    (month in arrayListOf(4, 6, 9, 11) && (day == 31)) ||
+                    (month == 2) and (day == 29)) {
+                day = 1
+                month += 1
+                println("Month $month")
+            } else if ((month == 12) && (day == 32)) {
+                day = 1
+                month = 1
+                println("Month 1")
+            }
+        }
+        return numOfInfected
     }
 }
