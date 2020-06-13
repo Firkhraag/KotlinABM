@@ -1,12 +1,13 @@
 package application.model
 
-class Household(val type: String,
-                val home: Home) {
+// Домохозяйство (тип)
+class Household(val type: String) {
 
+    // Массив агентов
     val agents = arrayListOf<Agent>()
 
+    // Добавить агента
     fun addAgent(agent: Agent) {
         agents.add(agent)
     }
-
 }

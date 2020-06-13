@@ -2,35 +2,67 @@ package application.model
 
 import application.utility.generateBarabasiAlbertNetworkForWork
 
+// Класс, содержащий все рабочие коллективы
 class Workplace {
 
-    private val m = 8
+    // Минимальный размер фирмы
+    private val minFirmSize = 6
+    // Максимальный размер фирмы
+    private val maxFirmSize = 2500 - minFirmSize
 
-    fun generateLastBarabasiAlbertNetwork() {
-        if (companies[companies.size - 1].agents.size >= m) {
-            generateBarabasiAlbertNetworkForWork(
-                    companies[companies.size - 1], m)
-        } else {
-            generateBarabasiAlbertNetworkForWork(
-                    companies[companies.size - 1], companies[companies.size - 1].agents.size)
+    // Индексы не полностью заполненных фирм
+    private val indexesOfWorkplacesToFill = arrayListOf<Int>()
+
+    // Создание графа Барабаши-Альберт для последних добавленных фирм
+    fun generateLastBarabasiAlbertNetworks() {
+        for (i in indexesOfWorkplacesToFill) {
+            if (workingGroups[i].agents.size == 0) {
+                // Агентов нет
+                continue
+            }
+            if (workingGroups[i].agents.size >= minFirmSize) {
+                generateBarabasiAlbertNetworkForWork(workingGroups[i], minFirmSize)
+            } else {
+                // Число агентов меньше, чем минимальный размер фирмы
+                generateBarabasiAlbertNetworkForWork(workingGroups[i], workingGroups[i].agents.size)
+            }
         }
     }
 
-    private val zipfDistribution = org.apache.commons.math3.distribution.ZipfDistribution(3000, 1.0)
-    private var currentGroupSize = zipfDistribution.sample() + (m - 1)
+    // Распределение по закону Ципфа
+    private val zipfDistribution = org.apache.commons.math3.distribution.ZipfDistribution(maxFirmSize, 1.059)
+    // Размеры фирм
+    private val groupSizes = arrayListOf<Int>()
+    // Массив фирм
+    val workingGroups = arrayListOf<Group>()
 
-    val companies = arrayListOf<Company>()
+    // В сколько фирм добавляем агентов
+    private val batchSize = 100
 
-    fun addAgent(agent: Agent, homes: ArrayList<Home>) {
-        if (companies.size == 0) {
-            companies.add(Company(homes[(homes.indices).random()]))
+    // Добавить агента
+    fun addAgent(agent: Agent) {
+        // Начальный набор фирм
+        if (workingGroups.size == 0) {
+            // Добавление новых фирм
+            for (i in (0 until batchSize)) {
+                workingGroups.add(Group())
+                indexesOfWorkplacesToFill.add(workingGroups.size - 1)
+                groupSizes.add(zipfDistribution.sample() + (minFirmSize - 1))
+            }
         }
-        if (companies[companies.size - 1].agents.size == currentGroupSize) {
-            generateBarabasiAlbertNetworkForWork(
-                    companies[companies.size - 1], m)
-            companies.add(Company(homes[(homes.indices).random()]))
-            currentGroupSize = zipfDistribution.sample() + (m - 1)
+        // Выбираем случайную фирму
+        val randomWorkplaceIndex = indexesOfWorkplacesToFill.random()
+        // Добавляем агента
+        workingGroups[randomWorkplaceIndex].addAgent(agent)
+        // Если заполнили
+        if (workingGroups[randomWorkplaceIndex].agents.size == groupSizes[randomWorkplaceIndex]) {
+            generateBarabasiAlbertNetworkForWork(workingGroups[randomWorkplaceIndex], minFirmSize)
+            // Убираем из массива фирм, нуждающихся в добавлении агентов
+            indexesOfWorkplacesToFill.remove(randomWorkplaceIndex)
+            // Добавляем новую фирму
+            workingGroups.add(Group())
+            indexesOfWorkplacesToFill.add(workingGroups.size - 1)
+            groupSizes.add(zipfDistribution.sample() + (minFirmSize - 1))
         }
-        companies[companies.size - 1].addAgent(agent)
     }
 }

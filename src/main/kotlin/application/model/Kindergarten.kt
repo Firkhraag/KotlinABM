@@ -1,8 +1,9 @@
 package application.model
 
-class Kindergarten(val pos: Pair<Double, Double>) {
+// Класс, содержащий все детские сады
+class Kindergarten {
 
-    // Number of people in a group
+    // Количество детей в группах
     private fun findNumberOfPeople(groupNum: Int): Int {
         return when (groupNum) {
             0 -> when ((0..99).random()) {
@@ -10,61 +11,42 @@ class Kindergarten(val pos: Pair<Double, Double>) {
                 in (20..79) -> 10
                 else -> 11
             }
-            1 -> when ((0..99).random()) {
+            in (1..2) -> when ((0..99).random()) {
                 in (0..19) -> 14
                 in (20..79) -> 15
                 else -> 16
             }
-            2 -> when ((0..99).random()) {
-                in (0..19) -> 14
-                in (20..79) -> 15
-                else -> 16
-            }
-            3 -> when ((0..99).random()) {
+            else -> when ((0..99).random()) {
                 in (0..19) -> 19
                 in (20..79) -> 20
                 else -> 21
             }
-            4 -> when ((0..99).random()) {
-                in (0..19) -> 19
-                in (20..79) -> 20
-                else -> 21
-            }
-            5 -> when ((0..99).random()) {
-                in (0..19) -> 19
-                in (20..79) -> 20
-                else -> 21
-            }
-            else -> 20
         }
     }
 
+    // Количество детей в последних добавленных группах
     private var currentGroupSize = arrayListOf(
-            findNumberOfPeople(0),
-            findNumberOfPeople(1),
-            findNumberOfPeople(2),
-            findNumberOfPeople(3),
-            findNumberOfPeople(4),
-            findNumberOfPeople(5))
+        findNumberOfPeople(0),
+        findNumberOfPeople(1),
+        findNumberOfPeople(2),
+        findNumberOfPeople(3),
+        findNumberOfPeople(4),
+        findNumberOfPeople(5)
+    )
 
+    // Группы по годам
     val groupsByAge = arrayListOf(
-            arrayListOf<Group>(),
-            arrayListOf(),
-            arrayListOf(),
-            arrayListOf(),
-            arrayListOf(),
-            arrayListOf())
+        arrayListOf<Group>(),
+        arrayListOf(),
+        arrayListOf(),
+        arrayListOf(),
+        arrayListOf(),
+        arrayListOf()
+    )
 
-    val adultNeeded = arrayListOf(
-            false,
-            false,
-            false,
-            false,
-            false,
-            false)
-
+    // Добавить агента
     fun addAgent(agent: Agent) {
-        // Group number by age
+        // Выбор группы по возрасту
         val groupNum = when (agent.age) {
             0 -> 0
             1 -> 1
@@ -73,19 +55,18 @@ class Kindergarten(val pos: Pair<Double, Double>) {
             4 -> if ((0..1).random() == 0) 3 else 4
             5 -> if ((0..1).random() == 0) 4 else 5
             6 -> 5
-            else -> 99
+            else -> error("Wrong age")
         }
+        // Добавление группы, если отсутствует
         if (groupsByAge[groupNum].size == 0) {
             groupsByAge[groupNum].add(Group())
-
-            adultNeeded[groupNum] = true
         }
+        // Группа заполнена
         if (groupsByAge[groupNum][groupsByAge[groupNum].size - 1].agents.size == currentGroupSize[groupNum]) {
             groupsByAge[groupNum].add(Group())
             currentGroupSize[groupNum] = findNumberOfPeople(groupNum)
-            adultNeeded[groupNum] = true
         }
-
+        // Добавление агента в последнюю добавленную группу
         groupsByAge[groupNum][groupsByAge[groupNum].size - 1].addAgent(agent)
     }
 }

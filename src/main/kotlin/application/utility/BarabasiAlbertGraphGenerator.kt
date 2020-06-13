@@ -1,8 +1,11 @@
 package application.utility
 
-import application.model.Company
+import application.model.Group
 
-fun generateBarabasiAlbertNetworkForWork(group: Company, m: Int) {
+// Создание графа Барабаши-Альберта
+// На вход подаются группа с набором агентов (group) и число минимальных связей, которые должен иметь агент (m)
+fun generateBarabasiAlbertNetworkForWork(group: Group, m: Int) {
+    // Связный граф с m вершинами
     for (i in 0 until m) {
         val agent = group.agents[i]
         for (j in 0 until m) {
@@ -10,10 +13,13 @@ fun generateBarabasiAlbertNetworkForWork(group: Company, m: Int) {
             agent.connectedWorkAgents.add(j)
         }
     }
+    // Сумма связей всех вершин
     var degreeSum = m * (m - 1)
+    // Добавление новых вершин
     for (i in m until group.agents.size) {
         val agent = group.agents[i]
         var addedCon = 0
+        // Новая вершина должна иметь m связей
         while (addedCon < m) {
             for (j in 0 until i) {
                 val agent2 = group.agents[j]

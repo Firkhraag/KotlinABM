@@ -2,31 +2,37 @@ package application.model
 
 import kotlin.math.*
 
-class Agent(private val isMale: Boolean, var age: Int, val household: Household) {
+// Агент (является ли мужчиной, возраст)
+class Agent(val isMale: Boolean, var age: Int) {
 
-    // True if agent needs to take parental leave if the child in his housesehold
-    // becomes infected and stays at home
-    var isMother = false
-    // True if agent stays stays at home because of parental leave
+    // Нужда в больничном по уходу за ребенком дома в случае его болезни
+    var needMotherLeave = false
+    // Взял ли агент на больничном по уходу за ребенком
     var isOnMotherLeave = false
 
-    // If age = 0 then age is defined by months after birth. Chosen randomly
+    // Месяц для младенцев 1-го года жизни
     var month = (1..12).random()
 
-    // List of agent ids that come in contact with current age each day
+    // Массив идентификаторов коллег по работе, с которыми происходят контакты
     var connectedWorkAgents = arrayListOf<Int>()
 
-    // Current health status
-    // 0 - susceptible, 1 - infected, 2 - recovered, 3 - exposed
+    // Состояние агента
+    // 0 - восприимчивый, 1 - инфицированный, 2 - резистентный, 3 - готов перейти в инкубационный период
     var healthStatus = when (age) {
-        in 0..2 -> if ((0..999).random() < 15) 1 else 0
-        in 3..6 -> if ((0..999).random() < 8) 1 else 0
-        in 7..14 -> if ((0..999).random() < 5) 1 else 0
-        else -> if ((0..999).random() < 2) 1 else 0
+        in 0..2 -> if ((0..999).random() < 16) 1 else 0 // 0.016
+        in 3..6 -> if ((0..999).random() < 10) 1 else 0 // 0.01
+        in 7..14 -> if ((0..999).random() < 7) 1 else 0 // 0.007
+        else -> if ((0..999).random() < 3) 1 else 0 // 0.003
     }
 
-    // Type of infection with initial ratio for summer
-    // FluA, FluB, RV, RSV, AdV, PIV, CoV
+    // Тип инфекции
+    // FluA - грипп типа A
+    // FluB - грипп типа B
+    // RV - риновирус
+    // RSV - респираторно-синцитиальный вирус
+    // AdV - аденовирус
+    // PIV - парагрипп
+    // CoV - коронавирус (229e, oc43)
     var infectionType = if (healthStatus == 1) {
         when ((0..99).random()) {
             in 0..59 -> "RV" // 60%
@@ -35,161 +41,401 @@ class Agent(private val isMale: Boolean, var age: Int, val household: Household)
         }
     } else "none"
 
-    // Days after recovering from last infection
+    // Дней в резистентном состоянии
     var daysImmune = if (healthStatus == 2) 1 else 0
 
-    //Type-specific immunity
-    var fluAImmunity = false
-    var fluBImmunity = false
-    var RVImmunity = false
-    var RSVImmunity = false
-    var AdVImmunity = false
-    var PIVImmunity = false
-    var CoVImmunity = false
+    // Типоспецифический иммунитет
+    var hasImmunityFluA = false
+    var hasImmunityFluB = false
+    var hasImmunityRV = false
+    var hasImmunityRSV = false
+    var hasImmunityAdV = false
+    var hasImmunityPIV = false
+    var hasImmunityCoV = false
 
-    // Days after recovering from last type-specific infection
-    var RVImmunityDays = 0
-    var RSVImmunityDays = 0
-    var PIVImmunityDays = 0
-    var AdVImmunityDays = 0
-    var CoVImmunityDays = 0
+    // Дней после приобретения типоспецифического иммунитета
+    var immunityRVDays = 0
+    var immunityRSVDays = 0
+    var immunityPIVDays = 0
+    var immunityAdVDays = 0
+    var immunityCoVDays = 0
 
-    // SD is 0.15
-    fun willBeInfected(): Int {
-        val rand = java.util.Random()
+    // Продолжительность периода болезни
+    fun findInfectionPeriod(): Int {
         return if (age < 16) {
+            // Ребенок
             when(infectionType) {
-                "fluA" -> (8.8 + rand.nextGaussian() * 1.32).toInt()
-                "fluB" -> (7.8 + rand.nextGaussian() * 1.17).toInt()
-                "RV" -> (11.4 + rand.nextGaussian() * 1.71).toInt()
-                "RSV" -> (9.3 + rand.nextGaussian() * 1.4).toInt()
-                "AdV" -> (9.0 + rand.nextGaussian() * 1.35).toInt()
-                "PIV" -> (8.0 + rand.nextGaussian() * 1.2).toInt()
-                "CoV" -> (8.0 + rand.nextGaussian() * 1.2).toInt()
+                "fluA" -> {
+                    // Erlang distribution (mean = 8.8, SD = 1.936)
+                    val minValue = 4.0
+                    val maxValue = 14.0
+                    val mean = 8.8
+                    val variance = 3.748
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "fluB" -> {
+                    // Erlang distribution (mean = 7.8, SD = 1.716)
+                    val minValue = 4.0
+                    val maxValue = 14.0
+                    val mean = 7.8
+                    val variance = 2.94
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "RV" -> {
+                    // Erlang distribution (mean = 11.4, SD = 2.5)
+                    val minValue = 4.0
+                    val maxValue = 14.0
+                    val mean = 11.4
+                    val variance = 6.25
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "RSV" -> {
+                    // Erlang distribution (mean = 9.3, SD = 2.0)
+                    val minValue = 4.0
+                    val maxValue = 14.0
+                    val mean = 9.3
+                    val variance = 4.0
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "AdV" -> {
+                    // Erlang distribution (mean = 9.0, SD = 1.98)
+                    val minValue = 4.0
+                    val maxValue = 14.0
+                    val mean = 9.0
+                    val variance = 3.92
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "PIV" -> {
+                    // Erlang distribution (mean = 8.0, SD = 1.76)
+                    val minValue = 4.0
+                    val maxValue = 14.0
+                    val mean = 8.0
+                    val variance = 3.1
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "CoV" -> {
+                    // Erlang distribution (mean = 8.0, SD = 1.76)
+                    val minValue = 4.0
+                    val maxValue = 14.0
+                    val mean = 8.0
+                    val variance = 3.1
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
                 else -> 0
             }
         } else {
+            // Взрослый
             when(infectionType) {
-                "fluA" -> round(4.8 + rand.nextGaussian() * 0.72).toInt()
-                "fluB" -> round(3.7 + rand.nextGaussian() * 0.56).toInt()
-                "RV" -> (10.1 + rand.nextGaussian() * 1.5).toInt()
-                "RSV" -> (7.4 + rand.nextGaussian() * 1.11).toInt()
-                "AdV" -> (8.0 + rand.nextGaussian() * 1.2).toInt()
-                "PIV" -> (7.0 + rand.nextGaussian() * 1.05).toInt()
-                "CoV" -> (7.0 + rand.nextGaussian() * 1.05).toInt()
+                "fluA" -> {
+                    // Erlang distribution (mean = 4.8, SD = 1.056)
+                    val minValue = 3.0
+                    val maxValue = 12.0
+                    val mean = 4.8
+                    val variance = 1.12
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "fluB" -> {
+                    // Erlang distribution (mean = 3.7, SD = 0.814)
+                    val minValue = 3.0
+                    val maxValue = 12.0
+                    val mean = 3.7
+                    val variance = 0.66
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "RV" -> {
+                    // Erlang distribution (mean = 10.1, SD = 2.22)
+                    val minValue = 3.0
+                    val maxValue = 12.0
+                    val mean = 10.1
+                    val variance = 4.93
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "RSV" -> {
+                    // Erlang distribution (mean = 7.4, SD = 1.63)
+                    val minValue = 3.0
+                    val maxValue = 12.0
+                    val mean = 7.4
+                    val variance = 2.66
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "AdV" -> {
+                    // Erlang distribution (mean = 8.0, SD = 1.76)
+                    val minValue = 3.0
+                    val maxValue = 12.0
+                    val mean = 8.0
+                    val variance = 3.1
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "PIV" -> {
+                    // Erlang distribution (mean = 7.0, SD = 1.54)
+                    val minValue = 3.0
+                    val maxValue = 12.0
+                    val mean = 7.0
+                    val variance = 2.37
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
+                "CoV" -> {
+                    // Erlang distribution (mean = 7.0, SD = 1.54)
+                    val minValue = 3.0
+                    val maxValue = 12.0
+                    val mean = 7.0
+                    val variance = 2.37
+                    var scale = variance / mean
+                    val shape = round(mean / scale)
+                    scale = mean / shape
+                    val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                    min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+                }
                 else -> 0
             }
         }
     }
+    var infectionPeriod = findInfectionPeriod()
 
-    // Incubation period
-    fun willHaveIncubationPeriod(): Int {
-        val rand = java.util.Random()
-        return min (6, max (1, when (infectionType) {
-            "fluA" -> round(1.4 + rand.nextGaussian() * 0.1).toInt()
-            "fluB" -> 1
-            "RV" -> round(1.9 + rand.nextGaussian() * 0.25).toInt()
-            "RSV" -> round(4.4 + rand.nextGaussian() * 0.25).toInt()
-            "AdV" -> round(5.6 + rand.nextGaussian() * 0.3).toInt()
-            "PIV" -> round(2.6 + rand.nextGaussian() * 0.25).toInt()
-            "CoV" -> round(3.2 + rand.nextGaussian() * 0.2).toInt()
+    // Продолжительность инкубационного периода
+    fun findIncubationPeriod(): Int {
+        return when (infectionType) {
+            "fluA" -> {
+                // Erlang distribution (mean = 1.4, SD = 0.3)
+                val minValue = 1.0
+                val maxValue = 7.0
+                val mean = 1.4
+                val variance = 0.09
+                var scale = variance / mean
+                val shape = round(mean / scale)
+                scale = mean / shape
+                val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+            }
+            "fluB" -> {
+                // Erlang distribution (mean = 1.0, SD = 0.22)
+                val minValue = 1.0
+                val maxValue = 7.0
+                val mean = 1.0
+                val variance = 0.0484
+                var scale = variance / mean
+                val shape = round(mean / scale)
+                scale = mean / shape
+                val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+            }
+            "RV" -> {
+                // Erlang distribution (mean = 1.9, SD = 0.418)
+                val minValue = 1.0
+                val maxValue = 7.0
+                val mean = 1.9
+                val variance = 0.175
+                var scale = variance / mean
+                val shape = round(mean / scale)
+                scale = mean / shape
+                val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+            }
+            "RSV" -> {
+                // Erlang distribution (mean = 4.4, SD = 0.968)
+                val minValue = 1.0
+                val maxValue = 7.0
+                val mean = 4.4
+                val variance = 0.937
+                var scale = variance / mean
+                val shape = round(mean / scale)
+                scale = mean / shape
+                val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+            }
+            "AdV" -> {
+                // Erlang distribution (mean = 5.6, SD = 1.23)
+                val minValue = 1.0
+                val maxValue = 7.0
+                val mean = 5.6
+                val variance = 1.51
+                var scale = variance / mean
+                val shape = round(mean / scale)
+                scale = mean / shape
+                val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+            }
+            "PIV" -> {
+                // Erlang distribution (mean = 2.6, SD = 0.572)
+                val minValue = 1.0
+                val maxValue = 7.0
+                val mean = 2.6
+                val variance = 0.327
+                var scale = variance / mean
+                val shape = round(mean / scale)
+                scale = mean / shape
+                val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+            }
+            "CoV" -> {
+                // Erlang distribution (mean = 3.2, SD = 0.704)
+                val minValue = 1.0
+                val maxValue = 7.0
+                val mean = 3.2
+                val variance = 0.496
+                var scale = variance / mean
+                val shape = round(mean / scale)
+                scale = mean / shape
+                val erlangDistribution = org.apache.commons.math3.distribution.GammaDistribution(shape, scale)
+                min(maxValue, max(minValue, erlangDistribution.sample())).roundToInt()
+            }
             else -> 0
-        }))
+        }
     }
+    var incubationPeriod = findIncubationPeriod()
 
-    // 25% chance of being asymptomatic
-    // 20% chance of being asymptomatic
-    fun willBeAsymptomatic(): Boolean {
+    // Протекание болезни в бессимптомной форме
+    fun findIfWillBeAsymptomatic(): Boolean {
+        // Вероятность бессимптомной формы
         val probab = when (infectionType) {
+            // Грипп - 16%
             "fluA" -> 16
             "fluB" -> 16
-            else -> 25
+            // Остальные инфекции - 30%
+            else -> 30
         }
         return (0..99).random() >= 100 - probab
     }
+    var isAsymptomatic = findIfWillBeAsymptomatic()
 
-    // Isolation and registration
-    fun shouldStayAtHome(): Boolean {
+    // Самоизоляция и выявление
+    fun findIfShouldStayAtHome(): Boolean {
+        // Если бессимптомный
         if (isAsymptomatic) {
             return false
         }
+        // Дней от начала симптомов
         return when (daysInfected) {
             1 -> when (age) {
-                in 0..7 -> ((0..999).random() < 304)
-                in 8..17 -> ((0..999).random() < 203)
-                else -> ((0..9).random() == 0)
+                in 0..7 -> ((0..999).random() < 304) // 30%
+                in 8..17 -> ((0..999).random() < 203) // 20%
+                else -> ((0..9).random() == 0) // 10%
             }
             2 -> when (age) {
-                in 0..7 -> ((0..999).random() < 575)
-                in 8..17 -> ((0..999).random() < 498)
-                else -> ((0..999).random() < 333)
+                in 0..7 -> ((0..999).random() < 575) // 58%
+                in 8..17 -> ((0..999).random() < 498) // 50%
+                else -> ((0..999).random() < 333) // 33%
             }
             3 -> when (age) {
-                in 0..7 -> ((0..999).random() < 324)
-                in 8..17 -> ((0..999).random() < 375)
-                else -> ((0..999).random() < 167)
+                in 0..7 -> ((0..999).random() < 324) // 32%
+                in 8..17 -> ((0..999).random() < 375) // 38%
+                else -> ((0..999).random() < 167) // 17%
             }
             else -> false
         }
     }
+    var isStayingHomeWhenInfected = findIfShouldStayAtHome()
 
-    // Mean viral load
-    fun willBeMeanViralLoad(): Double {
-        val rand = java.util.Random()
+    // Средняя вирусная нагрузка
+    fun findMeanViralLoad(): Double {
         return when(infectionType) {
             "fluA" -> {
                 when(age) {
-                    in 0..2 -> 4.6 + rand.nextGaussian() * 0.7
-                    in 3..15 -> 3.45 + rand.nextGaussian() * 0.5
-                    else -> 2.3 + rand.nextGaussian() * 0.3
+                    in 0..2 -> 4.6
+                    in 3..15 -> 3.45
+                    else -> 2.3
                 }
             }
             "fluB" -> {
                 when(age) {
-                    in 0..2 -> 4.7 + rand.nextGaussian() * 0.7
-                    in 3..15 -> 3.53 + rand.nextGaussian() * 0.5
-                    else -> 2.35 + rand.nextGaussian() * 0.3
+                    in 0..2 -> 4.7
+                    in 3..15 -> 3.53
+                    else -> 2.35
                 }
             }
             "RV" -> {
                 when(age) {
-                    in 0..2 -> 3.5 + rand.nextGaussian() * 0.7
-                    in 3..15 -> 2.63 + rand.nextGaussian() * 0.5
-                    else -> 1.75 + rand.nextGaussian() * 0.3
+                    in 0..2 -> 3.5
+                    in 3..15 -> 2.63
+                    else -> 1.75
                 }
             }
             "RSV" -> {
                 when(age) {
-                    in 0..2 -> 6.0 + rand.nextGaussian() * 0.7
-                    in 3..15 -> 4.5 + rand.nextGaussian() * 0.5
-                    else -> 2.25 + rand.nextGaussian() * 0.3
+                    in 0..2 -> 6.0
+                    in 3..15 -> 4.5
+                    else -> 2.25
                 }
             }
             "AdV" -> {
                 when(age) {
-                    in 0..2 -> 4.1 + rand.nextGaussian() * 0.7
-                    in 3..15 -> 3.08 + rand.nextGaussian() * 0.5
-                    else -> 2.05 + rand.nextGaussian() * 0.3
+                    in 0..2 -> 4.1
+                    in 3..15 -> 3.08
+                    else -> 2.05
                 }
             }
             "PIV" -> {
                 when(age) {
-                    in 0..2 -> 4.7 + rand.nextGaussian() * 0.7
-                    in 3..15 -> 3.53 + rand.nextGaussian() * 0.5
-                    else -> 2.35 + rand.nextGaussian() * 0.3
+                    in 0..2 -> 4.7
+                    in 3..15 -> 3.53
+                    else -> 2.35
                 }
             }
             "CoV" -> {
                 when(age) {
-                    in 0..2 -> 4.93 + rand.nextGaussian() * 0.7
-                    in 3..15 -> 3.7 + rand.nextGaussian() * 0.5
-                    else -> 2.47 + rand.nextGaussian() * 0.3
+                    in 0..2 -> 4.93
+                    in 3..15 -> 3.7
+                    else -> 2.47
                 }
             }
             else -> 0.0
         }
     }
+    var meanViralLoad = findMeanViralLoad()
 
+    // Обновить вирусную нагрузку на текущем шаге
     private fun findViralLoad(): Double {
         return min(12.0, if (daysInfected < 1) {
             if (incubationPeriod == 1) {
@@ -200,8 +446,8 @@ class Agent(private val isMale: Boolean, var age: Int, val household: Household)
                 k * daysInfected + b
             }
         } else {
-            val k = 2 * meanViralLoad / (1 - shouldBeInfected)
-            val b = -k * shouldBeInfected
+            val k = 2 * meanViralLoad / (1 - infectionPeriod)
+            val b = -k * infectionPeriod
             if (isAsymptomatic) {
                 1/2 * (k * daysInfected + b)
             } else {
@@ -210,36 +456,28 @@ class Agent(private val isMale: Boolean, var age: Int, val household: Household)
         })
     }
 
-    var isAsymptomatic = willBeAsymptomatic()
-    var incubationPeriod = willHaveIncubationPeriod()
-    var shouldBeInfected = willBeInfected()
-    var daysInfected = if (healthStatus == 1) ((1 - incubationPeriod)..shouldBeInfected).random() else 0
-    var isStayingHomeWhenInfected = shouldStayAtHome()
-    var meanViralLoad = willBeMeanViralLoad()
+    // День с момента инфицирования
+    var daysInfected = if (healthStatus == 1) ((1 - incubationPeriod)..infectionPeriod).random() else 0
 
+    // Обновление динамических свойств агента
     fun updateHealthParameters() {
-        isAsymptomatic = willBeAsymptomatic()
-        incubationPeriod = willHaveIncubationPeriod()
-        shouldBeInfected = willBeInfected()
+        isAsymptomatic = findIfWillBeAsymptomatic()
+        incubationPeriod = findIncubationPeriod()
+        infectionPeriod = findInfectionPeriod()
         daysInfected = 1 - incubationPeriod
-        isStayingHomeWhenInfected = shouldStayAtHome()
-        meanViralLoad = willBeMeanViralLoad()
+        isStayingHomeWhenInfected = findIfShouldStayAtHome()
+        meanViralLoad = findMeanViralLoad()
     }
 
-    // Ig Multipliers
-    // Multiplier for 19-29 compared to previous age group: 1.1347
-    // Multiplier for 30-59 compared to previous age group: 1.09
-    // Multiplier for 60+ compared to previous age group: 0.9
+    // Уровень IgG
     private fun getIgGLevel(): Double {
         val rand = java.util.Random()
         return when (age) {
-            0 -> {
-                when (month) {
-                    1 -> min(1480.0, max(399.0,913.85 + rand.nextGaussian() * 262.19))
-                    in 2..4 -> min(981.0, max(217.0,429.5 + rand.nextGaussian() * 145.59))
-                    in 5..7 -> min(1110.0, max(270.0,482.43 + rand.nextGaussian() * 236.8))
-                    else -> min(977.0, max(242.0,536.79 + rand.nextGaussian() * 186.62))
-                }
+            0 -> when (month) {
+                1 -> min(1480.0, max(399.0,913.85 + rand.nextGaussian() * 262.19))
+                in 2..4 -> min(981.0, max(217.0,429.5 + rand.nextGaussian() * 145.59))
+                in 5..7 -> min(1110.0, max(270.0,482.43 + rand.nextGaussian() * 236.8))
+                else -> min(977.0, max(242.0,536.79 + rand.nextGaussian() * 186.62))
             }
             1 -> min(1260.0, max(389.0,726.79 + rand.nextGaussian() * 238.61))
             2 -> min(1970.0, max(486.0,786.41 + rand.nextGaussian() * 249.14))
@@ -254,16 +492,15 @@ class Agent(private val isMale: Boolean, var age: Int, val household: Household)
         }
     }
 
+    // Уровень IgA
     private fun getIgALevel(): Double {
         val rand = java.util.Random()
         return when (age) {
-            0 -> {
-                when (month) {
-                    1 -> min(8.75, max(6.67,6.77 + rand.nextGaussian() * 0.45))
-                    in 2..4 -> min(24.6, max(6.67,9.58 + rand.nextGaussian() * 5.16))
-                    in 5..7 -> min(53.0, max(6.67,17.23 + rand.nextGaussian() * 9.77))
-                    else -> min(114.0, max(6.68,23.63 + rand.nextGaussian() * 12.37))
-                }
+            0 -> when (month) {
+                1 -> min(8.75, max(6.67,6.77 + rand.nextGaussian() * 0.45))
+                in 2..4 -> min(24.6, max(6.67,9.58 + rand.nextGaussian() * 5.16))
+                in 5..7 -> min(53.0, max(6.67,17.23 + rand.nextGaussian() * 9.77))
+                else -> min(114.0, max(6.68,23.63 + rand.nextGaussian() * 12.37))
             }
             1 -> min(103.0, max(13.1,34.09 + rand.nextGaussian() * 17.1))
             2 -> min(135.0, max(6.67,48.87 + rand.nextGaussian() * 24.52))
@@ -278,16 +515,15 @@ class Agent(private val isMale: Boolean, var age: Int, val household: Household)
         }
     }
 
+    // Уровень IgM
     private fun getIgMLevel(): Double {
         val rand = java.util.Random()
         return when (age) {
-            0 -> {
-                when (month) {
-                    1 -> min(50.9, max(5.1,16.89 + rand.nextGaussian() * 8.87))
-                    in 2..4 -> min(68.5, max(15.2,34.21 + rand.nextGaussian() * 13.55))
-                    in 5..7 -> min(130.0, max(26.9,69.05 + rand.nextGaussian() * 29.73))
-                    else -> min(162.0, max(24.2,73.42 + rand.nextGaussian() * 35.76))
-                }
+            0 -> when (month) {
+                1 -> min(50.9, max(5.1,16.89 + rand.nextGaussian() * 8.87))
+                in 2..4 -> min(68.5, max(15.2,34.21 + rand.nextGaussian() * 13.55))
+                in 5..7 -> min(130.0, max(26.9,69.05 + rand.nextGaussian() * 29.73))
+                else -> min(162.0, max(24.2,73.42 + rand.nextGaussian() * 35.76))
             }
             1 -> min(195.0, max(38.6,115.25 + rand.nextGaussian() * 41.63))
             2 -> min(236.0, max(42.7,104.66 + rand.nextGaussian() * 40.55))
@@ -302,39 +538,37 @@ class Agent(private val isMale: Boolean, var age: Int, val household: Household)
         }
     }
 
+    // Нормализованный суммарный уровень иммуноглобулина
     private fun getIgLevel(): Double {
+        // IgG
         val igGMax = 3005.46
         val igGMin = 217.0
+        // IgA
         val igAMax = 476.18
         val igAMin = 6.67
+        // IgM
         val igMMax = 399.5
         val igMMin = 5.1
-        return (getIgGLevel() + getIgALevel() + getIgMLevel() - igGMin - igAMin - igMMin) / (igGMax + igAMax + igMMax - igGMin - igAMin - igMMin)
+        return (getIgGLevel() + getIgALevel() + getIgMLevel() - igGMin - igAMin - igMMin) /
+                (igGMax + igAMax + igMMax - igGMin - igAMin - igMMin)
     }
 
-    var infectivity = 0.0
-    fun findInfectivity() {
-        infectivity = findViralLoad() / 12.0
+    // Влияние силы инфекции на вероятность инфицирования
+    var infectivityInfluence = 0.0
+    fun findInfectivityInfluence() {
+        infectivityInfluence = findViralLoad() / 12.0
     }
 
-    var fluASusceptibility = 0.0
-    var fluBSusceptibility = 0.0
-    var RVSusceptibility = 0.0
-    var RSVSusceptibility = 0.0
-    var AdVSusceptibility = 0.0
-    var PIVSusceptibility = 0.0
-    var CoVSusceptibility = 0.0
-    fun findSusceptibility(bMap: Map<String, Double>) {
-        fluASusceptibility = 2 / (1 + exp((bMap["fluA"] ?: error("Required")) * getIgLevel()))
-        fluBSusceptibility = 2 / (1 + exp((bMap["fluB"] ?: error("Required")) * getIgLevel()))
-        RVSusceptibility = 2 / (1 + exp((bMap["RV"] ?: error("Required")) * getIgLevel()))
-        RSVSusceptibility = 2 / (1 + exp((bMap["RSV"] ?: error("Required")) * getIgLevel()))
-        AdVSusceptibility = 2 / (1 + exp((bMap["AdV"] ?: error("Required")) * getIgLevel()))
-        PIVSusceptibility = 2 / (1 + exp((bMap["PIV"] ?: error("Required")) * getIgLevel()))
-        CoVSusceptibility = 2 / (1 + exp((bMap["CoV"] ?: error("Required")) * getIgLevel()))
-    }
+    // Влияние восприимчивости на вероятность инфицирования
+    val susceptibilityInfluenceFluA = 2 / (1 + exp((susceptibilityParameterMap["fluA"] ?: error("Required")) * getIgLevel()))
+    val susceptibilityInfluenceFluB = 2 / (1 + exp((susceptibilityParameterMap["fluB"] ?: error("Required")) * getIgLevel()))
+    val susceptibilityInfluenceRV = 2 / (1 + exp((susceptibilityParameterMap["RV"] ?: error("Required")) * getIgLevel()))
+    val susceptibilityInfluenceRSV = 2 / (1 + exp((susceptibilityParameterMap["RSV"] ?: error("Required")) * getIgLevel()))
+    val susceptibilityInfluenceAdV = 2 / (1 + exp((susceptibilityParameterMap["AdV"] ?: error("Required")) * getIgLevel()))
+    val susceptibilityInfluencePIV = 2 / (1 + exp((susceptibilityParameterMap["PIV"] ?: error("Required")) * getIgLevel()))
+    val susceptibilityInfluenceCoV = 2 / (1 + exp((susceptibilityParameterMap["CoV"] ?: error("Required")) * getIgLevel()))
 
-    // Data from census
+    // Социальный статус
     var activityStatus: Int = when (age) {
         // Ясли
         in 0..2 -> if ((0..99).random() < 23) 1 else 0
@@ -342,10 +576,8 @@ class Agent(private val isMale: Boolean, var age: Int, val household: Household)
         in 3..5 -> if ((0..99).random() < 83) 1 else 0
         6 -> 1
         // Школа
-        in 7..15 -> 2
-        in 16..17 -> 2
-        // 10% в колледж, 40% в школе, 50% - в универе
-        // Школа / универ
+        in 7..17 -> 2
+        // 50% - школа, 50% - универ
         18 -> if ((0..1).random() == 0) 2 else 3
         // 50% - универ, 50% - работа
         in 19..22 -> if ((0..1).random() == 0) 3 else 4
@@ -366,16 +598,9 @@ class Agent(private val isMale: Boolean, var age: Int, val household: Household)
                 in 30..39 -> if ((0..99).random() < 85) 4 else 0
                 in 40..49 -> if ((0..99).random() < 89) 4 else 0
                 in 50..59 -> if ((0..99).random() < 70) 4 else 0
-                else -> if ((0..99).random() < 29) 4 else 0
+                else -> if ((0..99).random() < 29) 5 else 0
             }
         }
         else -> 0
     }
-
-    // Uses metro to go to workplace
-    var usesMetro = if (activityStatus == 4) {
-        (0..99).random() < 63
-    } else false
-    var numberOfStationsWork = 0
-
 }

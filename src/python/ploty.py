@@ -22,6 +22,20 @@ pivData = [11, 14, 17, 14, 23, 28, 29, 30, 49, 35, 37, 38, 38, 54, 46, 35, 51, 4
 covData = [1, 2, 4, 1, 4, 2, 1, 2, 4, 2, 1, 5, 7, 4, 5, 7, 8, 5, 6, 15, 13, 6, 1, 7,
            9, 15, 20, 19, 25, 15, 9, 8, 6, 18, 20, 15, 12, 10, 5, 3, 1, 5, 7, 8, 3, 2, 1, 1, 1, 1, 1, 1]
 
+
+allData = np.array(fluData) + np.array(rsvData) + np.array(rvData) +\
+          np.array(advData) + np.array(pivData) + np.array(covData)
+
+ratios = np.zeros((52, 6))
+ratios[:, 0] = np.array(fluData) / allData
+ratios[:, 1] = np.array(rvData) / allData
+ratios[:, 2] = np.array(rsvData) / allData
+ratios[:, 3] = np.array(advData) / allData
+ratios[:, 4] = np.array(pivData) / allData
+ratios[:, 5] = np.array(covData) / allData
+df = pd.DataFrame(ratios)
+df.to_csv("etiologies.csv")
+
 arr = np.arange(52)
 xnew = np.linspace(arr.min(), arr.max(), 300)
 

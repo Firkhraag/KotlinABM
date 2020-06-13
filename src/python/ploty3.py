@@ -28,24 +28,24 @@ plt.xlabel('Время, проведенное в инфицированном �
 plt.legend()
 plt.show()
 
-b1 = 2.55
-b2 = 2.63
-b3 = 3.74
-b4 = 5.1
-b5 = 5.32
-b6 = 4.73
-b7 = 4.15
+b1 = 2.61
+b2 = 2.61
+b3 = 3.17
+b4 = 5.11
+b5 = 4.69
+b6 = 3.89
+b7 = 3.77
 x = np.linspace(0, 1, 100)
 y1 = 2 / (1 + np.exp(b1 * x))
-y2 = 2 / (1 + np.exp(b2 * x))
+# y2 = 2 / (1 + np.exp(b2 * x))
 y3 = 2 / (1 + np.exp(b3 * x))
 y4 = 2 / (1 + np.exp(b4 * x))
 y5 = 2 / (1 + np.exp(b5 * x))
 y6 = 2 / (1 + np.exp(b6 * x))
 y7 = 2 / (1 + np.exp(b7 * x))
 
-plt.plot(x, y1, c='r', label="FluA")
-plt.plot(x, y2, c='b', label="FluB")
+plt.plot(x, y1, c='r', label="FluA, FluB")
+# plt.plot(x, y2, c='b', label="FluB")
 plt.plot(x, y3, c="g", label="RV")
 plt.plot(x, y4, c='m', label="RSV")
 plt.plot(x, y5, c='y', label="AdV")
@@ -69,7 +69,7 @@ plt.show()
 
 
 x = np.linspace(0, 24, 100)
-y = 1 / (1 + np.exp(-x + 7.98))
+y = 1 / (1 + np.exp(-x + 7.05))
 
 # compose plot
 plt.plot(x, y, c="r")
@@ -78,13 +78,13 @@ plt.ylabel('Влияние продолжительности контакта')
 plt.xlabel('Продолжительность, ч')
 plt.show()
 
-k1 = -0.82
-k2 = -0.91
-k3 = -0.01
-k4 = -0.56
-k5 = -0.22
-k6 = -0.06
-k7 = -0.51
+k1 = -0.8
+k2 = -0.8
+k3 = -0.05
+k4 = -0.64
+k5 = -0.2
+# k6 = -0.05
+k7 = -0.8
 b = 1.0
 x = np.linspace(0, 1, 100)
 y1 = k1 * x + b
@@ -92,16 +92,16 @@ y2 = k2 * x + b
 y3 = k3 * x + b
 y4 = k4 * x + b
 y5 = k5 * x + b
-y6 = k6 * x + b
+# y6 = k6 * x + b
 y7 = k7 * x + b
 
-plt.plot(x, y1, c='r', label="FluA")
-plt.plot(x, y2, c='b', label="FluB")
-plt.plot(x, y3, c="g", label="RV")
+plt.plot(x, y1, c='r', label="FluA, FluB, CoV")
+# plt.plot(x, y2, c='b', label="FluB")
+plt.plot(x, y3, c="g", label="RV, PIV")
 plt.plot(x, y4, c='m', label="RSV")
 plt.plot(x, y5, c='y', label="AdV")
-plt.plot(x, y6, c='k', label="PIV")
-plt.plot(x, y7, c='c', label="CoV")
+# plt.plot(x, y6, c='k', label="PIV")
+# plt.plot(x, y7, c='c', label="CoV")
 plt.title("Влияние уровня температуры в зависимости от этиологии")
 plt.ylabel('Влияние температуры воздуха')
 plt.xlabel('Нормализованная температура воздуха')

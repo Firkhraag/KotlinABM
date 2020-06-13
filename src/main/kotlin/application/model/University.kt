@@ -1,8 +1,9 @@
 package application.model
 
-class University(val pos: Pair<Double, Double>) {
+// Класс, содержащий все университеты
+class University {
 
-    // Number of people in a group
+    // Количество агентов в группах
     private fun findNumberOfPeople(groupNum: Int): Int {
         return when (groupNum) {
             0 -> when ((0..99).random()) {
@@ -10,12 +11,7 @@ class University(val pos: Pair<Double, Double>) {
                 in (20..79) -> 15
                 else -> 16
             }
-            1 -> when ((0..99).random()) {
-                in (0..19) -> 13
-                in (20..79) -> 14
-                else -> 15
-            }
-            2 -> when ((0..99).random()) {
+            in (1..2) -> when ((0..99).random()) {
                 in (0..19) -> 13
                 in (20..79) -> 14
                 else -> 15
@@ -30,41 +26,37 @@ class University(val pos: Pair<Double, Double>) {
                 in (20..79) -> 12
                 else -> 13
             }
-            5 -> when ((0..99).random()) {
+            else -> when ((0..99).random()) {
                 in (0..19) -> 10
                 in (20..79) -> 11
                 else -> 12
             }
-            else -> 15
         }
     }
 
+    // Количество агентов в последних добавленных группах
     private var currentGroupSize = arrayListOf(
-            findNumberOfPeople(0),
-            findNumberOfPeople(1),
-            findNumberOfPeople(2),
-            findNumberOfPeople(3),
-            findNumberOfPeople(4),
-            findNumberOfPeople(5))
+        findNumberOfPeople(0),
+        findNumberOfPeople(1),
+        findNumberOfPeople(2),
+        findNumberOfPeople(3),
+        findNumberOfPeople(4),
+        findNumberOfPeople(5)
+    )
 
+    // Группы по годам
     val groupsByAge = arrayListOf(
-            arrayListOf<Group>(),
-            arrayListOf(),
-            arrayListOf(),
-            arrayListOf(),
-            arrayListOf(),
-            arrayListOf())
+        arrayListOf<Group>(),
+        arrayListOf(),
+        arrayListOf(),
+        arrayListOf(),
+        arrayListOf(),
+        arrayListOf()
+    )
 
-    val adultNeeded = arrayListOf(
-            false,
-            false,
-            false,
-            false,
-            false,
-            false)
-
+    // Добавить агента
     fun addAgent(agent: Agent) {
-        // Group number by age
+        // Выбор группы по возрасту
         val groupNum = when (agent.age) {
             18 -> 0
             19 -> if ((0..1).random() == 0) 0 else 1
@@ -73,19 +65,18 @@ class University(val pos: Pair<Double, Double>) {
             22 -> if ((0..1).random() == 0) 3 else 4
             23 -> if ((0..1).random() == 0) 4 else 5
             24 -> 5
-            else -> 99
+            else -> error("Wrong age")
         }
+        // Добавление группы, если отсутствует
         if (groupsByAge[groupNum].size == 0) {
             groupsByAge[groupNum].add(Group())
-
-            adultNeeded[groupNum] = true
         }
+        // Группа заполнена
         if (groupsByAge[groupNum][groupsByAge[groupNum].size - 1].agents.size == currentGroupSize[groupNum]) {
             groupsByAge[groupNum].add(Group())
             currentGroupSize[groupNum] = findNumberOfPeople(groupNum)
-            adultNeeded[groupNum] = true
         }
-
+        // Добавление агента в последнюю добавленную группу
         groupsByAge[groupNum][groupsByAge[groupNum].size - 1].addAgent(agent)
     }
 }

@@ -5,7 +5,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 
-fun writeTableResult(filepath: String, row: Int, stats: ArrayList<Int>) {
+// Запись массива целых чисел в новую строку таблицы
+fun writeTableInt(filepath: String, row: Int, stats: ArrayList<Int>) {
     try {
         val inputStream = FileInputStream(filepath)
         val xlWb = WorkbookFactory.create(inputStream)
@@ -20,13 +21,13 @@ fun writeTableResult(filepath: String, row: Int, stats: ArrayList<Int>) {
         val outputStream = FileOutputStream(filepath)
         xlWb.write(outputStream)
         xlWb.close()
-        inputStream.close()
     } catch(err: IOException) {
-        println("Unable to read the file: $filepath")
+        println("Unable to read the file")
     }
 }
 
-fun writeTableR0(filepath: String, row: Int, stats: ArrayList<Double>) {
+// Запись массива чисел с плавающей запятой в новую строку таблицы
+fun writeTableDouble(filepath: String, row: Int, stats: ArrayList<Double>) {
     try {
         val inputStream = FileInputStream(filepath)
         val xlWb = WorkbookFactory.create(inputStream)
@@ -41,8 +42,7 @@ fun writeTableR0(filepath: String, row: Int, stats: ArrayList<Double>) {
         val outputStream = FileOutputStream(filepath)
         xlWb.write(outputStream)
         xlWb.close()
-        inputStream.close()
     } catch(err: IOException) {
-        println("Unable to read the file: $filepath")
+        println("Unable to read the file")
     }
 }

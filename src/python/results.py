@@ -1089,7 +1089,7 @@ mean_res_recorded = (np.array(res_recorded1[:52]) + np.array(res_recorded2[:52])
                      np.array(res_recorded9[:52]) + np.array(res_recorded10[:52])) / 10
 
 plt.figure()
-plt.plot(np.linspace(1, 52, 52), res_recorded1[:52])
+plt.plot(np.linspace(1, 52, 52), res_recorded1[:52], label="модель")
 # plt.plot(np.linspace(1, 52, 52), res_recorded2[:52])
 # plt.plot(np.linspace(1, 52, 52), res_recorded3[:52])
 # plt.plot(np.linspace(1, 52, 52), res_recorded4[:52])
@@ -1113,9 +1113,21 @@ mean_res_recorded_daily = (np.array(df1.iloc[:, 1]) + np.array(df2.iloc[:, 1]) +
                            np.array(df6.iloc[:, 1]) + np.array(df7.iloc[:, 1]) + np.array(df8.iloc[:, 1]) +
                            np.array(df9.iloc[:, 1]) + np.array(df10.iloc[:, 1])) / 10
 
-corr, pval = pearsonr(list(temp_arr), list(mean_res_recorded_daily))
+# corr, pval = pearsonr(list(temp_arr), list(mean_res_recorded_daily))
+corr, pval = pearsonr(list(temp_arr), list(np.array(df1.iloc[:, 1])))
 print('Pearson correlation for model: %.3f' % corr)
 print('P-value: %.5f' % pval)
+
+
+corr, pval = pearsonr(list(temp_arr)[:183], list(np.array(df1.iloc[:183, 1])))
+print('Pearson correlation for model 1-st half: %.3f' % corr)
+print('P-value: %.5f' % pval)
+
+
+corr, pval = pearsonr(list(temp_arr)[183:], list(np.array(df1.iloc[183:, 1])))
+print('Pearson correlation for model 2-nd half: %.3f' % corr)
+print('P-value: %.5f' % pval)
+
 
 # plt.figure()
 # plt.plot(np.linspace(1, 52, 52), mean_flu, c='r')
@@ -1128,6 +1140,8 @@ print('P-value: %.5f' % pval)
 diff = 0
 for week in range(1, 53):
     diff += (mean_flu[str(week)] - mean_res_recorded[week - 1]) * (mean_flu[str(week)] - mean_res_recorded[week - 1])
+# for week in range(1, 53):
+#     diff += (mean_flu[str(week)] - np.array(res_recorded1[:52])[week - 1]) * (mean_flu[str(week)] - np.array(res_recorded1[:52])[week - 1])
 
 temp_arr2 = []
 for week in range(1, 53):
@@ -1143,12 +1157,27 @@ corr, pval = pearsonr(list(temp_arr2), list(mean_flu))
 print('Pearson correlation for data: %.3f' % corr)
 print('P-value: %.5f' % pval)
 
+corr, pval = pearsonr(list(temp_arr2[:27]), list(mean_flu[:27]))
+print('Pearson correlation for data 1-st half: %.3f' % corr)
+print('P-value: %.5f' % pval)
+
+print(list(temp_arr2[:27]))
+print(list(mean_flu[:27]))
+
+corr, pval = pearsonr(list(temp_arr2[27:]), list(mean_flu[27:]))
+print('Pearson correlation for data 2-nd half: %.3f' % corr)
+print('P-value: %.5f' % pval)
+
+print(list(temp_arr2[27:]))
+print(list(mean_flu[27:]))
+
 plt.figure()
 plt.scatter(temp_arr2, mean_flu, c='r', label="данные")
 plt.title("Зависимость регистрируемой заболеваемости от температуры")
 
-plt.scatter(temp_arr2, mean_res_recorded[:52], c='b', label="модель")
-plt.xlabel("Температура, ℃")
+plt.scatter(temp_arr2, np.array(res_recorded1[:52]), c='b', label="модель")
+# plt.scatter(temp_arr2, mean_res_recorded[:52], c='b', label="модель")
+plt.xlabel("Температура воздуха, ℃")
 plt.ylabel("Количество случаев на 1000 чел.")
 plt.legend()
 plt.show()
@@ -1191,20 +1220,21 @@ mean_res_CoV = (np.array(res1_CoV[:52]) + np.array(res2_CoV[:52]) +
                 np.array(res9_CoV[:52]) + np.array(res10_CoV[:52])) / 10
 
 plt.figure()
-plt.plot(np.linspace(1, 52, 52), res1_A[:52], c='r', label="FluA")
-plt.plot(np.linspace(1, 52, 52), res1_B[:52], c='b', label="FluB")
-plt.plot(np.linspace(1, 52, 52), res1_RV[:52], c='g', label="RV")
-plt.plot(np.linspace(1, 52, 52), res1_RSV[:52], c='m', label="RSV")
-plt.plot(np.linspace(1, 52, 52), res1_AdV[:52], c='y', label="AdV")
-plt.plot(np.linspace(1, 52, 52), res1_PIV[:52], c='k', label="PIV")
-plt.plot(np.linspace(1, 52, 52), res1_CoV[:52], c='c', label="CoV")
-# plt.plot(np.linspace(1, 52, 52), mean_res_A[:52], c='r', label="FluA")
-# plt.plot(np.linspace(1, 52, 52), mean_res_B[:52], c='b', label="FluB")
-# plt.plot(np.linspace(1, 52, 52), mean_res_RV[:52], c='g', label="RV")
-# plt.plot(np.linspace(1, 52, 52), mean_res_RSV[:52], c='m', label="RSV")
-# plt.plot(np.linspace(1, 52, 52), mean_res_AdV[:52], c='y', label="AdV")
-# plt.plot(np.linspace(1, 52, 52), mean_res_PIV[:52], c='k', label="PIV")
-# plt.plot(np.linspace(1, 52, 52), mean_res_CoV[:52], c='c', label="CoV")
+# plt.plot(np.linspace(1, 52, 52), res1_A[:52], c='r', label="FluA")
+# plt.plot(np.linspace(1, 52, 52), res1_B[:52], c='b', label="FluB")
+# plt.plot(np.linspace(1, 52, 52), res1_RV[:52], c='g', label="RV")
+# plt.plot(np.linspace(1, 52, 52), res1_RSV[:52], c='m', label="RSV")
+# plt.plot(np.linspace(1, 52, 52), res1_AdV[:52], c='y', label="AdV")
+# plt.plot(np.linspace(1, 52, 52), res1_PIV[:52], c='k', label="PIV")
+# plt.plot(np.linspace(1, 52, 52), res1_CoV[:52], c='c', label="CoV")
+
+plt.plot(np.linspace(1, 52, 52), mean_res_A[:52], c='r', label="FluA")
+plt.plot(np.linspace(1, 52, 52), mean_res_B[:52], c='b', label="FluB")
+plt.plot(np.linspace(1, 52, 52), mean_res_RV[:52], c='g', label="RV")
+plt.plot(np.linspace(1, 52, 52), mean_res_RSV[:52], c='m', label="RSV")
+plt.plot(np.linspace(1, 52, 52), mean_res_AdV[:52], c='y', label="AdV")
+plt.plot(np.linspace(1, 52, 52), mean_res_PIV[:52], c='k', label="PIV")
+plt.plot(np.linspace(1, 52, 52), mean_res_CoV[:52], c='c', label="CoV")
 plt.title("Полученная заболеваемость для этиологии ОРЗ")
 plt.xlabel("Месяц")
 plt.ylabel("Количество случаев на 1000 чел.")
@@ -1226,16 +1256,16 @@ mean_res0_2_recorded = (np.array(res1_0_2[:52]) + np.array(res2_0_2[:52]) +
 
 mean_flu = flu.mean(axis=1)
 plt.figure()
-plt.plot(np.linspace(1, 52, 52), res1_0_2[:52])
-plt.plot(np.linspace(1, 52, 52), res2_0_2[:52])
-plt.plot(np.linspace(1, 52, 52), res3_0_2[:52])
-plt.plot(np.linspace(1, 52, 52), res4_0_2[:52])
-plt.plot(np.linspace(1, 52, 52), res5_0_2[:52])
-plt.plot(np.linspace(1, 52, 52), res6_0_2[:52])
-plt.plot(np.linspace(1, 52, 52), res7_0_2[:52])
-plt.plot(np.linspace(1, 52, 52), res8_0_2[:52])
-plt.plot(np.linspace(1, 52, 52), res9_0_2[:52])
-plt.plot(np.linspace(1, 52, 52), res10_0_2[:52])
+# plt.plot(np.linspace(1, 52, 52), res1_0_2[:52], label="модель")
+# plt.plot(np.linspace(1, 52, 52), res2_0_2[:52])
+# plt.plot(np.linspace(1, 52, 52), res3_0_2[:52])
+# plt.plot(np.linspace(1, 52, 52), res4_0_2[:52])
+# plt.plot(np.linspace(1, 52, 52), res5_0_2[:52])
+# plt.plot(np.linspace(1, 52, 52), res6_0_2[:52])
+# plt.plot(np.linspace(1, 52, 52), res7_0_2[:52])
+# plt.plot(np.linspace(1, 52, 52), res8_0_2[:52])
+# plt.plot(np.linspace(1, 52, 52), res9_0_2[:52])
+# plt.plot(np.linspace(1, 52, 52), res10_0_2[:52])
 plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
 plt.plot(np.linspace(1, 52, 52), mean_res0_2_recorded[:52], c='b', label="модель")
 plt.title("Регистрируемая заболеваемость для возрастной группы 0-2")
@@ -1248,6 +1278,8 @@ plt.show()
 diff1 = 0
 for week in range(1, 53):
     diff1 += (mean_flu[week] - mean_res0_2_recorded[week - 1]) * (mean_flu[week] - mean_res0_2_recorded[week - 1])
+# for week in range(1, 53):
+#     diff1 += (mean_flu[week] - np.array(res1_0_2[:52])[week - 1]) * (mean_flu[week] - np.array(res1_0_2[:52])[week - 1])
 
 print("Error0: ", diff1)
 
@@ -1264,16 +1296,16 @@ mean_res3_6_recorded = (np.array(res1_3_6[:52]) + np.array(res2_3_6[:52]) +
 
 mean_flu = flu.mean(axis=1)
 plt.figure()
-plt.plot(np.linspace(1, 52, 52), res1_3_6[:52])
-plt.plot(np.linspace(1, 52, 52), res2_3_6[:52])
-plt.plot(np.linspace(1, 52, 52), res3_3_6[:52])
-plt.plot(np.linspace(1, 52, 52), res4_3_6[:52])
-plt.plot(np.linspace(1, 52, 52), res5_3_6[:52])
-plt.plot(np.linspace(1, 52, 52), res6_3_6[:52])
-plt.plot(np.linspace(1, 52, 52), res7_3_6[:52])
-plt.plot(np.linspace(1, 52, 52), res8_3_6[:52])
-plt.plot(np.linspace(1, 52, 52), res9_3_6[:52])
-plt.plot(np.linspace(1, 52, 52), res10_3_6[:52])
+# plt.plot(np.linspace(1, 52, 52), res1_3_6[:52], label="модель")
+# plt.plot(np.linspace(1, 52, 52), res2_3_6[:52])
+# plt.plot(np.linspace(1, 52, 52), res3_3_6[:52])
+# plt.plot(np.linspace(1, 52, 52), res4_3_6[:52])
+# plt.plot(np.linspace(1, 52, 52), res5_3_6[:52])
+# plt.plot(np.linspace(1, 52, 52), res6_3_6[:52])
+# plt.plot(np.linspace(1, 52, 52), res7_3_6[:52])
+# plt.plot(np.linspace(1, 52, 52), res8_3_6[:52])
+# plt.plot(np.linspace(1, 52, 52), res9_3_6[:52])
+# plt.plot(np.linspace(1, 52, 52), res10_3_6[:52])
 plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
 plt.plot(np.linspace(1, 52, 52), mean_res3_6_recorded[:52], c='b', label="модель")
 plt.title("Регистрируемая заболеваемость для возрастной группы 3-6")
@@ -1286,6 +1318,8 @@ plt.show()
 diff2 = 0
 for week in range(1, 53):
     diff2 += (mean_flu[week] - mean_res3_6_recorded[week - 1]) * (mean_flu[week] - mean_res3_6_recorded[week - 1])
+# for week in range(1, 53):
+#     diff2 += (mean_flu[week] - np.array(res1_3_6[:52])[week - 1]) * (mean_flu[week] - np.array(res1_3_6[:52])[week - 1])
 
 print("Error3: ", diff2)
 
@@ -1303,16 +1337,16 @@ mean_res7_14_recorded = (np.array(res1_7_14[:52]) + np.array(res2_7_14[:52]) +
 
 mean_flu = flu.mean(axis=1)
 plt.figure()
-plt.plot(np.linspace(1, 52, 52), res1_7_14[:52])
-plt.plot(np.linspace(1, 52, 52), res2_7_14[:52])
-plt.plot(np.linspace(1, 52, 52), res3_7_14[:52])
-plt.plot(np.linspace(1, 52, 52), res4_7_14[:52])
-plt.plot(np.linspace(1, 52, 52), res5_7_14[:52])
-plt.plot(np.linspace(1, 52, 52), res6_7_14[:52])
-plt.plot(np.linspace(1, 52, 52), res7_7_14[:52])
-plt.plot(np.linspace(1, 52, 52), res8_7_14[:52])
-plt.plot(np.linspace(1, 52, 52), res9_7_14[:52])
-plt.plot(np.linspace(1, 52, 52), res10_7_14[:52])
+# plt.plot(np.linspace(1, 52, 52), res1_7_14[:52], label="модель")
+# plt.plot(np.linspace(1, 52, 52), res2_7_14[:52])
+# plt.plot(np.linspace(1, 52, 52), res3_7_14[:52])
+# plt.plot(np.linspace(1, 52, 52), res4_7_14[:52])
+# plt.plot(np.linspace(1, 52, 52), res5_7_14[:52])
+# plt.plot(np.linspace(1, 52, 52), res6_7_14[:52])
+# plt.plot(np.linspace(1, 52, 52), res7_7_14[:52])
+# plt.plot(np.linspace(1, 52, 52), res8_7_14[:52])
+# plt.plot(np.linspace(1, 52, 52), res9_7_14[:52])
+# plt.plot(np.linspace(1, 52, 52), res10_7_14[:52])
 plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
 plt.plot(np.linspace(1, 52, 52), mean_res7_14_recorded[:52], c='b', label="модель")
 plt.title("Регистрируемая заболеваемость для возрастной группы 7-14")
@@ -1325,6 +1359,8 @@ plt.show()
 diff3 = 0
 for week in range(1, 53):
     diff3 += (mean_flu[week] - mean_res7_14_recorded[week - 1]) * (mean_flu[week] - mean_res7_14_recorded[week - 1])
+# for week in range(1, 53):
+#     diff3 += (mean_flu[week] - np.array(res1_7_14[:52])[week - 1]) * (mean_flu[week] - np.array(res1_7_14[:52])[week - 1])
 
 print("Error7: ", diff3)
 
@@ -1341,16 +1377,16 @@ mean_res15_recorded = (np.array(res1_15[:52]) + np.array(res2_15[:52]) +
 
 mean_flu = flu.mean(axis=1)
 plt.figure()
-plt.plot(np.linspace(1, 52, 52), res1_15[:52])
-plt.plot(np.linspace(1, 52, 52), res2_15[:52])
-plt.plot(np.linspace(1, 52, 52), res3_15[:52])
-plt.plot(np.linspace(1, 52, 52), res4_15[:52])
-plt.plot(np.linspace(1, 52, 52), res5_15[:52])
-plt.plot(np.linspace(1, 52, 52), res6_15[:52])
-plt.plot(np.linspace(1, 52, 52), res7_15[:52])
-plt.plot(np.linspace(1, 52, 52), res8_15[:52])
-plt.plot(np.linspace(1, 52, 52), res9_15[:52])
-plt.plot(np.linspace(1, 52, 52), res10_15[:52])
+# plt.plot(np.linspace(1, 52, 52), res1_15[:52], label="модель")
+# plt.plot(np.linspace(1, 52, 52), res2_15[:52])
+# plt.plot(np.linspace(1, 52, 52), res3_15[:52])
+# plt.plot(np.linspace(1, 52, 52), res4_15[:52])
+# plt.plot(np.linspace(1, 52, 52), res5_15[:52])
+# plt.plot(np.linspace(1, 52, 52), res6_15[:52])
+# plt.plot(np.linspace(1, 52, 52), res7_15[:52])
+# plt.plot(np.linspace(1, 52, 52), res8_15[:52])
+# plt.plot(np.linspace(1, 52, 52), res9_15[:52])
+# plt.plot(np.linspace(1, 52, 52), res10_15[:52])
 plt.plot(np.linspace(1, 52, 52), mean_flu, c='r', label="данные")
 plt.plot(np.linspace(1, 52, 52), mean_res15_recorded[:52], c='b', label="модель")
 plt.title("Регистрируемая заболеваемость для возрастной группы 15+")
@@ -1363,6 +1399,8 @@ plt.show()
 diff4 = 0
 for week in range(1, 53):
     diff4 += (mean_flu[week] - mean_res15_recorded[week - 1]) * (mean_flu[week] - mean_res15_recorded[week - 1])
+# for week in range(1, 53):
+#     diff4 += (mean_flu[week] - np.array(res1_15[:52])[week - 1]) * (mean_flu[week] - np.array(res1_15[:52])[week - 1])
 
 print("Error15: ", diff4)
 
