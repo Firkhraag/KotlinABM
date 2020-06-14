@@ -113,7 +113,7 @@ temp_arr = temp.values()
 # plt.ylabel("Температура, °C")
 # plt.show()
 
-flu = pd.read_csv(r'C:\Users\sigla\Desktop\MasterWork\Flu.csv', index_col=0)
+flu = pd.read_csv(r'..\tables\flu.csv', index_col=0)
 flu = flu.loc[1999:, :]
 for year in range(1999, 2003):
     for week in range(1, 53):
@@ -1242,7 +1242,7 @@ plt.xticks(np.linspace(1, 52, 13), ('Авг', 'Сен', 'Окт', 'Ноя', 'Д�
 plt.legend()
 plt.show()
 
-flu = pd.read_csv(r'C:\Users\sigla\Desktop\MasterWork\Flu0-2.csv', index_col=0)
+flu = pd.read_csv(r'..\tables\flu0-2.csv', index_col=0)
 flu = flu.loc[:, str(1999):]
 for year in range(1999, 2003):
     for week in range(1, 53):
@@ -1283,7 +1283,7 @@ for week in range(1, 53):
 
 print("Error0: ", diff1)
 
-flu = pd.read_csv(r'C:\Users\sigla\Desktop\MasterWork\Flu3-6.csv', index_col=0)
+flu = pd.read_csv(r'..\tables\flu3-6.csv', index_col=0)
 flu = flu.loc[:, str(1999):]
 for year in range(1999, 2003):
     for week in range(1, 53):
@@ -1323,7 +1323,7 @@ for week in range(1, 53):
 
 print("Error3: ", diff2)
 
-flu = pd.read_csv(r'C:\Users\sigla\Desktop\MasterWork\Flu7-14.csv', index_col=0)
+flu = pd.read_csv(r'..\tables\flu7-14.csv', index_col=0)
 flu = flu.loc[:, str(1999):]
 for year in range(1999, 2003):
     for week in range(1, 53):
@@ -1364,7 +1364,7 @@ for week in range(1, 53):
 
 print("Error7: ", diff3)
 
-flu = pd.read_csv(r'C:\Users\sigla\Desktop\MasterWork\Flu15+.csv', index_col=0)
+flu = pd.read_csv(r'..\tables\flu15+.csv', index_col=0)
 flu = flu.loc[:, str(1999):]
 for year in range(1999, 2003):
     for week in range(1, 53):

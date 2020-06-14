@@ -3269,14 +3269,11 @@ class World(private val progress: ReadOnlyDoubleWrapper) {
             }
 
             // Запись в таблицы результатов на текущем шаге
-            writeTableInt("D:\\Dev\\Projects\\KotlinProjects\\TornadoFX\\src\\output\\results${numOfIter}.xlsx",
-                    globalDay, newCasesDayStats)
+            writeTableInt("src\\output\\results${numOfIter}.xlsx", globalDay, newCasesDayStats)
 
-            writeTableInt("D:\\Dev\\Projects\\KotlinProjects\\TornadoFX\\src\\output\\resultsByAge${numOfIter}.xlsx",
-                    globalDay, ageGroupsDayStats)
+            writeTableInt("src\\output\\resultsByAge${numOfIter}.xlsx", globalDay, ageGroupsDayStats)
 
-            writeTableInt("D:\\Dev\\Projects\\KotlinProjects\\TornadoFX\\src\\output\\resultsByEtiology${numOfIter}.xlsx",
-                    globalDay, etiologyDayStats)
+            writeTableInt("src\\output\\resultsByEtiology${numOfIter}.xlsx", globalDay, etiologyDayStats)
 
             // Меняем день
             day++
@@ -3361,22 +3358,18 @@ class World(private val progress: ReadOnlyDoubleWrapper) {
 
     init {
         // Данные по удельному весу различных инфекций по неделям
-        readTableDouble("D:\\Dev\\Projects\\KotlinProjects\\TornadoFX\\src\\Tables\\etiologies_cum.xlsx",
-                51, 5, etiologiesRatio)
+        readTableDouble("src\\tables\\etiologies_cum.xlsx", 51, 5, etiologiesRatio)
 
         // Данные по распределению возрастов по районам
         val ageDistributionInDistrictsMatrix = arrayListOf<ArrayList<Int>>()
-        readTableInt("D:\\Dev\\Projects\\KotlinProjects\\TornadoFX\\src\\Tables\\age-num-of-people-districts.xlsx",
-                18, 535, ageDistributionInDistrictsMatrix)
+        readTableInt("src\\tables\\age-num-of-people-districts.xlsx", 18, 535, ageDistributionInDistrictsMatrix)
 
         // Данные по районам
         val districtsInfoMatrix = arrayListOf<ArrayList<Int>>()
-        readTableInt("D:\\Dev\\Projects\\KotlinProjects\\TornadoFX\\src\\Tables\\districts.xlsx",
-                107, 163, districtsInfoMatrix)
+        readTableInt("src\\tables\\districts.xlsx", 107, 163, districtsInfoMatrix)
 
         // Данные по заболеваемости
-        readTableDouble("D:\\Dev\\Projects\\KotlinProjects\\TornadoFX\\src\\tables\\stats.xlsx",
-            51, 3, realData)
+        readTableDouble("src\\tables\\stats.xlsx", 51, 3, realData)
 
         // Создание популяции
         addHouseholdsToPool(districtsInfoMatrix, ageDistributionInDistrictsMatrix)
