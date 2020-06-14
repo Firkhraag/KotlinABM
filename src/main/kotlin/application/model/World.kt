@@ -308,7 +308,7 @@ class World(private val progress: ReadOnlyDoubleWrapper) {
                 // Родитель 33 года, ребенок - 0-15 лет
                 33 -> {
                     if (ageGroupRandomNum in 1..ageDistributionInDistrictsMatrix[16][biasedIndex]) {
-                        // В группе 0-14
+                        // В группе 0-14 лет
                         when (ageRandomNum) {
                             in (1..districtsInfoMatrix[okatoIndex][154]) -> {
                                 Agent(sexRandomNum in (1..districtsInfoMatrix[okatoIndex][117]), (0..4).random())
@@ -322,14 +322,14 @@ class World(private val progress: ReadOnlyDoubleWrapper) {
                         }
                     }
                     else {
-                        // В группе 15-17
+                        // В группе 15-17 лет
                         return Agent(sexRandomNum in (1..districtsInfoMatrix[okatoIndex][123]), 15)
                     }
                 }
                 // Родитель 34 года, ребенок - 0-16 лет
                 34 -> {
                     if (ageGroupRandomNum in 1..ageDistributionInDistrictsMatrix[16][biasedIndex]) {
-                        // В группе 0-14
+                        // В группе 0-14 лет
                         when (ageRandomNum) {
                             in (1..districtsInfoMatrix[okatoIndex][154]) -> {
                                 Agent(sexRandomNum in (1..districtsInfoMatrix[okatoIndex][117]), (0..4).random())
@@ -343,14 +343,14 @@ class World(private val progress: ReadOnlyDoubleWrapper) {
                         }
                     }
                     else {
-                        // В группе 15-17
+                        // В группе 15-17 лет
                         return Agent(sexRandomNum in (1..districtsInfoMatrix[okatoIndex][123]), (15..16).random())
                     }
                 }
                 // Родитель 35+ лет, ребенок - 0-17 лет
                 else -> {
                     if (ageGroupRandomNum in 1..ageDistributionInDistrictsMatrix[16][biasedIndex]) {
-                        // В группе 0-14
+                        // В группе 0-14 лет
                         when (ageRandomNum) {
                             in (1..districtsInfoMatrix[okatoIndex][154]) -> {
                                 Agent(sexRandomNum in (1..districtsInfoMatrix[okatoIndex][117]), (0..4).random())
@@ -364,7 +364,7 @@ class World(private val progress: ReadOnlyDoubleWrapper) {
                         }
                     }
                     else {
-                        // В группе 15-17
+                        // В группе 15-17 лет
                         return Agent(sexRandomNum in (1..districtsInfoMatrix[okatoIndex][123]), (15..17).random())
                     }
                 }
